@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 public class Adams_Bashforth_Solver {
 
-
     public Adams_Bashforth_Solver(){
 
     }
