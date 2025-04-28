@@ -37,9 +37,9 @@ public class Adams_Bashforth_Solver {
             for (int j = 0; j < x.length; j++) {
                 x[j] = x[j] + h / 6.0 * (k1[j] + 2 * k2[j] + 2 * k3[j] + k4[j]);
                 //Store x values after each time step
-                history[t/h][j] = x[j];
+                history[(int)(t/h)][j] = x[j];
             }
-            System.out.println("Step : " + i + " | t = " + t + " | x = " + Arrays.toString(x));
+            System.out.println("Step : " + t/h + " | t = " + t + " | x = " + Arrays.toString(x));
             return x;
         }
 
@@ -48,13 +48,12 @@ public class Adams_Bashforth_Solver {
             for (int j = 0; j < x.length; j++) {
                 //x_j = x_j-1 + h/24 * (55 * f(x_j-1, t_j-1) - 59 * f(x_j-2, t_j-2) + 37 * f(x_j-3, t_j-3- 9 * f(x_j-4, t_j-4))
                 x[j] = x[j] + h / 24.0 * (
-                        55 * function.computeDerivative(history[t/h - h], t - h)[j]
-                                - 59 * function.computeDerivative(history[t/h - 2h], t - 2h)[j]
-                                + 37 * function.computeDerivative(history[t/h - 3h], t - 3h)[j]
-                                -  9 * function.computeDerivative(history[t/h - 4h], t - 4h)[j]
+                        55 * function.computeDerivative(history[(int)(t/h - h)], t - h)[j]
+                                - 59 * function.computeDerivative(history[(int)(t/h - 2*h)], t - 2*h)[j]
+                                + 37 * function.computeDerivative(history[(int)(t/h - 3*h)], t - 3*h)[j]
+                                -  9 * function.computeDerivative(history[(int)(t/h - 4*h)], t - 4*h)[j]
                 );
-
-                history[t/h][j] = x[j];
+                history[(int)(t/h)][j] = x[j];
             }
         }
 
