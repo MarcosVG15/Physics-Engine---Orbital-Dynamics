@@ -33,17 +33,18 @@ public class AstralObject {
      * @param Mass - the size of the planet of asteroid
      */
     public AstralObject(double x , double y , double z , double Vx, double Vy, double Vz , double Mass){
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.Vx = Vx;
-        this.Vy = Vy;
-        this.Vz = Vz;
+
+        Coordinate coordinate  = new Coordinate(x , y, z);
+        Velocities velocities = new Velocities(Vx , Vy , Vz);
+
 
         this.Mass = Mass;
 
         this.pastCoordinates =new ArrayList<>() ;
         this.pastVelocities = new ArrayList<>() ;
+
+        pastCoordinates.add(coordinate);
+        pastVelocities.add(velocities);
 
     }
 
@@ -60,7 +61,11 @@ public class AstralObject {
         double[][] velocities = new double[j][3];
         double length  = pastVelocities.size() ;
 
-        for(  int i = 0  ; i<j ; i++){
+        for(  int i = 1  ; i<j ; i++){
+
+            if(length-i<0) {
+                continue;
+            }
             velocities[i] = pastVelocities.get((int)length-i).getVelocities() ;
         }
 
@@ -68,17 +73,14 @@ public class AstralObject {
     }
 
     // sets the velocities of the new
-    public void setVelocities(double[] newV){
-       Vx = newV[0];
-       Vy = newV[1];
-       Vz = newV[2];
+    public void addVelocities(double[] newV){
+       Velocities velocities = new Velocities(newV[0] ,newV[1] , newV[2]);
+       pastVelocities.add(velocities);
     }
     public ArrayList<Velocities> getAllVelocities(){
         return pastVelocities;
     }
-    public void addVelocities(Velocities velocities){
-        pastVelocities.add(velocities);
-    }
+
 
 
     public void copyAstralObject(AstralObject other) {
@@ -87,9 +89,10 @@ public class AstralObject {
         this.Mass = other.Mass;
         // Copy other fields if you have them
     }
-    public void addCoordinate(Coordinate currentCoordinate){
+    public void addCoordinate(double[] coordinates){
 
-        pastCoordinates.add(currentCoordinate);
+        Coordinate coordinate = new Coordinate(coordinates[0] , coordinates[1] , coordinates[2]);
+        pastCoordinates.add(coordinate);
     }
     public ArrayList<Coordinate> getAllCoordinates(){
 
@@ -97,10 +100,10 @@ public class AstralObject {
     }
     // returns the last n values of the coordinate array
     public double[][] getSpecificCoordinates(int j ){
-        double[][] coordinates = new double[j][3];
-        double length  = pastCoordinates.size() ;
+        double[][] coordinates = new double[j+1][3];
+        int length  = pastCoordinates.size() ;
 
-        for(  int i = 0  ; i<j ; i++){
+        for ( int i = length ; i>=j ;i--){
             coordinates[i] = pastCoordinates.get((int)length-i).getCoordinates() ;
         }
 

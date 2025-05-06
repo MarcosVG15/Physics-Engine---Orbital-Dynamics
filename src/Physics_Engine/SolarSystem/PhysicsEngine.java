@@ -31,8 +31,8 @@ public class PhysicsEngine {
         solarSystem.add(Neptune);
 
 
-        Trajectories trajectories = new Trajectories(solarSystem);
-        trajectories.getTrajectories(1);
+        //Trajectories trajectories = new Trajectories(solarSystem);
+       // trajectories.getTrajectories(1);
 
     }
 }

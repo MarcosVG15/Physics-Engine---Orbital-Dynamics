@@ -41,8 +41,11 @@ public class Main {
         for(int i =  0 ; i< time.length ; i++){
             time[i] = i*0.1;
         }
-        ObjectPositionCalculator calculator  = new ObjectPositionCalculator(0.1) ;
-        System.out.println(calculator.getNextStep(solarSystem , time));
+        ObjectPositionCalculator calculator  = new ObjectPositionCalculator(solarSystem ,0.1) ;
+        System.out.println(calculator.getNextStep(0));
+//        System.out.println(calculator.getNextStep(0.1));
+//        System.out.println(calculator.getNextStep(0.2));
+//        System.out.println(calculator.getNextStep(0.3));
 
     }
 }

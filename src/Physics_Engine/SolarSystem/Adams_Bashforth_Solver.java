@@ -15,7 +15,7 @@ public class Adams_Bashforth_Solver {
         
 
         //Bootstraping first using classical fourth order Runge-Kuntta method
-        if (t/h < 3) {
+        if (Math.round(t/h) < 3) {
             double[] k1 = function.computeDerivative(x, t);
             double[] xTemp = new double[x.length];
             // k2 = f(x + h/2 * k1, t + h/2)
@@ -39,7 +39,7 @@ public class Adams_Bashforth_Solver {
                 //Store x values after each time step
                 history[(int)(t/h)][j] = x[j];
             }
-            System.out.println("Step : " + t/h + " | t = " + t + " | x = " + Arrays.toString(x));
+            System.out.println("Step : " + Math.round(t/h) + " | t = " + t + " | x = " + Arrays.toString(x));
             return x;
         }
 
@@ -48,12 +48,12 @@ public class Adams_Bashforth_Solver {
             for (int j = 0; j < x.length; j++) {
                 //x_j = x_j-1 + h/24 * (55 * f(x_j-1, t_j-1) - 59 * f(x_j-2, t_j-2) + 37 * f(x_j-3, t_j-3- 9 * f(x_j-4, t_j-4))
                 x[j] = x[j] + h / 24.0 * (
-                        55 * function.computeDerivative(history[(int)(t/h - h)], t - h)[j]
-                                - 59 * function.computeDerivative(history[(int)(t/h - 2*h)], t - 2*h)[j]
-                                + 37 * function.computeDerivative(history[(int)(t/h - 3*h)], t - 3*h)[j]
-                                -  9 * function.computeDerivative(history[(int)(t/h - 4*h)], t - 4*h)[j]
+                        55 * function.computeDerivative(history[(int)Math.round(t/h - h)], t - h)[j]
+                                - 59 * function.computeDerivative(history[(int)Math.round(t/h - 2*h)], t - 2*h)[j]
+                                + 37 * function.computeDerivative(history[(int)Math.round(t/h - 3*h)], t - 3*h)[j]
+                                -  9 * function.computeDerivative(history[(int)Math.round(t/h - 4*h)], t - 4*h)[j]
                 );
-                history[(int)(t/h)][j] = x[j];
+                history[(int)Math.round(t/h)][j] = x[j];
             }
         }
 
