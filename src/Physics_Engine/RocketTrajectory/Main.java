@@ -37,15 +37,19 @@ public class Main {
         solarSystem.add(Neptune);
 
 
-        double[] time = new double[100];
-        for(int i =  0 ; i< time.length ; i++){
-            time[i] = i*0.1;
-        }
-        ObjectPositionCalculator calculator  = new ObjectPositionCalculator(solarSystem ,0.1) ;
-        System.out.println(calculator.getNextStep(0));
-//        System.out.println(calculator.getNextStep(0.1));
-//        System.out.println(calculator.getNextStep(0.2));
-//        System.out.println(calculator.getNextStep(0.3));
+        solarSystem.get(1).getSpecificCoordinates(0);
+        solarSystem.get(1).getSpecificVelocities(0);
+
+
+//        double[] time = new double[100];
+//        for(int i =  0 ; i< time.length ; i++){
+//            time[i] = i*0.1;
+//        }
+//        ObjectPositionCalculator calculator  = new ObjectPositionCalculator(solarSystem ,0.1) ;
+//        System.out.println(calculator.getNextStep(0));
+////        System.out.println(calculator.getNextStep(0.1));
+////        System.out.println(calculator.getNextStep(0.2));
+////        System.out.println(calculator.getNextStep(0.3));
 
     }
 }

@@ -56,21 +56,6 @@ public class AstralObject {
 
 
 
-    // returns the previous velocities
-    public double[][] getSpecificVelocities(int j ){
-        double[][] velocities = new double[j][3];
-        double length  = pastVelocities.size() ;
-
-        for(  int i = 1  ; i<j ; i++){
-
-            if(length-i<0) {
-                continue;
-            }
-            velocities[i] = pastVelocities.get((int)length-i).getVelocities() ;
-        }
-
-        return velocities ;
-    }
 
     // sets the velocities of the new
     public void addVelocities(double[] newV){
@@ -102,12 +87,22 @@ public class AstralObject {
     public double[][] getSpecificCoordinates(int j ){
         double[][] coordinates = new double[j+1][3];
         int length  = pastCoordinates.size() ;
-
-        for ( int i = length ; i>=j ;i--){
-            coordinates[i] = pastCoordinates.get((int)length-i).getCoordinates() ;
+        for ( int i = length ; i>j ;i--){
+            coordinates[length-i] = pastCoordinates.get((int)length-i).getCoordinates() ;
+            System.out.println(Arrays.deepToString(coordinates));
         }
 
         return coordinates ;
+    }
+    public double[][] getSpecificVelocities(int j ){
+        double[][] velocities = new double[j+1][3];
+        int length  = pastVelocities.size() ;
+        for ( int i = length ; i>j ;i--){
+            velocities[length-i] = pastVelocities.get((int)length-i).getVelocities() ;
+            System.out.println(Arrays.deepToString(velocities));
+        }
+
+        return velocities ;
     }
 
 
