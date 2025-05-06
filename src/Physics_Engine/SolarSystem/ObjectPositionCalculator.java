@@ -8,22 +8,22 @@ public class ObjectPositionCalculator {
 
     private double stepSize;
     private static int currentCoordinateIndex ;
-    private ArrayList<AstralObject> tempSolarSystem ;
+    private ArrayList<AstralObject> solarSystem ;
 
     public ObjectPositionCalculator(ArrayList<AstralObject> solarSystem, double stepSize) {
         this.stepSize = stepSize ;
-        this.tempSolarSystem = solarSystem ;
-        this.currentCoordinateIndex= 1;
+        this.solarSystem = solarSystem ;
+        this.currentCoordinateIndex= 0;
 
     }
 
     public ArrayList<AstralObject> getNextStep(double nextStep) {
 
-        for (int i = 1; i < tempSolarSystem.size(); i++) {
+        for (int i = 1; i < solarSystem.size(); i++) {
 
-            AstralObject currentAstralObject  = tempSolarSystem.get(i) ;
+            AstralObject currentAstralObject  = solarSystem.get(i) ;
 
-            SpeedFunction speedFunction = new SpeedFunction(tempSolarSystem , i);
+            SpeedFunction speedFunction = new SpeedFunction(solarSystem , i);
             CoordinateFunction coordinateFunction = new CoordinateFunction() ;
 
             double[][] speeds  = currentAstralObject.getSpecificVelocities(currentCoordinateIndex);
@@ -39,11 +39,11 @@ public class ObjectPositionCalculator {
                                         , currentAstralObject.getSpecificVelocities(3) , coordinateFunction) ;
 
 
-            tempSolarSystem.get(i).addVelocities(updatedSpeed);
-            tempSolarSystem.get(i).addCoordinate(updatedCoordinates);
+            solarSystem.get(i).addVelocities(updatedSpeed);
+            solarSystem.get(i).addCoordinate(updatedCoordinates);
         }
         currentCoordinateIndex++;
-        return tempSolarSystem ;
+        return solarSystem ;
     }
 
 }

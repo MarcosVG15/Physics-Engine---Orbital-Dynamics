@@ -89,7 +89,6 @@ public class AstralObject {
         int length  = pastCoordinates.size() ;
         for ( int i = length ; i>j ;i--){
             coordinates[length-i] = pastCoordinates.get((int)length-i).getCoordinates() ;
-            System.out.println(Arrays.deepToString(coordinates));
         }
 
         return coordinates ;
@@ -99,7 +98,6 @@ public class AstralObject {
         int length  = pastVelocities.size() ;
         for ( int i = length ; i>j ;i--){
             velocities[length-i] = pastVelocities.get((int)length-i).getVelocities() ;
-            System.out.println(Arrays.deepToString(velocities));
         }
 
         return velocities ;
