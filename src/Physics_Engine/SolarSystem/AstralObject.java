@@ -14,12 +14,17 @@ public class AstralObject {
     private double Vx;
     private double Vy;
     private double Vz;
+    private double Ax;
+    private double Ay;
+    private double Az;
 
 
-    private ArrayList<Coordinate> pastCoordinates  ;
-    private ArrayList<Velocities> pastVelocities   ;
+
+    private double[][] pastCoordinates  ;
+    private double[][] pastVelocities   ;
 
     private double Mass;
+    private String name;
 
 
     /**
@@ -32,20 +37,20 @@ public class AstralObject {
      * @param Vz - velocity in the z direction
      * @param Mass - the size of the planet of asteroid
      */
-    public AstralObject(double x , double y , double z , double Vx, double Vy, double Vz , double Mass){
-
-        Coordinate coordinate  = new Coordinate(x , y, z);
-        Velocities velocities = new Velocities(Vx , Vy , Vz);
-
+    public AstralObject(double x , double y , double z , double Vx, double Vy, double Vz , double Mass, String name){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.Vx = Vx;
+        this.Vy = Vy;
+        this.Vz = Vz;
 
         this.Mass = Mass;
 
-        this.pastCoordinates =new ArrayList<>() ;
-        this.pastVelocities = new ArrayList<>() ;
+        this.pastCoordinates =new double[4][3];
+        this.pastVelocities = new double[4][3];
 
-        pastCoordinates.add(coordinate);
-        pastVelocities.add(velocities);
-
+        this.name = name;
     }
 
     public double getMass(){
@@ -53,57 +58,76 @@ public class AstralObject {
     }
 
 
-
-
-
-
     // sets the velocities of the new
-    public void addVelocities(double[] newV){
-       Velocities velocities = new Velocities(newV[0] ,newV[1] , newV[2]);
-       pastVelocities.add(velocities);
+    public void setVelocities(double[] newV){
+       this.Vx = newV[0];
+        this.Vy = newV[1];
+        this.Vz = newV[2];
     }
-    public ArrayList<Velocities> getAllVelocities(){
+
+
+    public double[] getVelocities(){
+        return new double[]{Vx, Vy, Vz};
+    }
+
+
+    public void setCoordinates(double[] coordinates){
+        this.x = coordinates[0];
+        this.y = coordinates[1];
+        this.z = coordinates[2];
+    }
+
+    public double[] getCoordinates(){
+        return new double[]{x, y, z};
+    }
+
+    public double[][] getPastCoordinates(){
+        return pastCoordinates;
+    }
+
+    public double[][] getPastVelocities(){
         return pastVelocities;
     }
 
+    public void setAcceleration(List<AstralObject> solarSystem){
+        double Fx = 0;
+        double Fy = 0;
+        double Fz = 0;
+        double Gconstant = 6.67430E-11;
 
+        for(AstralObject object : solarSystem){
+            double[] corr = object.getCoordinates();
+            double oMass = object.getMass();
+            if(x == corr[0]){
+                continue;
+            }
+            double dx = x - corr[0];
+            double dy = y - corr[1];
+            double dz = z - corr[2];
+            double dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
 
-    public void copyAstralObject(AstralObject other) {
-        this.pastCoordinates = other.getAllCoordinates();
-        this.pastVelocities = other.getAllVelocities() ;
-        this.Mass = other.Mass;
-        // Copy other fields if you have them
-    }
-    public void addCoordinate(double[] coordinates){
-
-        Coordinate coordinate = new Coordinate(coordinates[0] , coordinates[1] , coordinates[2]);
-        pastCoordinates.add(coordinate);
-    }
-    public ArrayList<Coordinate> getAllCoordinates(){
-
-        return pastCoordinates ;
-    }
-    // returns the last n values of the coordinate array
-    public double[][] getSpecificCoordinates(int j ){
-        double[][] coordinates = new double[j+1][3];
-        int length  = pastCoordinates.size() ;
-        for ( int i = length ; i>j ;i--){
-            coordinates[length-i] = pastCoordinates.get((int)length-i).getCoordinates() ;
+            Fx += Gconstant*oMass*Mass*(dx)/Math.pow(Math.abs(dist), 3);
+            Fy += Gconstant*oMass*Mass*(dy)/Math.pow(Math.abs(dist), 3);
+            Fz += Gconstant*oMass*Mass*(dz)/Math.pow(Math.abs(dist), 3);
         }
+        Fx = -Fx;
+        Fy = -Fy;
+        Fz = -Fz;
 
-        return coordinates ;
-    }
-    public double[][] getSpecificVelocities(int j ){
-        double[][] velocities = new double[j+1][3];
-        int length  = pastVelocities.size() ;
-        for ( int i = length ; i>j ;i--){
-            velocities[length-i] = pastVelocities.get((int)length-i).getVelocities() ;
-        }
-
-        return velocities ;
+        this.Ax = Fx/Mass;
+        this.Ay = Fy/Mass;
+        this.Az = Fz/Mass;
     }
 
+    public double[] getAcceleration(){
+        return new double[]{Ax, Ay, Az};
+    }
 
+    public double[] getAllVariables(){
+        return new double[] {x, y, z, Vx, Vy, Vz, Ax, Ay, Az};
+    }
 
-
+    public String getName(){
+        return name;
+    }
 }
