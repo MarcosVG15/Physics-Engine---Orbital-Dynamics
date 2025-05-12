@@ -1,4 +1,4 @@
-package src.Physics_Engine.SOLAR_SYSTEM_MARCOS;
+package src.Physics_Engine.SpectralDefferedInProgress;
 
 import java.util.ArrayList;
 

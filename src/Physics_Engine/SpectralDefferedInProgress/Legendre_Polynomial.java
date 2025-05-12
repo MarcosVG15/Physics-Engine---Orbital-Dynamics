@@ -1,6 +1,4 @@
-package src.Physics_Engine.SOLAR_SYSTEM_MARCOS;
-
-import org.w3c.dom.ls.LSOutput;
+package src.Physics_Engine.SpectralDefferedInProgress;
 
 import java.util.ArrayList;
 
