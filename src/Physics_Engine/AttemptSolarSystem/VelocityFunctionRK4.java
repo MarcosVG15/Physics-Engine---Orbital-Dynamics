@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class VelocityFunctionRK4 implements functionRK4 {
     @Override
     public vectorInterfaceRK4 computeDerivative(int planet, vectorInterfaceRK4 Vector, ArrayList<AstralObjectRK4> solarSystem) {
-
         return Vector;
     }
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class RK4_ODESolver {
 
-    private static final double H = 1;
+    private static final double H = 60;
 
     public void ComputeODE(double t , SolarSystemRK4 solarSystem, functionRK4 acceleration , functionRK4 velocity){
 

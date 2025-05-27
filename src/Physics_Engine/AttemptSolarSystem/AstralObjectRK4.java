@@ -61,10 +61,10 @@ public class AstralObjectRK4 {
 
 
     public vectorInterfaceRK4 getVelocityVector(){
-        return this.velocity;
+        return velocityHistory.get(velocityHistory.size()-1);
     }
     public vectorInterfaceRK4 getPositionVector(){
-        return this.position;
+        return positionHistory.get(positionHistory.size()-1);
     }
 
 
@@ -78,9 +78,8 @@ public class AstralObjectRK4 {
 
 
     public void print(){
-        //position.print(Name + ", Position : ");
-        position.print("Position,");
-        //velocity.print(Name + "  Velocity : ");
+        position.print(Name + ", Position : ");
+        velocity.print(Name + "  Velocity : ");
     }
 
     public void setName(String name){

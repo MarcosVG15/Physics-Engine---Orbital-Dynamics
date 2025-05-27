@@ -5,11 +5,12 @@ package src.Physics_Engine.AttemptSolarSystem;
 
 import src.Physics_Engine.AttemptSolarSystem.Interfaces.functionRK4;
 import src.Physics_Engine.AttemptSolarSystem.Interfaces.vectorInterfaceRK4;
+import src.Physics_Engine.SpectralDefferedInProgress.SolarSystem;
 
 import java.util.ArrayList;
 
 public class AccelerationFunctionRK4 implements functionRK4 {
-    public static final double G = 6.67430e-11;
+    public static final double G = 6.67430e-20 ; //we are working with km ;
 
 
     @Override
@@ -25,18 +26,18 @@ public class AccelerationFunctionRK4 implements functionRK4 {
                 if(j==planet){
                     continue;
                 }
+
                 AstralObjectRK4 current = solarSystem.get(j);
-
-                double modulus = getModulus(VectorPosition,current.getPositionVector());
-                double MassDividedModulus = current.getMass()/Math.pow(Math.abs(modulus),3);
-
                 double[] planetAPosition = VectorPosition.getVector();
                 double[] currentPosition = current.getPositionVector().getVector();
 
-                summation+= MassDividedModulus*(planetAPosition[i] - currentPosition[i]);
+                double modulus = getModulus(VectorPosition,current.getPositionVector());
+                double MassDividedModulus = (planetAPosition[i] - currentPosition[i])/Math.pow((modulus),3);
+
+                summation+= G*MassDividedModulus*(current.getMass());
 
             }
-            accelerationValues[i] = -G*summation;
+            accelerationValues[i] = -summation;
 
         }
 
@@ -46,7 +47,7 @@ public class AccelerationFunctionRK4 implements functionRK4 {
     }
 
     private double getModulus(vectorInterfaceRK4 v1 , vectorInterfaceRK4 v2){
-        double modulus = 0;
+        double modulus ;
         double[] valueV1 = v1.getVector();
         double[] valueV2 = v2.getVector();
 
