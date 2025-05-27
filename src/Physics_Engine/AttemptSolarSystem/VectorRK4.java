@@ -53,7 +53,7 @@ public class VectorRK4 implements vectorInterfaceRK4 {
     }
 
     public void print(String  type ){
-        System.out.printf(type+ "Vector : x : %f , | y : %f , | z : %f \n"
+        System.out.printf(type+ "%f,%f,%f \n"
                 , values[0] , values[1], values[2]);
     }
 

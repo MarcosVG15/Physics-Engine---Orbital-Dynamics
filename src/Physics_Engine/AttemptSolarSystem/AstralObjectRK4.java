@@ -78,9 +78,9 @@ public class AstralObjectRK4 {
 
 
     public void print(){
-        position.print(Name + "  Position : ");
-        velocity.print(Name + "  Velocity : ");
-        System.out.println("");
+        //position.print(Name + ", Position : ");
+        position.print("Position,");
+        //velocity.print(Name + "  Velocity : ");
     }
 
     public void setName(String name){

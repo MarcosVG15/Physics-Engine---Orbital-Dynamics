@@ -33,10 +33,10 @@ public class AccelerationFunctionRK4 implements functionRK4 {
                 double[] planetAPosition = VectorPosition.getVector();
                 double[] currentPosition = current.getPositionVector().getVector();
 
-                summation+= MassDividedModulus*(currentPosition[i]-planetAPosition[i]);
+                summation+= MassDividedModulus*(planetAPosition[i] - currentPosition[i]);
 
             }
-            accelerationValues[i] = G*summation;
+            accelerationValues[i] = -G*summation;
 
         }
 

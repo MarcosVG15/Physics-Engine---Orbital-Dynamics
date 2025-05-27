@@ -10,7 +10,7 @@ public class TEST {
         ArrayList<AstralObjectRK4> solarSystem = S.getSolarSystem();
 
 
-       for(int t = 0 ; t<10 ; t++){
+       for(int t = 0 ; t<10000 ; t++){
 
            solarSystem.get(1).print();
 
