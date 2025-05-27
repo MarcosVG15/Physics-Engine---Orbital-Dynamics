@@ -4,6 +4,10 @@ import src.Physics_Engine.SolarSystem.ODEFunction;
 
 import java.util.Arrays;
 
+/**
+ * DO NOT IMPLEMENT IT (FOR NOW)
+ * SOLVER DOES UPDATE OBJECT(PLANET) WITHOUT WAITING FOR OTHER PLANTES IN SOLAR SYSTEM
+ */
 public class Adams_Bashforth_Solver {
 
     public Adams_Bashforth_Solver(){
