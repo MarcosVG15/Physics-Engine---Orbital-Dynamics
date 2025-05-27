@@ -9,11 +9,11 @@ public class TEST {
 
         ArrayList<AstralObjectRK4> solarSystem = S.getSolarSystem();
 
+
        for(int t = 0 ; t<10 ; t++){
 
-           for (AstralObjectRK4 a: solarSystem){
-               a.print();
-           }
+           solarSystem.get(1).print();
+
            AccelerationFunctionRK4 acceleration = new AccelerationFunctionRK4();
            VelocityFunctionRK4 velocity = new VelocityFunctionRK4();
            RK4_ODESolver odeSolver = new RK4_ODESolver();
