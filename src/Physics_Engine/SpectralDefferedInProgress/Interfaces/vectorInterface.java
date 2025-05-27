@@ -1,4 +1,4 @@
-package src.Physics_Engine.AttemptSolarSystem.Interfaces;
+package src.Physics_Engine.SpectralDefferedInProgress.Interfaces;
 
 public interface vectorInterface {
 

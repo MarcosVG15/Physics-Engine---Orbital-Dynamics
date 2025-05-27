@@ -1,13 +1,18 @@
 package src.Physics_Engine.SpectralDefferedInProgress;
 
+
+
+import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.vectorInterface;
+
 import java.util.ArrayList;
 
 public class AstralObject {
     private Vector velocity ;
     private Vector position ;
     private double Mass;
-    private ArrayList<vectorI> positionHistory ;
-    private ArrayList<vectorI> velocityHistory ;
+    private String Name ;
+    private ArrayList<vectorInterface> positionHistory ;
+    private ArrayList<vectorInterface> velocityHistory ;
 
     public AstralObject(Vector velocity, Vector position, double Mass) {
         this.Mass     = Mass;
@@ -24,14 +29,14 @@ public class AstralObject {
 
         // now these snapshots are of your own internal data
         positionHistory.add(
-                new Vector(this.position.getX(),
-                        this.position.getY(),
-                        this.position.getZ())
+                new Vector(position.getX(),
+                        position.getY(),
+                        position.getZ())
         );
         velocityHistory.add(
-                new Vector(this.velocity.getX(),
-                        this.velocity.getY(),
-                        this.velocity.getZ())
+                new Vector(velocity.getX(),
+                        velocity.getY(),
+                        velocity.getZ())
         );
     }
 
@@ -40,14 +45,14 @@ public class AstralObject {
         return Mass;
     }
 
-    public void setPosition(vectorI v) {
+    public void setPosition(vectorInterface v) {
         position.setVector(v);
         positionHistory.add(
                 new Vector(position.getX(), position.getY(), position.getZ())
         );
     }
 
-    public void setVelocity(vectorI v) {
+    public void setVelocity(vectorInterface v) {
         velocity.setVector(v);
         velocityHistory.add(
                 new Vector(velocity.getX(), velocity.getY(), velocity.getZ())
@@ -56,27 +61,34 @@ public class AstralObject {
 
 
 
-    public vectorI getVelocityVector(){
+    public vectorInterface getVelocityVector(){
         return this.velocity;
     }
-    public vectorI getPositionVector(){
+    public vectorInterface getPositionVector(){
         return this.position;
     }
 
 
 
-    public ArrayList<vectorI> getVelocityLog(){
+    public ArrayList<vectorInterface> getVelocityLog(){
         return velocityHistory;
     }
-    public ArrayList<vectorI> getPositionLog(){
+    public ArrayList<vectorInterface> getPositionLog(){
         return positionHistory;
     }
 
 
     public void print(){
-        position.print();
-        velocity.print();
+        position.print(Name + "  Position : ");
+        velocity.print(Name + "  Velocity : ");
+        System.out.println("");
     }
+
+    public void setName(String name){
+        this.Name = name;
+    }
+
+
 
 
 

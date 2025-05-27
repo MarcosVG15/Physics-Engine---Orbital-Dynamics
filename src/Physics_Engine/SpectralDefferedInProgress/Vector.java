@@ -1,9 +1,11 @@
 package src.Physics_Engine.SpectralDefferedInProgress;
 
+
+import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.vectorInterface;
 /**
  * Allows for opperations and copy of vectors ;
  */
-public class Vector implements vectorI{
+public class Vector implements vectorInterface {
 
     private double[] values ;
 
@@ -43,16 +45,14 @@ public class Vector implements vectorI{
      * @param v - vector that we want to copy
      */
     @Override
-    public void setVector(vectorI v) {
+    public void setVector(vectorInterface v) {
         values[0] = v.getX();
         values[1] = v.getY();
         values[2] = v.getZ();
-
-
     }
 
-    public void print(){
-        System.out.printf("Vector : x : %f , | y : %f , | z : %f \n"
+    public void print(String  type ){
+        System.out.printf(type+ "Vector : x : %f , | y : %f , | z : %f \n"
                 , values[0] , values[1], values[2]);
     }
 
@@ -73,4 +73,7 @@ public class Vector implements vectorI{
     public double getZ() {
         return values[2];
     }
+
+
+
 }

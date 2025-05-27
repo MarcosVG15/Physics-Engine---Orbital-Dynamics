@@ -1,25 +1,25 @@
 package src.Physics_Engine.AttemptSolarSystem;
 
 
-import src.Physics_Engine.AttemptSolarSystem.Interfaces.vectorInterface;
+import src.Physics_Engine.AttemptSolarSystem.Interfaces.vectorInterfaceRK4;
 
 import java.util.ArrayList;
 
-public class AstralObject {
-    private Vector velocity ;
-    private Vector position ;
+public class AstralObjectRK4 {
+    private VectorRK4 velocity ;
+    private VectorRK4 position ;
     private double Mass;
     private String Name ;
-    private ArrayList<vectorInterface> positionHistory ;
-    private ArrayList<vectorInterface> velocityHistory ;
+    private ArrayList<vectorInterfaceRK4> positionHistory ;
+    private ArrayList<vectorInterfaceRK4> velocityHistory ;
 
-    public AstralObject(Vector velocity, Vector position, double Mass) {
+    public AstralObjectRK4(VectorRK4 velocity, VectorRK4 position, double Mass) {
         this.Mass     = Mass;
         // make internal copies instead of aliasing
-        this.position = new Vector(position.getX(),
+        this.position = new VectorRK4(position.getX(),
                 position.getY(),
                 position.getZ());
-        this.velocity = new Vector(velocity.getX(),
+        this.velocity = new VectorRK4(velocity.getX(),
                 velocity.getY(),
                 velocity.getZ());
 
@@ -28,12 +28,12 @@ public class AstralObject {
 
         // now these snapshots are of your own internal data
         positionHistory.add(
-                new Vector(position.getX(),
+                new VectorRK4(position.getX(),
                         position.getY(),
                         position.getZ())
         );
         velocityHistory.add(
-                new Vector(velocity.getX(),
+                new VectorRK4(velocity.getX(),
                         velocity.getY(),
                         velocity.getZ())
         );
@@ -44,35 +44,35 @@ public class AstralObject {
         return Mass;
     }
 
-    public void setPosition(vectorInterface v) {
+    public void setPosition(vectorInterfaceRK4 v) {
         position.setVector(v);
         positionHistory.add(
-                new Vector(position.getX(), position.getY(), position.getZ())
+                new VectorRK4(position.getX(), position.getY(), position.getZ())
         );
     }
 
-    public void setVelocity(vectorInterface v) {
+    public void setVelocity(vectorInterfaceRK4 v) {
         velocity.setVector(v);
         velocityHistory.add(
-                new Vector(velocity.getX(), velocity.getY(), velocity.getZ())
+                new VectorRK4(velocity.getX(), velocity.getY(), velocity.getZ())
         );
     }
 
 
 
-    public vectorInterface getVelocityVector(){
+    public vectorInterfaceRK4 getVelocityVector(){
         return this.velocity;
     }
-    public vectorInterface getPositionVector(){
+    public vectorInterfaceRK4 getPositionVector(){
         return this.position;
     }
 
 
 
-    public ArrayList<vectorInterface> getVelocityLog(){
+    public ArrayList<vectorInterfaceRK4> getVelocityLog(){
         return velocityHistory;
     }
-    public ArrayList<vectorInterface> getPositionLog(){
+    public ArrayList<vectorInterfaceRK4> getPositionLog(){
         return positionHistory;
     }
 

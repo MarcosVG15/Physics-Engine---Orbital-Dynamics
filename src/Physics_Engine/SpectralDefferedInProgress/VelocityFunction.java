@@ -1,8 +1,10 @@
-package src.Physics_Engine.AttemptSolarSystem;
+package src.Physics_Engine.SpectralDefferedInProgress;
 
 
-import src.Physics_Engine.AttemptSolarSystem.Interfaces.function;
-import src.Physics_Engine.AttemptSolarSystem.Interfaces.vectorInterface;
+
+
+import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.function;
+import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.vectorInterface;
 
 import java.util.ArrayList;
 
@@ -12,4 +14,5 @@ public class VelocityFunction implements function {
 
         return Vector;
     }
+
 }

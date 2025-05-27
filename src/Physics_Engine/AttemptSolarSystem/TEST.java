@@ -5,17 +5,17 @@ import java.util.ArrayList;
 public class TEST {
     public static void main(String[] args){
 
-        SolarSystem S = SolarSystem.getInstance();
+        SolarSystemRK4 S = src.Physics_Engine.AttemptSolarSystem.SolarSystemRK4.getInstance();
 
-        ArrayList<AstralObject> solarSystem = S.getSolarSystem();
+        ArrayList<AstralObjectRK4> solarSystem = S.getSolarSystem();
 
        for(int t = 0 ; t<10 ; t++){
 
-           for (AstralObject a: solarSystem){
+           for (AstralObjectRK4 a: solarSystem){
                a.print();
            }
-           AccelerationFunction acceleration = new AccelerationFunction();
-           VelocityFunction velocity = new VelocityFunction();
+           AccelerationFunctionRK4 acceleration = new AccelerationFunctionRK4();
+           VelocityFunctionRK4 velocity = new VelocityFunctionRK4();
            RK4_ODESolver odeSolver = new RK4_ODESolver();
 
            odeSolver.ComputeODE(t , S, acceleration ,velocity);

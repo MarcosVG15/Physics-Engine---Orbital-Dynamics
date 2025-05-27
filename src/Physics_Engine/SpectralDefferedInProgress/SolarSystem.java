@@ -1,11 +1,8 @@
-package src.Physics_Engine.AttemptSolarSystem;
+package src.Physics_Engine.SpectralDefferedInProgress;
 
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class SolarSystem {
