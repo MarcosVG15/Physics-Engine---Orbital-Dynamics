@@ -1,12 +1,12 @@
 package src.Physics_Engine.AttemptSolarSystem;
 
 
-import src.Physics_Engine.AttemptSolarSystem.Interfaces.vectorInterfaceRK4;
+import src.Physics_Engine.Interfaces.vectorInterface;
 
 /**
  * Allows for opperations and copy of vectors ;
  */
-public class VectorRK4 implements vectorInterfaceRK4 {
+public class Vector implements vectorInterface {
 
     private double[] values ;
 
@@ -16,7 +16,7 @@ public class VectorRK4 implements vectorInterfaceRK4 {
      * @param y - position in y plane
      * @param z - position in z plane
      */
-    public VectorRK4(double x , double  y , double z){
+    public Vector(double x , double  y , double z){
         this.values = new double[]{x, y, z};;
 
     }
@@ -46,7 +46,7 @@ public class VectorRK4 implements vectorInterfaceRK4 {
      * @param v - vector that we want to copy
      */
     @Override
-    public void setVector(vectorInterfaceRK4 v) {
+    public void setVector(vectorInterface v) {
         values[0] = v.getX();
         values[1] = v.getY();
         values[2] = v.getZ();

@@ -1,8 +1,11 @@
 package src.Physics_Engine.SpectralDefferedInProgress;
 
 
-import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.function;
-import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.vectorInterface;
+
+
+import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.Interfaces.function;
+import src.Physics_Engine.Interfaces.vectorInterface;
 
 import java.util.ArrayList;
 
@@ -13,9 +16,9 @@ public class HEUN_2ORDER {
 
         int n = solarSystem.getSolarSystem().size();
 
-        ArrayList<AstralObject> solarSystemArr = solarSystem.getSolarSystem();
+        ArrayList<SpaceObject> solarSystemArr = solarSystem.getSolarSystem();
 
-        ArrayList<AstralObject> snapshotSolarSystem = new ArrayList<>();
+        ArrayList<SpaceObject> snapshotSolarSystem = new ArrayList<>();
         copyArrayList(solarSystemArr ,snapshotSolarSystem);
 
         vectorInterface[] k1_v = new vectorInterface[n], k1_p = new vectorInterface[n];
@@ -85,7 +88,7 @@ public class HEUN_2ORDER {
      * @param currentK = the array of k values
      * @param scalar - the scalar  k that i want to multiple
      */
-    private void addSnapshotPosition(ArrayList<AstralObject> snapshotArray , ArrayList<AstralObject> solarSystem, vectorInterface[] currentK , double scalar){
+    private void addSnapshotPosition(ArrayList<SpaceObject> snapshotArray , ArrayList<SpaceObject> solarSystem, vectorInterface[] currentK , double scalar){
 
         for(int i = 0 ; i < solarSystem.size() ; i++){
             snapshotArray.get(i).setPosition(createSnapshotVector(solarSystem.get(i).getPositionVector() , currentK[i] , scalar));
@@ -100,7 +103,7 @@ public class HEUN_2ORDER {
      * @param currentK
      * @param scalar
      */
-    private void addSnapshotVelocity(ArrayList<AstralObject> snapshotArray , ArrayList<AstralObject> solarSystem, vectorInterface[] currentK , double scalar){
+    private void addSnapshotVelocity(ArrayList<SpaceObject> snapshotArray , ArrayList<SpaceObject> solarSystem, vectorInterface[] currentK , double scalar){
 
         for(int i = 0 ; i < solarSystem.size() ; i++){
             snapshotArray.get(i).setVelocity(createSnapshotVector(solarSystem.get(i).getVelocityVector() , currentK[i] , scalar));
@@ -133,10 +136,10 @@ public class HEUN_2ORDER {
      * @param actual - the array we want to copy from
      * @param copy - the array we want the copies to be
      */
-    public void copyArrayList(ArrayList<AstralObject> actual , ArrayList<AstralObject> copy){
+    public void copyArrayList(ArrayList<SpaceObject> actual , ArrayList<SpaceObject> copy){
 
         for( int i = 0  ; i<actual.size() ; i++){
-            AstralObject newObject = new AstralObject(
+            SpaceObject newObject = new AstralObject(
                     new Vector(actual.get(i).getVelocityVector().getX() , actual.get(i).getVelocityVector().getY(),actual.get(i).getVelocityVector().getZ())
                     , new Vector(actual.get(i).getPositionVector().getX(), actual.get(i).getPositionVector().getY(), actual.get(i).getPositionVector().getZ() )
                     , actual.get(i).getMass());

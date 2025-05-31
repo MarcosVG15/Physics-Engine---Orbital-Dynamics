@@ -2,14 +2,12 @@ package src.Physics_Engine.SpectralDefferedInProgress;
 
 public class QIJMatrix {
 
-    private double[][] QIJMatrix ;
     private double StartT;
     private double EndT;
 
-    private static int NUMBER_OF_INTERVALS = 10 ; // will change if it takes too much time to calculate ;
+    private static int NUMBER_OF_INTERVALS = 11 ; // will change if it takes too much time to calculate ;
 
     public QIJMatrix( double StartT , double EndT){
-        this.QIJMatrix = new double[NUMBER_OF_INTERVALS][NUMBER_OF_INTERVALS];
         this.StartT = StartT;
         this.EndT = EndT;
 
@@ -17,55 +15,69 @@ public class QIJMatrix {
 
     }
 
-    private double[][] ComputeMatrixCoefficients(){
-        double h  =  ((EndT - StartT)/(double)NUMBER_OF_INTERVALS);
-        double[] ArrayAllTs = getAllTs();
 
-        for( int  i = 0 ; i<NUMBER_OF_INTERVALS ; i++){
-            for( int  j = 0 ; j<NUMBER_OF_INTERVALS ; j++) {
-                QIJMatrix[i][j] = SimpsonsIntegration(j,segmentArray(i , ArrayAllTs));
+    public double[][] QijMatrix(int size){
+
+        double[][] QIJMatrix = new double[size][size];
+
+        for(int i = 1 ; i<10 ; i++){
+            for(int j = 1 ; j<10 ; j++){
+                if(j<=i){
+                    QIJMatrix[i][j] = TrapezoidIntegration( getAllTs(), i , j);
+
+                }
+
             }
         }
-        return  QIJMatrix ;
+        return QIJMatrix;
     }
 
+
     /**
-     * Shortens the array based  how many datapoints we want to pass
-     * @param data - the amount of data point
-     * @param Array - the Array that we want shorten
-     * @return - returns a shortened array
+     * This method computes the Integral for a given interval of a specific lagrange Polynomial for a given range
+     * @param AllTs - This is the array of all subsections of the interval t and t+1 which would be 1 second for our planet
+     * @param I - is the current Row of the Qij Matrix that we want to compute
+     * @param J - is the current Column of the Qij Matrix that we want to compute and corresponds to the lagrange Polynomial
+     * @return - It should return the integral  over a given range of the specific Lagrange Polynomial.
      */
-    private double[] segmentArray(int data, double[] Array){
+    public double TrapezoidIntegration(double[] AllTs , int I , int J ){
 
-        double[] shortenedArray = new double[data + 1];
-        for (int i = 0; i <= data; i++) {
-            shortenedArray[i] = Array[i];
+        double Integral = 0 ;
+        double[] SegmentedArray = Segmenter(I ,  AllTs);
+        double Tj = SegmentedArray[J];
+        double h = (SegmentedArray[I]- SegmentedArray[0])/SegmentedArray.length;
+
+        if(SegmentedArray.length < 2) {
+            throw new IllegalArgumentException(" The Size Must be bigger than 2");
         }
-        return shortenedArray ;
+
+        Integral+= LagrangePolynomial(SegmentedArray[0] ,Tj , SegmentedArray );
+
+        Integral+= LagrangePolynomial(SegmentedArray[I] , Tj, SegmentedArray );
+
+
+        for (int i = 1 ; i< I ; i++){
+            Integral += 2 * (LagrangePolynomial(SegmentedArray[i] ,Tj ,SegmentedArray));
+        }
+
+
+        return (h/2.0) * Integral ;
     }
 
-    private double SimpsonsIntegration(int j, double[] ArrayAllTs){
-        double h  =  ((ArrayAllTs[ArrayAllTs.length-1] - ArrayAllTs[0])/(ArrayAllTs.length));
+    public double[] Segmenter ( int I , double[] AllTs){
 
-        double Integration = LagrangePolynomial(ArrayAllTs[0], ArrayAllTs[j], ArrayAllTs)
-                                              + LagrangePolynomial(ArrayAllTs[ArrayAllTs.length-1] ,ArrayAllTs[j] , ArrayAllTs) ;
+        double[] segmenetedArray = new double[I+1];
 
-        for (int c = 1; c < ArrayAllTs.length; c++) {
-            if (c % 2 != 0) {
-                Integration += 4*(LagrangePolynomial(c, ArrayAllTs[j], ArrayAllTs));
-            }
-            else {
-                Integration += 2*(LagrangePolynomial(c, ArrayAllTs[j], ArrayAllTs));
-
-            }
+        for(int i = 0 ; i<I+1 ; i++){
+            segmenetedArray[i] = AllTs[i];
         }
-        return (h/3 * Integration);
-
-
+        return segmenetedArray;
     }
+
+
 
     /**
-     * This method compute the langrang polynomial values such that i could integrate over these values for different S
+     * This method compute the lagrange polynomial values such that i could integrate over these values for different S
      * it requires the S that we want to compute the polynomial for , the Tj which is the step J that is needed and an
      * array of T values which are essentially a subset of the main step interval.
      *
@@ -74,23 +86,25 @@ public class QIJMatrix {
      * @param AllTs - all T values
      * @return - returns the value of the Lagrange Polynomials for the current S
      */
-    private double LagrangePolynomial(double S , double Tj , double[] AllTs){
+    public double LagrangePolynomial(double S , double Tj , double[] AllTs){
         double Jth_LagrangeValue = 1;
 
         for (double allT : AllTs) {
             if(Tj == allT){
                 continue;
             }
-            Jth_LagrangeValue *= (S - allT) / (Tj - allT);
+            Jth_LagrangeValue *= ((S - allT)/(Tj - allT));
+            System.out.println("Numerator : For Ti : "+ allT +" We get : "+ (S - allT));
+            System.out.println("Denominator : For Ti : "+ allT +" We get : "+ (Tj - allT));
         }
 
         return Jth_LagrangeValue;
     }
 
 
-    private double[] getAllTs(){
+    public double[] getAllTs(){
 
-        double h = (EndT - StartT)/NUMBER_OF_INTERVALS ;
+        double h = (EndT - StartT)/(NUMBER_OF_INTERVALS-1) ;
         double[] ArrayOfTs = new double[NUMBER_OF_INTERVALS];
 
         double Accumulation = StartT;
@@ -98,9 +112,10 @@ public class QIJMatrix {
 
         for( int i = 1 ; i<NUMBER_OF_INTERVALS ; i++){
             Accumulation+= h;
-            ArrayOfTs[i] = Accumulation;
+            ArrayOfTs[i] = (double) Math.round(Accumulation * 10_000) /10_000;
         }
 
        return ArrayOfTs;
     }
+
 }

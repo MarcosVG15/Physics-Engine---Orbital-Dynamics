@@ -1,27 +1,24 @@
-package src.Physics_Engine.AttemptSolarSystem;
+package src.Physics_Engine.ProbeMission;
 
+import src.Physics_Engine.AttemptSolarSystem.AstralObject;
 
-
+import src.Physics_Engine.AttemptSolarSystem.Vector;
 import src.Physics_Engine.Interfaces.SolarSystemInterface;
 import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.Interfaces.vectorInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+public class SolarSystem implements SolarSystemInterface {
+    private final double EARTH_RADIUS = 6370 ;
 
-public class SolarSystemRK4 implements SolarSystemInterface {
-
-    private static SolarSystemRK4 instance;
 
     private ArrayList<SpaceObject> solarSystem;
 
-    public static SolarSystemRK4 getInstance() {
-        if (instance == null) {
-            instance = new SolarSystemRK4();
-        }
-        return instance;
-    }
 
-    private SolarSystemRK4(){
+
+    public SolarSystem(){
 
         SpaceObject sun = new AstralObject(
                 new Vector(0, 0, 0),
@@ -100,6 +97,18 @@ public class SolarSystemRK4 implements SolarSystemInterface {
         );
         neptune.setName("neptune");
 
+
+        // Compute best coordinate to set the probe
+
+        double[] BestCoordinates = getBestInitialPositionCoordinates(titan.getPositionVector().getVector() , earth.getPositionVector().getVector());
+
+        ProbeObject probe = new ProbeObject(
+                new Vector( 51.459648,-31.249168,-13.900438),
+                new Vector(BestCoordinates[0] , BestCoordinates[1] , BestCoordinates[2])
+
+        );
+        probe.setName("PROBE");
+
         solarSystem = new ArrayList<>();
 
         solarSystem.add( sun);
@@ -112,12 +121,52 @@ public class SolarSystemRK4 implements SolarSystemInterface {
         solarSystem.add( saturn);
         solarSystem.add( titan);
         solarSystem.add( uranus);
-        solarSystem.add(neptune);
+        solarSystem.add( neptune);
+        solarSystem.add( probe);
 
     }
 
-    public ArrayList<SpaceObject> getSolarSystem(){
+    public  ArrayList<SpaceObject> getSolarSystem(){
         return solarSystem;
+    }
+
+    /**
+     * To compute the best initial position for the rocket we compute the vector that is between the earth and titan
+     * after which we then scale it down to the radius of the earth by normalising and finally adding it to the vector
+     * of earth such that the position remains relative to the sun.
+     * @param Titan - coordinates of Titan - start coordinates
+     * @param Earth - coordinates of Earth - start coordinates
+     * @return
+     */
+    private double[] getBestInitialPositionCoordinates(double[] Titan , double[] Earth){
+
+        double [] InitialPosition = new double[3] ;
+        for( int i = 0 ; i< 3 ; i++){
+            InitialPosition[i] = Titan[i] - Earth[i] ;
+
+        }
+
+        // We Normalise scale and add at the same time to save on computation
+        double Normal = getModulus(new Vector(InitialPosition[0] , InitialPosition[1], InitialPosition[2]) , new Vector(0,0,0));
+
+        for(int i = 0 ; i<3 ; i++ ){
+            InitialPosition[i] = (InitialPosition[i]/Normal) * EARTH_RADIUS + Earth[i];
+        }
+
+        return InitialPosition ;
+    }
+    public double getModulus (vectorInterface vectorProbe , vectorInterface vectorTitan){
+
+        double[] probeValues = vectorProbe.getVector();
+        double[] titanValues = vectorTitan.getVector();
+
+        double sum =0 ;
+
+        for(int i = 0 ; i<3 ; i++){
+            sum += Math.pow((probeValues[i]- titanValues[i]), 2);
+        }
+
+        return Math.sqrt(sum);
     }
 
 }

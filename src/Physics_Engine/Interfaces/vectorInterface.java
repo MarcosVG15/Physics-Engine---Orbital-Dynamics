@@ -1,4 +1,4 @@
-package src.Physics_Engine.SpectralDefferedInProgress.Interfaces;
+package src.Physics_Engine.Interfaces;
 
 public interface vectorInterface {
 

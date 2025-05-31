@@ -4,18 +4,19 @@ package src.Physics_Engine.SpectralDefferedInProgress;
 
 
 
+import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.Interfaces.function;
+import src.Physics_Engine.Interfaces.vectorInterface;
 import src.Physics_Engine.SpectralDefferedInProgress.AstralObject;
-import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.function;
-import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.vectorInterface;
 
 import java.util.ArrayList;
 
 public class AccelerationFunction implements function {
-    public static final double G = 6.67430e-11;
+    public static final double G = 6.67430e-20;
 
 
     @Override
-    public vectorInterface computeDerivative(int planet, vectorInterface VectorPosition, ArrayList<AstralObject> solarSystem){
+    public vectorInterface computeDerivative(int planet, vectorInterface VectorPosition, ArrayList<SpaceObject> solarSystem){
         double [] accelerationValues = new double[3];
 
 
@@ -27,7 +28,7 @@ public class AccelerationFunction implements function {
                 if(j==planet){
                     continue;
                 }
-                AstralObject current = solarSystem.get(j);
+                SpaceObject current = solarSystem.get(j);
 
                 double modulus = getModulus(VectorPosition,current.getPositionVector());
                 double MassDividedModulus = current.getMass()/Math.pow(Math.abs(modulus),3);

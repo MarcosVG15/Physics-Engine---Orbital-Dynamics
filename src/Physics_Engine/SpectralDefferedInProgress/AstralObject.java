@@ -2,11 +2,12 @@ package src.Physics_Engine.SpectralDefferedInProgress;
 
 
 
-import src.Physics_Engine.SpectralDefferedInProgress.Interfaces.vectorInterface;
+import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.Interfaces.vectorInterface;
 
 import java.util.ArrayList;
 
-public class AstralObject {
+public class AstralObject implements SpaceObject {
     private Vector velocity ;
     private Vector position ;
     private double Mass;
@@ -43,6 +44,11 @@ public class AstralObject {
 
     public double getMass(){
         return Mass;
+    }
+
+    @Override
+    public boolean hasHitPlanet(SpaceObject astralObject, double Radius) {
+        return false;
     }
 
     public void setPosition(vectorInterface v) {

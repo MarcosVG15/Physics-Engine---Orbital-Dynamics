@@ -3,18 +3,18 @@ package src.Physics_Engine.AttemptSolarSystem;
 
 
 
-import src.Physics_Engine.AttemptSolarSystem.Interfaces.functionRK4;
-import src.Physics_Engine.AttemptSolarSystem.Interfaces.vectorInterfaceRK4;
-import src.Physics_Engine.SpectralDefferedInProgress.SolarSystem;
+import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.Interfaces.function;
+import src.Physics_Engine.Interfaces.vectorInterface;
 
 import java.util.ArrayList;
 
-public class AccelerationFunctionRK4 implements functionRK4 {
+public class AccelerationFunction implements function {
     public static final double G = 6.67430e-20 ; //we are working with km ;
 
 
     @Override
-    public vectorInterfaceRK4 computeDerivative(int planet, vectorInterfaceRK4 VectorPosition, ArrayList<AstralObjectRK4> solarSystem){
+    public vectorInterface computeDerivative(int planet, vectorInterface VectorPosition, ArrayList<SpaceObject> solarSystem){
         double [] accelerationValues = new double[3];
 
 
@@ -27,7 +27,7 @@ public class AccelerationFunctionRK4 implements functionRK4 {
                     continue;
                 }
 
-                AstralObjectRK4 current = solarSystem.get(j);
+                SpaceObject current = solarSystem.get(j);
                 double[] planetAPosition = VectorPosition.getVector();
                 double[] currentPosition = current.getPositionVector().getVector();
 
@@ -41,12 +41,12 @@ public class AccelerationFunctionRK4 implements functionRK4 {
 
         }
 
-        VectorRK4 acceleration = new VectorRK4(accelerationValues[0],accelerationValues[1],accelerationValues[2]);
+        Vector acceleration = new Vector(accelerationValues[0],accelerationValues[1],accelerationValues[2]);
 
         return acceleration;
     }
 
-    private double getModulus(vectorInterfaceRK4 v1 , vectorInterfaceRK4 v2){
+    private double getModulus(vectorInterface v1 , vectorInterface v2){
         double modulus ;
         double[] valueV1 = v1.getVector();
         double[] valueV2 = v2.getVector();
