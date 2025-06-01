@@ -9,7 +9,6 @@ public class TEST {
     public static void main(String[] args){
 
         SolarSystem S = new SolarSystem();
-
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
 
 

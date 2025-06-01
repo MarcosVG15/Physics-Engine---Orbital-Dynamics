@@ -141,6 +141,7 @@ public class SolarSystem implements SolarSystemInterface {
         solarSystem.add( uranus);
         solarSystem.add( neptune);
         solarSystem.add( probe);
+        solarSystem.add(SpaceShip);
 
     }
 
