@@ -102,4 +102,8 @@ public class ProbeObject implements SpaceObject {
         return hasHit[0] & hasHit[1] & hasHit[2];
     }
 
+    public String getName(){
+        return Name ;
+    }
+
 }

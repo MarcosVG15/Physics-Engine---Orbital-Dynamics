@@ -92,6 +92,10 @@ public class AstralObject implements SpaceObject {
         this.Name = name;
     }
 
+    public String getName(){
+        return Name ;
+    }
+
 
 
 

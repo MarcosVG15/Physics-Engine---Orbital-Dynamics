@@ -6,7 +6,7 @@ import src.Physics_Engine.GeneralComponents.Vector;
 
 import java.util.ArrayList;
 
-public class SpaceShip implements SpaceObject {
+public class SpaceShip implements SpaceObject  {
     private vectorInterface velocity ;
     private vectorInterface position ;
 
@@ -99,5 +99,8 @@ public class SpaceShip implements SpaceObject {
         }
 
         return hasHit[0] & hasHit[1] & hasHit[2];
+    }
+    public String getName(){
+        return Name ;
     }
 }
