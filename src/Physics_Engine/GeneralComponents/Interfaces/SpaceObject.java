@@ -11,6 +11,7 @@ public interface SpaceObject {
     public void setName(String name);
     public void print();
     public double getMass();
+    public String getName() ;
 
     public boolean hasHitPlanet(SpaceObject astralObject , double Radius);
 }

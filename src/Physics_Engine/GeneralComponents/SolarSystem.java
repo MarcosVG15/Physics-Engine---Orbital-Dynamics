@@ -111,21 +111,12 @@ public class SolarSystem implements SolarSystemInterface {
         probe.setName("PROBE");
 
 
-
         SpaceObject SpaceShip = new SpaceShip(
-                new Vector(  51.147313,-31.207901,-13.928841),
-                new Vector(BestCoordinates[0] , BestCoordinates[1] , BestCoordinates[2])
+                new Vector(  0, 0,0),
+                new Vector(BestCoordinates[0]+1 , BestCoordinates[1] +1, BestCoordinates[2]+1 )
 
         );
         SpaceShip.setName("SpaceShip");
-
-
-
-
-
-
-
-
 
         solarSystem = new ArrayList<>();
 

@@ -47,6 +47,11 @@ public class AstralObject implements SpaceObject {
     }
 
     @Override
+    public String getName() {
+        return Name;
+    }
+
+    @Override
     public boolean hasHitPlanet(SpaceObject astralObject, double Radius) {
         return false;
     }
