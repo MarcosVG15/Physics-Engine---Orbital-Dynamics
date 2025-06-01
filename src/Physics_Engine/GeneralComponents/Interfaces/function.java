@@ -1,4 +1,4 @@
-package src.Physics_Engine.Interfaces;
+package src.Physics_Engine.GeneralComponents.Interfaces;
 
 
 import java.util.ArrayList;

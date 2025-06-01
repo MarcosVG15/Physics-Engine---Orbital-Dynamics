@@ -1,7 +1,7 @@
-package src.Physics_Engine.AttemptSolarSystem;
+package src.Physics_Engine.GeneralComponents;
 
 
-import src.Physics_Engine.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
 /**
  * Allows for opperations and copy of vectors ;

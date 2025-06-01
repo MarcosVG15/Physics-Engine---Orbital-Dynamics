@@ -1,11 +1,13 @@
-package src.Physics_Engine.AttemptSolarSystem;
+package src.Physics_Engine.ODESolverRK4;
 
 
 
-import src.Physics_Engine.Interfaces.SolarSystemInterface;
-import src.Physics_Engine.Interfaces.SpaceObject;
-import src.Physics_Engine.Interfaces.function;
-import src.Physics_Engine.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.AstralObject;
+import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.Interfaces.function;
+import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.Vector;
 
 import java.util.ArrayList;
 

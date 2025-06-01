@@ -1,10 +1,12 @@
 package src.Physics_Engine.ProbeMission;
 
-import src.Physics_Engine.AttemptSolarSystem.*;
-import src.Physics_Engine.Interfaces.SpaceObject;
-import src.Physics_Engine.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.AstralObject;
+import src.Physics_Engine.GeneralComponents.SolarSystem;
+import src.Physics_Engine.GeneralComponents.Vector;
+import src.Physics_Engine.ODESolverRK4.*;
+import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
-import javax.sound.sampled.Port;
 import java.util.ArrayList;
 import java.util.Arrays;
 

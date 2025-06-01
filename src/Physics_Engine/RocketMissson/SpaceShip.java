@@ -1,4 +1,4 @@
-package src.Physics_Engine.ProbeMission;
+package src.Physics_Engine.RocketMissson;
 
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
@@ -6,8 +6,7 @@ import src.Physics_Engine.GeneralComponents.Vector;
 
 import java.util.ArrayList;
 
-public class ProbeObject implements SpaceObject {
-
+public class SpaceShip implements SpaceObject {
     private vectorInterface velocity ;
     private vectorInterface position ;
 
@@ -17,14 +16,14 @@ public class ProbeObject implements SpaceObject {
     private String Name ;
 
 
-    public ProbeObject(vectorInterface Velocity , vectorInterface Position){
+    public SpaceShip(vectorInterface Velocity , vectorInterface Position){
         this.velocity = Velocity;
         this.position = Position ;
 
         positionHistory = new ArrayList<>();
         velocityHistory = new ArrayList<>();
 
-       positionHistory.add(
+        positionHistory.add(
                 new Vector(position.getX(),
                         position.getY(),
                         position.getZ())
@@ -101,5 +100,4 @@ public class ProbeObject implements SpaceObject {
 
         return hasHit[0] & hasHit[1] & hasHit[2];
     }
-
 }

@@ -1,14 +1,12 @@
-package src.Physics_Engine.ProbeMission;
+package src.Physics_Engine.GeneralComponents;
 
-import src.Physics_Engine.AttemptSolarSystem.AstralObject;
-
-import src.Physics_Engine.AttemptSolarSystem.Vector;
-import src.Physics_Engine.Interfaces.SolarSystemInterface;
-import src.Physics_Engine.Interfaces.SpaceObject;
-import src.Physics_Engine.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import src.Physics_Engine.ProbeMission.ProbeObject;
+import src.Physics_Engine.RocketMissson.SpaceShip;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SolarSystem implements SolarSystemInterface {
     private final double EARTH_RADIUS = 6370 ;
@@ -98,16 +96,36 @@ public class SolarSystem implements SolarSystemInterface {
         neptune.setName("neptune");
 
 
+        //--------------------------------------------------------------------------------------------------------------
+
+
         // Compute best coordinate to set the probe
 
         double[] BestCoordinates = getBestInitialPositionCoordinates(titan.getPositionVector().getVector() , earth.getPositionVector().getVector());
 
-        ProbeObject probe = new ProbeObject(
-                new Vector( 51.459648,-31.249168,-13.900438),
+        SpaceObject probe = new ProbeObject(
+                new Vector(  51.147313,-31.207901,-13.928841),
                 new Vector(BestCoordinates[0] , BestCoordinates[1] , BestCoordinates[2])
 
         );
         probe.setName("PROBE");
+
+
+
+        SpaceObject SpaceShip = new SpaceShip(
+                new Vector(  51.147313,-31.207901,-13.928841),
+                new Vector(BestCoordinates[0] , BestCoordinates[1] , BestCoordinates[2])
+
+        );
+        SpaceShip.setName("SpaceShip");
+
+
+
+
+
+
+
+
 
         solarSystem = new ArrayList<>();
 

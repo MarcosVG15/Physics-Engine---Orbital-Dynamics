@@ -1,13 +1,14 @@
-package src.Physics_Engine.AttemptSolarSystem;
+package src.Physics_Engine.ODESolverRK4;
 
-import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.SolarSystem;
 
 import java.util.ArrayList;
 
 public class TEST {
     public static void main(String[] args){
 
-        SolarSystemRK4 S = SolarSystemRK4.getInstance();
+        SolarSystem S = new SolarSystem();
 
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
 

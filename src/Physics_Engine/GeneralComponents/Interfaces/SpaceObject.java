@@ -1,6 +1,4 @@
-package src.Physics_Engine.Interfaces;
-
-import src.Physics_Engine.AttemptSolarSystem.AstralObject;
+package src.Physics_Engine.GeneralComponents.Interfaces;
 
 public interface SpaceObject {
 

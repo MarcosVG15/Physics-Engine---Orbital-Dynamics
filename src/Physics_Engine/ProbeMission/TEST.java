@@ -1,10 +1,10 @@
 package src.Physics_Engine.ProbeMission;
 
-import src.Physics_Engine.AttemptSolarSystem.AccelerationFunction;
-import src.Physics_Engine.AttemptSolarSystem.RK4_ODESolver;
-import src.Physics_Engine.AttemptSolarSystem.SolarSystemRK4;
-import src.Physics_Engine.AttemptSolarSystem.VelocityFunction;
-import src.Physics_Engine.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.SolarSystem;
+import src.Physics_Engine.ODESolverRK4.AccelerationFunction;
+import src.Physics_Engine.ODESolverRK4.RK4_ODESolver;
+import src.Physics_Engine.ODESolverRK4.VelocityFunction;
+import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ public class TEST {
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
 
 
-        for(int t = 0 ; t<52560 ; t++){
+        for(int t = 0 ; t<525600 ; t++){
 
 
             for(SpaceObject object : solarSystem){
