@@ -57,6 +57,20 @@ public class Vector implements vectorInterface {
                 , values[0] , values[1], values[2]);
     }
 
+    /**
+     * Calculates the Euclidean distance between this vector and another vector.
+     *
+     * @param other The other vector to which the distance is calculated.
+     * @return The Euclidean distance between the two vectors.
+     */
+    @Override
+    public double distance(vectorInterface other) {
+        double disX = this.getX() - other.getX();
+        double disY = this.getY() - other.getY();
+        double disZ = this.getZ() - other.getZ();
+        return Math.sqrt(disX * disX + disY * disY + disZ * disZ);
+    }
+
 
 
 

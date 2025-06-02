@@ -17,5 +17,13 @@ public interface vectorInterface {
 
 
     void print(String type);
+
+    /**
+     * Calculates the Euclidean distance between this vector and another vector.
+     *
+     * @param other The other vector to which the distance is calculated.
+     * @return The Euclidean distance between the two vectors.
+     */
+    double distance(vectorInterface other);
 }
 

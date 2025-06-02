@@ -2,6 +2,7 @@ package src.Physics_Engine.ODESolverRK4;
 
 
 
+import java.util.ArrayList;
 import src.Physics_Engine.GeneralComponents.AstralObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
@@ -9,11 +10,9 @@ import src.Physics_Engine.GeneralComponents.Interfaces.function;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 import src.Physics_Engine.GeneralComponents.Vector;
 
-import java.util.ArrayList;
-
 public class RK4_ODESolver {
 
-    private static final double H = 60; // Change this back to 60
+    private static final double H = 60; 
 
     public void ComputeODE(double t , SolarSystemInterface solarSystem, function acceleration , function velocity){
 
