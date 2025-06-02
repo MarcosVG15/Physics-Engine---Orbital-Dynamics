@@ -142,7 +142,7 @@ public class NewtonRaphson {
 
         for(int t = 0 ; t<525600 ; t++){
 
-            probe = (ProbeObject) solarSystem.get(solarSystem.size()-1);
+            probe = (ProbeObject) solarSystem.get(11);
             titan = (AstralObject) solarSystem.get(8);
             //probe.print();
 
