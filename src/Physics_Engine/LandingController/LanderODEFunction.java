@@ -18,18 +18,10 @@ public class LanderODEFunction implements StateDerivativeFunction {
      *
      * @param state The current state vector [x, y, vx, vy, theta, omega].
      * @param time The current time.
-     * @param unused_v_param Unused parameter (required by the interface).
-     * @return The derivative of the state vector [dx/dt, dy/dt, dvx/dt, dvy/dt, dtheta/dt, domega/dt].
-     */
-    /**
-     * Computes the derivative of the state vector for the Lander.
-     * The state vector is [x, y, vx, vy, theta, omega].
-     *
-     * @param state The current state vector [x, y, vx, vy, theta, omega].
-     * @param time The current time.
      * @param params Optional parameters needed for the derivative computation.
      * @return The derivative of the state vector [dx/dt, dy/dt, dvx/dt, dvy/dt, dtheta/dt, domega/dt].
      */
+    
     @Override
     public double[] computeDerivative(double[] state, double time, double[] params) {
         // Convert raw state array to LanderState object for easier access and readability

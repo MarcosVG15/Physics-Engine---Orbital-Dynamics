@@ -1,5 +1,8 @@
 package Physics_Engine.LandingController;
 
+import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.Vector;
+
 public class LanderState {
     public double x, y;        // Position (m)
     public double vx, vy;      // Velocity (m/s)
@@ -14,6 +17,23 @@ public class LanderState {
         this.theta = theta;
         this.omega = omega;
     }
+
+    public vectorInterface getPositionVector() {
+        return new Vector(x, y, 0); // Assuming 2D, Z is 0
+    }
+
+    public vectorInterface getVelocityVector() {
+        return new Vector(vx, vy, 0); // Assuming 2D, Z is 0
+    }
+
+    public double getOrientation() {
+        return theta;
+    }
+
+    public double getAngularVelocity() {
+        return omega;
+    }
+
 
     // Optional: Add a copy constructor or clone method if your solver needs immutable states
     public LanderState copy() {
