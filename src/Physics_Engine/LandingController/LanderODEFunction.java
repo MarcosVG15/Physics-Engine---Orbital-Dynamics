@@ -2,6 +2,7 @@ package Physics_Engine.LandingController;
 
 import Physics_Engine.GeneralComponents.Interfaces.StateDerivativeFunction;
 import static Physics_Engine.LandingController.Constants.*;
+import Physics_Engine.LaunchController.LaunchController;
 
 public class LanderODEFunction implements StateDerivativeFunction {
     private LanderController controller;
@@ -10,6 +11,10 @@ public class LanderODEFunction implements StateDerivativeFunction {
     public LanderODEFunction(LanderController controller, WindModel windModel) {
         this.controller = controller;
         this.windModel = windModel;
+    }
+
+    public LanderODEFunction(LaunchController controller, WindModel windModel) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
