@@ -1,6 +1,6 @@
-package Physics_Engine.LandingController;
+package src.Physics_Engine.LandingController;
 
-import static Physics_Engine.LandingController.Constants.*; // Import all static members from the Constants class for easy access to physical constants and limits.
+import static src.Physics_Engine.LandingController.Constants.*; // Import all static members from the Constants class for easy access to physical constants and limits.
 
 public class LanderController {
     /**
@@ -23,7 +23,7 @@ public class LanderController {
      * @param currentLanderState The current state of the lander, including its position, velocity, orientation, and angular velocity.
      * @return A ControlInputs object containing the calculated thrust and torque.
      */
-    public ControlInputs calculateControlInputs(LanderObject currentLanderState) {
+    public ControlInputs calculateControlInputs(LanderState currentLanderState) {
         // --- Vertical Control (Y-axis) ---
         // The goal is to bring the lander to a vertical position of 0 and vertical velocity of 0.
         // desired_ay = Kp_y * (desired_y - current_y) + Kd_y * (desired_vy - current_vy)
@@ -37,7 +37,7 @@ public class LanderController {
 
         // Clamp the raw thrust magnitude to ensure it stays within the physical limits of the lander's engine.
         // Thrust cannot be negative (pulling up) and has a maximum limit.
-        double finalThrustMagnitude = clamp(rawThrustMagnitude, 0, U_MAX_MULTIPLIER * GRAVITY_TITAN);
+        double finalThrustMagnitude = clamp(rawThrustMagnitude, 0, THRUST_MAX);
 
         // --- Horizontal Control (X-axis) ---
         // The goal is to bring the lander to a horizontal position of 0 and horizontal velocity of 0.
@@ -62,7 +62,7 @@ public class LanderController {
                                         derivativeGainAngularVelocity * (0 - currentLanderState.getAngularVelocity());
 
         // Clamp the applied torque magnitude to ensure it stays within the physical limits of the lander's thrusters.
-        appliedTorqueMagnitude = clamp(appliedTorqueMagnitude, -V_MAX, V_MAX);
+        appliedTorqueMagnitude = clamp(appliedTorqueMagnitude, -TORQUE_MAX, TORQUE_MAX);
 
         // Return the calculated thrust and torque as control inputs.
         return new ControlInputs(finalThrustMagnitude, appliedTorqueMagnitude);

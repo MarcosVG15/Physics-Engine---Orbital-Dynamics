@@ -1,4 +1,4 @@
-package Physics_Engine.LandingController; // Corrected package declaration
+package src.Physics_Engine.LandingController; // Corrected package declaration
 
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject; // Import the SpaceObject interface from GeneralComponents
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface; // Import the vectorInterface for position and velocity from GeneralComponents

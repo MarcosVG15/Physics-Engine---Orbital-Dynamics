@@ -1,4 +1,4 @@
-package Physics_Engine.LandingController;
+package src.Physics_Engine.LandingController;
 
 public class ControlInputs {
     public double thrust;           // Main thrust (0 to 10*g)

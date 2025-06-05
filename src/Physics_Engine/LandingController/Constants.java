@@ -1,4 +1,4 @@
-package Physics_Engine.LandingController;
+package src.Physics_Engine.LandingController;
 
 public final class Constants {
     // Physical Constants

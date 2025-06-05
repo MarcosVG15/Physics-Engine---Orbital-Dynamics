@@ -1,18 +1,19 @@
 package src.Physics_Engine.ODESolverRK4;
 
-
-
 import java.util.ArrayList;
 import src.Physics_Engine.GeneralComponents.AstralObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.function;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.Physics_Engine.GeneralComponents.Vector;
+import src.Physics_Engine.GeneralComponents.Vector; // Import StateDerivativeFunction
+import src.Physics_Engine.LandingController.LanderODEFunction;
+import src.Physics_Engine.RocketMissson.SpaceShip; // Import SpaceShip
 
 public class RK4_ODESolver {
 
-    private static final double H = 60; 
+    private static final double H = 60;
+
 
     public void ComputeODE(double t , SolarSystemInterface solarSystem, function acceleration , function velocity){
 
@@ -91,6 +92,67 @@ public class RK4_ODESolver {
 
     }
 
+    /**
+     * Computes one step of the RK4 method for a given state vector.
+     *
+     * @param currentState The current state vector as a double array.
+     * @param time The current time.
+     * @param dt The time step size.
+     * @param landerODEFunction The function that computes the derivative of the state vector.
+     * @param params Optional parameters needed for the derivative function.
+     * @return The new state vector after one RK4 step.
+     */
+    public double[] computeODE(double[] currentState, double time, double dt, LanderODEFunction landerODEFunction, double[] params) {
+        int n = currentState.length;
+        double[] k1 = new double[n];
+        double[] k2 = new double[n];
+        double[] k3 = new double[n];
+        double[] k4 = new double[n];
+        double[] nextState = new double[n];
+
+        // k1 = dt * f(currentState, time)
+        double[] dState1 = landerODEFunction.computeDerivative(currentState, time, params);
+        for (int i = 0; i < n; i++) {
+            k1[i] = dt * dState1[i];
+        }
+
+        // k2 = dt * f(currentState + k1/2, time + dt/2)
+        double[] statePlusK1Half = new double[n];
+        for (int i = 0; i < n; i++) {
+            statePlusK1Half[i] = currentState[i] + k1[i] / 2.0;
+        }
+        double[] dState2 = landerODEFunction.computeDerivative(statePlusK1Half, time + dt / 2.0, params);
+        for (int i = 0; i < n; i++) {
+            k2[i] = dt * dState2[i];
+        }
+
+        // k3 = dt * f(currentState + k2/2, time + dt/2)
+        double[] statePlusK2Half = new double[n];
+        for (int i = 0; i < n; i++) {
+            statePlusK2Half[i] = currentState[i] + k2[i] / 2.0;
+        }
+        double[] dState3 = landerODEFunction.computeDerivative(statePlusK2Half, time + dt / 2.0, params);
+        for (int i = 0; i < n; i++) {
+            k3[i] = dt * dState3[i];
+        }
+
+        // k4 = dt * f(currentState + k3, time + dt)
+        double[] statePlusK3 = new double[n];
+        for (int i = 0; i < n; i++) {
+            statePlusK3[i] = currentState[i] + k3[i];
+        }
+        double[] dState4 = landerODEFunction.computeDerivative(statePlusK3, time + dt, params);
+        for (int i = 0; i < n; i++) {
+            k4[i] = dt * dState4[i];
+        }
+
+        // nextState = currentState + (k1 + 2*k2 + 2*k3 + k4) / 6
+        for (int i = 0; i < n; i++) {
+            nextState[i] = currentState[i] + (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]) / 6.0;
+        }
+
+        return nextState;
+    }
 
 
     private vectorInterface addAll(vectorInterface currentVector , vectorInterface k1 , vectorInterface k2 , vectorInterface k3 , vectorInterface k4){
@@ -174,10 +236,15 @@ public class RK4_ODESolver {
      * Allows me to initialise the astral objects in the snapshot with solar system without passing by reference
      * @param actual - the array we want to copy from
      * @param copy - the array we want the copies to be
+     * @throws IllegalArgumentException if the actual list contains a SpaceShip object, as it cannot be copied this way.
      */
     public void copyArrayList(ArrayList<SpaceObject> actual , ArrayList<SpaceObject> copy){
 
         for( int i = 0  ; i<actual.size() ; i++){
+             if (actual.get(i) instanceof SpaceShip) {
+                // Handle SpaceShip specifically if needed, or throw an exception if it shouldn't be copied here
+                throw new IllegalArgumentException("Cannot copy SpaceShip object using this method.");
+            }
             SpaceObject newObject = new AstralObject(
               new Vector(actual.get(i).getVelocityVector().getX() , actual.get(i).getVelocityVector().getY(),actual.get(i).getVelocityVector().getZ())
             , new Vector(actual.get(i).getPositionVector().getX(), actual.get(i).getPositionVector().getY(), actual.get(i).getPositionVector().getZ() )

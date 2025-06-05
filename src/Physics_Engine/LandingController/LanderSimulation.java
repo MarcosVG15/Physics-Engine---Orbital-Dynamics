@@ -1,14 +1,13 @@
-package Physics_Engine.LandingController;
-
-import src.Physics_Engine.ODESolverRK4.RK4_ODESolver;
-import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
-import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.Physics_Engine.GeneralComponents.Vector;
-import src.Physics_Engine.GeneralComponents.SolarSystem; // Assuming this is the concrete implementation of SolarSystemInterface
-
-import java.util.ArrayList;
+package src.Physics_Engine.LandingController;
 
 import static src.Physics_Engine.LandingController.Constants.*;
+
+import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+
+
+import src.Physics_Engine.GeneralComponents.SolarSystem;
+import src.Physics_Engine.GeneralComponents.Vector;
+import src.Physics_Engine.ODESolverRK4.RK4_ODESolver; // Assuming this is the concrete implementation of SolarSystemInterface
 
 public class LanderSimulation {
 
@@ -22,23 +21,29 @@ public class LanderSimulation {
         double initialTheta = Math.PI / 4; // 45 degrees (pointing somewhat right)
         double initialOmega = 0.0;
 
-        LanderObject initialLander = new LanderObject(
-            new Vector(initialX, initialY, 0), // Assuming 2D for now, Z is 0
-            new Vector(initialVx, initialVy, 0), // Assuming 2D for now, Z is 0
-            LANDER_MASS, // Assuming LANDER_MASS is defined in Constants
+        // Initialize LanderState with initial conditions
+        LanderState currentLanderState = new LanderState(
+            initialX, initialY, initialVx, initialVy, initialTheta, initialOmega
+        );
+
+        // Create a LanderObject for the SolarSystem based on the initial state
+        LanderObject landerObjectInSolarSystem = new LanderObject(
+            new Vector(currentLanderState.x, currentLanderState.y, 0), // Assuming 2D for now, Z is 0
+            new Vector(currentLanderState.vx, currentLanderState.vy, 0), // Assuming 2D for now, Z is 0
+            SPACESHIP_MASS, // Assuming SPACESHIP_MASS is defined in Constants
             "Lander",
-            initialTheta, initialOmega
+            currentLanderState.theta, currentLanderState.omega
         );
 
         // 2. Instantiate Controller, Wind Model, and ODE Function
         LanderController controller = new LanderController();
         WindModel windModel = new WindModel(0.05); // Max wind force 0.05 m/s^2
-        LanderPhysicsFunction landerAccelerationFunction = new LanderPhysicsFunction(controller, windModel);
-        LanderVelocityFunction landerVelocityFunction = new LanderVelocityFunction();
+        // Instantiate the unified LanderODEFunction
+        LanderODEFunction landerODEFunction = new LanderODEFunction(controller, windModel);
 
         // Setup SolarSystem for RK4_ODESolver
         SolarSystemInterface solarSystem = new SolarSystem();
-        solarSystem.addSpaceObject(initialLander); // Add the lander to the system
+        solarSystem.getSolarSystem().add(landerObjectInSolarSystem); // Add the lander object to the system
 
         // Instantiate RK4_ODESolver
         RK4_ODESolver rk4Solver = new RK4_ODESolver();
@@ -50,74 +55,36 @@ public class LanderSimulation {
 
         System.out.println("Starting Lander Simulation...");
         System.out.printf("Initial State: x=%.2f, y=%.2f, vx=%.2f, vy=%.2f, theta=%.2f, omega=%.2f%n",
-            initialLander.getPositionVector().getX(), initialLander.getPositionVector().getY(),
-            initialLander.getVelocityVector().getX(), initialLander.getVelocityVector().getY(),
-            initialLander.getTheta(), initialLander.getOmega());
+            currentLanderState.x, currentLanderState.y,
+            currentLanderState.vx, currentLanderState.vy,
+            currentLanderState.theta, currentLanderState.omega);
 
-        LanderObject currentLander = initialLander;
+        // Simulation Loop
+        while (currentLanderState.y > 0 && time < MAX_SIMULATION_TIME) {
+            // Get the current state as a double array
+            double[] currentStateArray = {
+                currentLanderState.x, currentLanderState.y,
+                currentLanderState.vx, currentLanderState.vy,
+                currentLanderState.theta, currentLanderState.omega
+            };
 
-        while (currentLander.getPositionVector().getY() > 0 && time < MAX_SIMULATION_TIME) {
-            // Perform one step of integration for position and velocity using RK4_ODESolver
-            // The RK4_ODESolver updates the SpaceObjects directly in the solarSystem list
-            rk4Solver.ComputeODE(time, solarSystem, landerAccelerationFunction, landerVelocityFunction);
+            // Perform one step of integration for the full state using the new RK4_ODESolver method
+            double[] nextStateArray = rk4Solver.computeODE(currentStateArray, time, dt, landerODEFunction, null); // Pass null for params if not needed
 
-            // Manually perform RK4 step for theta and omega
-            // k1
-            ControlInputs inputs_k1 = controller.calculateControlInputs(currentLander);
-            double dtheta_dt_k1 = currentLander.getOmega();
-            double domega_dt_k1 = inputs_k1.torque;
+            // Update the LanderState object with the new state
+            currentLanderState.x = nextStateArray[0];
+            currentLanderState.y = nextStateArray[1];
+            currentLanderState.vx = nextStateArray[2];
+            currentLanderState.vy = nextStateArray[3];
+            currentLanderState.theta = nextStateArray[4];
+            currentLanderState.omega = nextStateArray[5];
 
-            // Apply k1/2 to a temporary state for k2 calculation
-            LanderObject tempLander_k2 = new LanderObject(
-                currentLander.getPositionVector(),
-                currentLander.getVelocityVector(),
-                currentLander.getMass(),
-                currentLander.getName(),
-                currentLander.getTheta() + dtheta_dt_k1 * dt / 2,
-                currentLander.getOmega() + domega_dt_k1 * dt / 2
-            );
+            // Update the LanderObject in the SolarSystem to match the LanderState
+            landerObjectInSolarSystem.setPosition(new Vector(currentLanderState.x, currentLanderState.y, 0)); // Assuming 2D
+            landerObjectInSolarSystem.setVelocity(new Vector(currentLanderState.vx, currentLanderState.vy, 0)); // Assuming 2D
+            landerObjectInSolarSystem.setOrientation(currentLanderState.theta);
+            landerObjectInSolarSystem.setAngularVelocity(currentLanderState.omega);
 
-            // k2
-            ControlInputs inputs_k2 = controller.calculateControlInputs(tempLander_k2);
-            double dtheta_dt_k2 = tempLander_k2.getOmega();
-            double domega_dt_k2 = inputs_k2.torque;
-
-            // Apply k2/2 to a temporary state for k3 calculation
-            LanderObject tempLander_k3 = new LanderObject(
-                currentLander.getPositionVector(),
-                currentLander.getVelocityVector(),
-                currentLander.getMass(),
-                currentLander.getName(),
-                currentLander.getTheta() + dtheta_dt_k2 * dt / 2,
-                currentLander.getOmega() + domega_dt_k2 * dt / 2
-            );
-
-            // k3
-            ControlInputs inputs_k3 = controller.calculateControlInputs(tempLander_k3);
-            double dtheta_dt_k3 = tempLander_k3.getOmega();
-            double domega_dt_k3 = inputs_k3.torque;
-
-            // Apply k3 to a temporary state for k4 calculation
-            LanderObject tempLander_k4 = new LanderObject(
-                currentLander.getPositionVector(),
-                currentLander.getVelocityVector(),
-                currentLander.getMass(),
-                currentLander.getName(),
-                currentLander.getTheta() + dtheta_dt_k3 * dt,
-                currentLander.getOmega() + domega_dt_k3 * dt
-            );
-
-            // k4
-            ControlInputs inputs_k4 = controller.calculateControlInputs(tempLander_k4);
-            double dtheta_dt_k4 = tempLander_k4.getOmega();
-            double domega_dt_k4 = inputs_k4.torque;
-
-            // Update theta and omega using RK4 formula
-            double newTheta = currentLander.getTheta() + (dt / 6.0) * (dtheta_dt_k1 + 2 * dtheta_dt_k2 + 2 * dtheta_dt_k3 + dtheta_dt_k4);
-            double newOmega = currentLander.getOmega() + (dt / 6.0) * (domega_dt_k1 + 2 * domega_dt_k2 + 2 * domega_dt_k3 + domega_dt_k4);
-
-            currentLander.setTheta(newTheta);
-            currentLander.setOmega(newOmega);
 
             time += dt;
 
@@ -131,23 +98,23 @@ public class LanderSimulation {
 
         System.out.println("\nSimulation Ended.");
         System.out.printf("Final State: x=%.2f, y=%.2f, vx=%.2f, vy=%.2f, theta=%.2f, omega=%.2f%n",
-            currentLander.getPositionVector().getX(), currentLander.getPositionVector().getY(),
-            currentLander.getVelocityVector().getX(), currentLander.getVelocityVector().getY(),
-            currentLander.getTheta(), currentLander.getOmega());
+            currentLanderState.x, currentLanderState.y,
+            currentLanderState.vx, currentLanderState.vy,
+            currentLanderState.theta, currentLanderState.omega);
 
         // 5. Check success criteria
         boolean landedSuccessfully =
-            Math.abs(currentLander.getPositionVector().getX()) <= DELTA_X &&
-            Math.abs(normalizeAngle(currentLander.getTheta())) <= DELTA_THETA &&
-            Math.abs(currentLander.getVelocityVector().getX()) <= EPSILON_X &&
-            Math.abs(currentLander.getVelocityVector().getY()) <= EPSILON_Y &&
-            Math.abs(currentLander.getOmega()) <= EPSILON_THETA;
+            Math.abs(currentLanderState.x) <= DELTA_X &&
+            Math.abs(normalizeAngle(currentLanderState.theta)) <= DELTA_THETA &&
+            Math.abs(currentLanderState.vx) <= EPSILON_X &&
+            Math.abs(currentLanderState.vy) <= EPSILON_Y &&
+            Math.abs(currentLanderState.omega) <= EPSILON_THETA;
 
         if (landedSuccessfully) {
             System.out.println("Lander successfully landed!");
         } else {
             System.out.println("Lander failed to land successfully.");
-            if (currentLander.getPositionVector().getY() <= 0) {
+            if (currentLanderState.y <= 0) {
                 System.out.println("Reason: Hit ground but failed conditions.");
             } else if (time >= MAX_SIMULATION_TIME) {
                 System.out.println("Reason: Simulation timed out before landing.");
