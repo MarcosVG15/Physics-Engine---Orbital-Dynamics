@@ -1,8 +1,7 @@
-package src.Physics_Engine.ProbeMission;
+package src.Physics_Engine.GeneralComponents;
 
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.Physics_Engine.GeneralComponents.Vector;
 
 import java.util.ArrayList;
 
@@ -52,7 +51,7 @@ public class ProbeObject implements SpaceObject {
     @Override
     public void print() {
         position.print(Name + ", Position , ");
-        //velocity.print(Name + "  Velocity , ");
+        velocity.print(Name + "  Velocity , ");
     }
 
     @Override
@@ -69,6 +68,11 @@ public class ProbeObject implements SpaceObject {
 
     public vectorInterface getVelocityVector(){
         return velocityHistory.get(velocityHistory.size()-1);
+    }
+
+
+    public vectorInterface getVelocityVectorPasByValue(){
+        return new Vector(velocityHistory.get(velocityHistory.size()-1).getX() ,velocityHistory.get(velocityHistory.size()-1).getY(),velocityHistory.get(velocityHistory.size()-1).getZ()) ;
     }
     public vectorInterface getPositionVector(){
         return positionHistory.get(positionHistory.size()-1);
@@ -100,6 +104,14 @@ public class ProbeObject implements SpaceObject {
         }
 
         return hasHit[0] & hasHit[1] & hasHit[2];
+    }
+
+    @Override
+    public SpaceObject clone() {
+        ProbeObject probe = new ProbeObject(new Vector(velocity.getX() , velocity.getY() , velocity.getZ())
+                            , new Vector(position.getX() , position.getY() , position.getZ()));
+        probe.setName(Name);
+        return probe ;
     }
 
     public String getName(){

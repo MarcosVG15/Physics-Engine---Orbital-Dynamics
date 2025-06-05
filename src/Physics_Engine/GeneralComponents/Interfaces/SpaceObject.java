@@ -14,4 +14,5 @@ public interface SpaceObject {
     public String getName() ;
 
     public boolean hasHitPlanet(SpaceObject astralObject , double Radius);
+    SpaceObject clone();
 }

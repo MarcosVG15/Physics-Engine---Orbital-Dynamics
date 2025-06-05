@@ -4,6 +4,7 @@ package src.Physics_Engine.SpectralDefferedInProgress;
 
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.ProbeObject;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,15 @@ public class AstralObject implements SpaceObject {
         return false;
     }
 
+    @Override
+    public SpaceObject clone() {
+
+        AstralObject astralObject = new AstralObject(new Vector(velocity.getX(), velocity.getY(), velocity.getZ())
+                , new Vector(position.getX(), position.getY(), position.getZ()), Mass);
+
+        astralObject.setName(Name);
+        return astralObject;
+    }
     public void setPosition(vectorInterface v) {
         position.setVector(v);
         positionHistory.add(

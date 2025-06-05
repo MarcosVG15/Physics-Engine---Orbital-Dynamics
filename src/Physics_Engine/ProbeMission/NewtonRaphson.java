@@ -1,6 +1,7 @@
 package src.Physics_Engine.ProbeMission;
 
 import src.Physics_Engine.GeneralComponents.AstralObject;
+import src.Physics_Engine.GeneralComponents.ProbeObject;
 import src.Physics_Engine.GeneralComponents.SolarSystem;
 import src.Physics_Engine.GeneralComponents.Vector;
 import src.Physics_Engine.ODESolverRK4.*;

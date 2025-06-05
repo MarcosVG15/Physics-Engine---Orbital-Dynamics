@@ -3,8 +3,6 @@ package src.Physics_Engine.GeneralComponents;
 import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.Physics_Engine.ProbeMission.ProbeObject;
-import src.Physics_Engine.RocketMissson.SpaceShip;
 
 import java.util.ArrayList;
 
@@ -112,7 +110,7 @@ public class SolarSystem implements SolarSystemInterface {
 
 
         SpaceObject SpaceShip = new SpaceShip(
-                new Vector(  0, 0,0),
+                new Vector(  5.31, -29.3, 6.69E-4),
                 new Vector(BestCoordinates[0]+1 , BestCoordinates[1] +1, BestCoordinates[2]+1 )
 
         );
@@ -177,6 +175,14 @@ public class SolarSystem implements SolarSystemInterface {
         }
 
         return Math.sqrt(sum);
+    }
+
+    public void setSolarSystem(ArrayList<SpaceObject> replacement){
+        solarSystem.clear();
+
+        for (SpaceObject spaceObject : replacement) {
+            solarSystem.add(spaceObject.clone()); // make sure each SpaceObject implements clone()
+        }
     }
 
 }

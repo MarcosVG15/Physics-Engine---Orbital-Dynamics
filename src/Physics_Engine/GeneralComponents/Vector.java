@@ -23,7 +23,7 @@ public class Vector implements vectorInterface {
 
     @Override
     public double[] getVector() {
-        return values;
+        return new double[] {values[0] , values[1] , values[2]} ;
     }
 
     /**
@@ -71,7 +71,25 @@ public class Vector implements vectorInterface {
         return Math.sqrt(disX * disX + disY * disY + disZ * disZ);
     }
 
+    @Override
+    public void add(vectorInterface vector2) {
+        double[] vector2Array = vector2.getVector() ;
 
+        for(int i = 0 ; i<vector2Array.length ; i++){
+            values[i]+= vector2Array[i] ;
+        }
+
+
+    }
+
+    @Override
+    public void scale(double scale) {
+
+        for(int i = 0 ; i<values.length;i++){
+            values[i]*= scale ;
+        }
+
+    }
 
 
     @Override
@@ -89,6 +107,21 @@ public class Vector implements vectorInterface {
         return values[2];
     }
 
+
+    @Override
+    public void setX(double X) {
+        values[0] = X;
+    }
+
+    @Override
+    public void setY(double Y) {
+         values[1]= Y;
+    }
+
+    @Override
+    public void setZ(double Z) {
+        values[2] = Z;
+    }
 
 
 }
