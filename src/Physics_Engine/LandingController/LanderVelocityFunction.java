@@ -1,4 +1,4 @@
-package Physics_Engine.LandingController;
+package src.Physics_Engine.LandingController;
 
 import java.util.ArrayList;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;

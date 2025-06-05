@@ -1,10 +1,10 @@
-package Physics_Engine.LandingController;
+package src.Physics_Engine.LandingController;
 
-import Physics_Engine.GeneralComponents.Interfaces.StateDerivativeFunction;
-import static Physics_Engine.LandingController.Constants.*;
-import Physics_Engine.LaunchController.LaunchController;
+import static src.Physics_Engine.LandingController.Constants.*;
 
-public class LanderODEFunction implements StateDerivativeFunction {
+import src.Physics_Engine.LaunchController.LaunchController;
+
+public class LanderODEFunction  {
     private LanderController controller;
     private WindModel windModel;
 
@@ -27,7 +27,6 @@ public class LanderODEFunction implements StateDerivativeFunction {
      * @return The derivative of the state vector [dx/dt, dy/dt, dvx/dt, dvy/dt, dtheta/dt, domega/dt].
      */
     
-    @Override
     public double[] computeDerivative(double[] state, double time, double[] params) {
         // Convert raw state array to LanderState object for easier access and readability
         LanderState currentLanderState = new LanderState(

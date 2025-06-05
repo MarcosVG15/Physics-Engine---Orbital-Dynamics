@@ -1,6 +1,6 @@
-package Physics_Engine.LandingController;
+package src.Physics_Engine.LandingController;
 
-import static Physics_Engine.LandingController.Constants.GRAVITY_TITAN;
+import static src.Physics_Engine.LandingController.Constants.GRAVITY_TITAN;
 import java.util.ArrayList;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.function;

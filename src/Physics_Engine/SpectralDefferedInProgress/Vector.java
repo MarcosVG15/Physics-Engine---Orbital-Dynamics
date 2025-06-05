@@ -57,7 +57,10 @@ public class Vector implements vectorInterface {
                 , values[0] , values[1], values[2]);
     }
 
-
+    @Override
+    public double distance(vectorInterface other) {
+        return 0;
+    }
 
 
     @Override

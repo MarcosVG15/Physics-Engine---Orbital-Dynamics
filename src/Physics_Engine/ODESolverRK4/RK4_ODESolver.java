@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import src.Physics_Engine.GeneralComponents.AstralObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.Physics_Engine.GeneralComponents.Interfaces.StateDerivativeFunction;
 import src.Physics_Engine.GeneralComponents.Interfaces.function;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 import src.Physics_Engine.GeneralComponents.Vector; // Import StateDerivativeFunction
+import src.Physics_Engine.LandingController.LanderODEFunction;
 import src.Physics_Engine.RocketMissson.SpaceShip; // Import SpaceShip
 
 public class RK4_ODESolver {
@@ -98,11 +98,11 @@ public class RK4_ODESolver {
      * @param currentState The current state vector as a double array.
      * @param time The current time.
      * @param dt The time step size.
-     * @param derivativeFunction The function that computes the derivative of the state vector.
+     * @param landerODEFunction The function that computes the derivative of the state vector.
      * @param params Optional parameters needed for the derivative function.
      * @return The new state vector after one RK4 step.
      */
-    public double[] computeODE(double[] currentState, double time, double dt, StateDerivativeFunction derivativeFunction, double[] params) {
+    public double[] computeODE(double[] currentState, double time, double dt, LanderODEFunction landerODEFunction, double[] params) {
         int n = currentState.length;
         double[] k1 = new double[n];
         double[] k2 = new double[n];
@@ -111,7 +111,7 @@ public class RK4_ODESolver {
         double[] nextState = new double[n];
 
         // k1 = dt * f(currentState, time)
-        double[] dState1 = derivativeFunction.computeDerivative(currentState, time, params);
+        double[] dState1 = landerODEFunction.computeDerivative(currentState, time, params);
         for (int i = 0; i < n; i++) {
             k1[i] = dt * dState1[i];
         }
@@ -121,7 +121,7 @@ public class RK4_ODESolver {
         for (int i = 0; i < n; i++) {
             statePlusK1Half[i] = currentState[i] + k1[i] / 2.0;
         }
-        double[] dState2 = derivativeFunction.computeDerivative(statePlusK1Half, time + dt / 2.0, params);
+        double[] dState2 = landerODEFunction.computeDerivative(statePlusK1Half, time + dt / 2.0, params);
         for (int i = 0; i < n; i++) {
             k2[i] = dt * dState2[i];
         }
@@ -131,7 +131,7 @@ public class RK4_ODESolver {
         for (int i = 0; i < n; i++) {
             statePlusK2Half[i] = currentState[i] + k2[i] / 2.0;
         }
-        double[] dState3 = derivativeFunction.computeDerivative(statePlusK2Half, time + dt / 2.0, params);
+        double[] dState3 = landerODEFunction.computeDerivative(statePlusK2Half, time + dt / 2.0, params);
         for (int i = 0; i < n; i++) {
             k3[i] = dt * dState3[i];
         }
@@ -141,7 +141,7 @@ public class RK4_ODESolver {
         for (int i = 0; i < n; i++) {
             statePlusK3[i] = currentState[i] + k3[i];
         }
-        double[] dState4 = derivativeFunction.computeDerivative(statePlusK3, time + dt, params);
+        double[] dState4 = landerODEFunction.computeDerivative(statePlusK3, time + dt, params);
         for (int i = 0; i < n; i++) {
             k4[i] = dt * dState4[i];
         }
