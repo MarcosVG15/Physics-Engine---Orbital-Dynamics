@@ -85,6 +85,11 @@ public class LanderObject implements SpaceObject {
         return distance <= Radius;
     }
 
+    @Override
+    public SpaceObject clone() {
+        return null;
+    }
+
     /**
      * Gets the current orientation (angle) of the lander.
      * @return The orientation angle in radians.

@@ -6,9 +6,10 @@ import src.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.function;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import src.Physics_Engine.GeneralComponents.ProbeObject;
+import src.Physics_Engine.GeneralComponents.SpaceShip;
 import src.Physics_Engine.GeneralComponents.Vector; // Import StateDerivativeFunction
 import src.Physics_Engine.LandingController.LanderODEFunction;
-import src.Physics_Engine.RocketMissson.SpaceShip; // Import SpaceShip
 
 public class RK4_ODESolver {
 
@@ -241,16 +242,23 @@ public class RK4_ODESolver {
     public void copyArrayList(ArrayList<SpaceObject> actual , ArrayList<SpaceObject> copy){
 
         for( int i = 0  ; i<actual.size() ; i++){
-             if (actual.get(i) instanceof SpaceShip) {
-                // Handle SpaceShip specifically if needed, or throw an exception if it shouldn't be copied here
-                throw new IllegalArgumentException("Cannot copy SpaceShip object using this method.");
-            }
-            SpaceObject newObject = new AstralObject(
-              new Vector(actual.get(i).getVelocityVector().getX() , actual.get(i).getVelocityVector().getY(),actual.get(i).getVelocityVector().getZ())
-            , new Vector(actual.get(i).getPositionVector().getX(), actual.get(i).getPositionVector().getY(), actual.get(i).getPositionVector().getZ() )
-            , actual.get(i).getMass());
 
-            copy.add(newObject);
+            if (actual.get(i) instanceof SpaceShip) {
+
+                copy.add(actual.get(i).clone());
+
+            }
+            else if (actual.get(i) instanceof ProbeObject) {
+
+                copy.add(actual.get(i).clone());
+
+            }
+             else{
+                copy.add(actual.get(i).clone());
+
+             }
+
+
         }
     }
 
