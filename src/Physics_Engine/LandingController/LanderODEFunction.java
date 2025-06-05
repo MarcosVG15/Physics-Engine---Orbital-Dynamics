@@ -2,7 +2,6 @@ package src.Physics_Engine.LandingController;
 
 import static src.Physics_Engine.LandingController.Constants.*;
 
-import src.Physics_Engine.LaunchController.LaunchController;
 
 public class LanderODEFunction  {
     private LanderController controller;
@@ -13,9 +12,7 @@ public class LanderODEFunction  {
         this.windModel = windModel;
     }
 
-    public LanderODEFunction(LaunchController controller, WindModel windModel) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+
 
     /**
      * Computes the derivative of the state vector for the Lander.
