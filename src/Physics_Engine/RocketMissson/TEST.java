@@ -10,7 +10,8 @@ import java.util.Arrays;
 
 public class TEST {
     public static void main(String[] args){
-        runStage2();
+        Controller controller = new Controller() ;
+        //runStage1() ;
     }
 
     public static void runStage1(){
@@ -20,7 +21,7 @@ public class TEST {
         SolarSystem solarSystem = new SolarSystem();
         GradientDescentStage1 gradientDescentStage1 = new GradientDescentStage1(solarSystem.getSolarSystem()
                 , new Vector(-146993666.454047-600,-29700654.885264-600,27287.513994+600 )
-                , 600_000
+                , 60_000
                 ,1);
 
         System.out.println(Arrays.toString(gradientDescentStage1.gradientDescent()));

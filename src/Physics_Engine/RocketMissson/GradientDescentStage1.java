@@ -15,10 +15,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import static src.Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
 public class GradientDescentStage1 {
 
     private ArrayList<SpaceObject> solarSystem ;
     private Thrust[] ArrayOfThrusts;
+    private double TimePenalty ;
 
     private vectorInterface targetVector ;
     private double fuelCap ;
@@ -37,24 +40,29 @@ public class GradientDescentStage1 {
 
 
         ArrayOfThrusts = new Thrust[amountOfThrust] ;
-        Random random = new Random();
 
-        for(int i = 0 ; i<ArrayOfThrusts.length ; i++){
+        ArrayOfThrusts[0] = new Thrust(15371.243704099237, 5369.651085592523, -3.302986450182103);
+        ArrayOfThrusts[0].setDuration(12);
+        ArrayOfThrusts[0].setStartTime(0);
 
-            Thrust thrust = new Thrust(-1*(random.nextInt(50))*100+1, -1*(random.nextInt(50))*100+1,(random.nextInt(50))*100+1 );
-            thrust.setDuration(random.nextDouble(5)+10);
-
-            double previous = 0 ;
-
-            if(i != 0 ){
-                previous += ArrayOfThrusts[i-1].getDuration() + ArrayOfThrusts[i-1].getStartTime();
-            }
-            thrust.setStartTime(random.nextDouble(5)+ previous);
-            ArrayOfThrusts[i] = thrust ;
-
-            System.out.print(Arrays.toString(thrust.getVector()));
-            System.out.println(" Duration : " + thrust.getDuration() + " StartTime : " + thrust.getStartTime());
-        }
+//        Random random = new Random();
+//
+//        for(int i = 0 ; i<ArrayOfThrusts.length ; i++){
+//
+//            Thrust thrust = new Thrust(-1*(random.nextInt(50))*100+1, -1*(random.nextInt(50))*100+1,(random.nextInt(50))*100+1 );
+//            thrust.setDuration(random.nextDouble(5)+10);
+//
+//            double previous = 0 ;
+//
+//            if(i != 0 ){
+//                previous += ArrayOfThrusts[i-1].getDuration() + ArrayOfThrusts[i-1].getStartTime();
+//            }
+//            thrust.setStartTime(random.nextDouble(5)+ previous);
+//            ArrayOfThrusts[i] = thrust ;
+//
+//            System.out.print(Arrays.toString(thrust.getVector()));
+//            System.out.println(" Duration : " + thrust.getDuration() + " StartTime : " + thrust.getStartTime());
+//        }
         //ArrayOfThrusts[1] = new Thrust(0,0,0);
 
 
@@ -74,7 +82,7 @@ public class GradientDescentStage1 {
 
 
         boolean hasHit = false ;
-        double ALPHA_0 = 1;
+        double ALPHA_0 = 1e-2;
         double decayRate = 1e-17;
 
         double iterations = 0 ;
@@ -89,6 +97,7 @@ public class GradientDescentStage1 {
                 ALPHA = 1e-3 ;
             }
 
+            System.out.println("OLD UPDATE OF THRUST *****************************************************************");
             double costOld = getCost(ArrayOfThrusts);
 
             for(int i = 0 ; i<ArrayOfThrusts.length ; i++){
@@ -107,7 +116,15 @@ public class GradientDescentStage1 {
                     double gradient = getSlope(TempArray , costOld, perturbation) ;
 
 
-                    nextThrustContent[i][j] = specificContentOfThrust[j] - ALPHA*gradient ;
+                    System.out.println(" GRADIENT FOR : " + j + " GIVES : " + gradient);
+                    if (j <= 2)      // X, Y, Z thrust
+                        nextThrustContent[i][j] = specificContentOfThrust[j] - ALPHA* gradient;
+                    else if (j == 3) // Start time
+                        nextThrustContent[i][j] = Math.max(0, specificContentOfThrust[j] - 1e-2* gradient);
+                    else if (j == 4) // Duration
+                        nextThrustContent[i][j] = Math.max(1, specificContentOfThrust[j] -  1e-2* gradient);
+
+                    System.out.println("THE RESULT IS : " + nextThrustContent[i][j]);
 
                 }
 
@@ -121,6 +138,9 @@ public class GradientDescentStage1 {
                 ArrayOfThrusts[i] = newThrust ;
             }
 
+
+
+            System.out.println("GET DISTANCE FOR STOPPING CONDITION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
             vectorInterface newDistance = simulate(ArrayOfThrusts);
             hasHit = checkIfDistanceIsZero(newDistance);
 
@@ -172,14 +192,19 @@ public class GradientDescentStage1 {
                     thrust.setDuration(10);
                     endTime = startTime+thrust.getDuration() ;
                 }
+                if (thrust.getStartTime() < 0 ) {
+                    System.out.println("problem START TIME");
+                    thrust.setStartTime(0);
+                    startTime = 0;
+                }
 
                 if(startTime <= steps && endTime>= steps){
-                    System.out.println("YOU SHOULD SEE AN IMPACT -----------------------------------------------------"  + Arrays.toString(thrust.getVector()));
+                    System.out.println("YOU SHOULD SEE AN IMPACT ------------------"  + Arrays.toString(thrust.getVector()));
 
                     SpaceShip spaceShip = (SpaceShip) solarSystemCopy.get(12);
 
                    vectorInterface VelocityVector = spaceShip.getVelocityVectorPasByValue();
-                   VelocityVector.add(scale(thrust , 60/spaceShip.getMass()));
+                   VelocityVector.add(scale(thrust , STEPSIZE/spaceShip.getMass()));
                    //System.out.println(" Velocity Updated Vector : " + Arrays.toString(VelocityVector.getVector()));
 
                     solarSystemCopy.get(12).setVelocity(new Vector(VelocityVector.getX(), VelocityVector.getY(), VelocityVector.getZ() ));
@@ -192,7 +217,9 @@ public class GradientDescentStage1 {
             //solarSystemObject.getSolarSystem().get(12).print();
 
             steps++;
-            if(steps>6000){
+            TimePenalty = steps*0.5;
+            if(steps>600_000/STEPSIZE){
+                TimePenalty = 600_000/STEPSIZE*0.7 ;
                 break ;
             }
 
@@ -260,13 +287,14 @@ public class GradientDescentStage1 {
             fuel += getModulus(getImpulse(t)) / 1000.0;  // kg
         }
 
-        double penalty = Math.max(0, fuel - fuelCap) * 1e4;
+        double penalty = Math.max(0, fuel - fuelCap) * 1e5;
 
         if(distance<10000){
-            return distance + penalty +1;
+            return  Math.log(distance/2 + 1) + penalty + 1+ TimePenalty;
         }
         else{
-            return distance + penalty + (100 / (distance + 1));
+            return  distance + penalty + TimePenalty;
+
 
         }
     }
@@ -278,7 +306,9 @@ public class GradientDescentStage1 {
      */
     public double computePerturbation(double xi) {
         double epsilon = 1e-2;
-        return epsilon * Math.max(0, Math.abs(xi));
+        System.out.println(" COMPUTE THE PRETURBATION WITH : "+ xi+ " perturbation : "+ epsilon * Math.max(0, Math.abs(xi)));
+        return  epsilon * (Math.abs(xi) > 1e-3 ? Math.abs(xi) : 1.0);
+
     }
 
 
@@ -300,8 +330,9 @@ public class GradientDescentStage1 {
             case 0 -> perturbed.setX(t.getX() + h);
             case 1 -> perturbed.setY(t.getY() + h);
             case 2 -> perturbed.setZ(t.getZ() + h);
-            case 3 -> perturbed.setStartTime(t.getStartTime() + h);
-            case 4 -> perturbed.setDuration(t.getDuration() + h);
+            case 3 -> perturbed.setStartTime(Math.max(0, t.getStartTime() + h));
+            case 4 -> perturbed.setDuration(Math.max(1, t.getDuration() + h));
+
         }
 
         return perturbed;
@@ -336,7 +367,7 @@ public class GradientDescentStage1 {
         double duration = thrust.getDuration() ;
 
         for(int i = 0 ; i<thrustVectorArray.length ; i++){
-            thrustVectorArray[i]*= duration*60;
+            thrustVectorArray[i]*= duration*STEPSIZE;
         }
         return new Vector(thrustVectorArray[0] , thrustVectorArray[1] , thrustVectorArray[2]);
 

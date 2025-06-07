@@ -11,9 +11,11 @@ import src.Physics_Engine.GeneralComponents.SpaceShip;
 import src.Physics_Engine.GeneralComponents.Vector; // Import StateDerivativeFunction
 import src.Physics_Engine.LandingController.LanderODEFunction;
 
+import static src.Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
 public class RK4_ODESolver {
 
-    private static final double H = 60;
+    private static final double H = STEPSIZE;
 
 
     public void ComputeODE(double t , SolarSystemInterface solarSystem, function acceleration , function velocity){

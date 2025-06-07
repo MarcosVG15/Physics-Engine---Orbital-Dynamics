@@ -5,6 +5,8 @@ import src.Physics_Engine.GeneralComponents.SolarSystem;
 
 import java.util.ArrayList;
 
+import static src.Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
 public class TEST {
     public static void main(String[] args){
 
@@ -14,7 +16,7 @@ public class TEST {
 
         long startTime = System.nanoTime();
 
-       for(int t = 0 ; t<525600 ; t++){
+       for(int t = 0 ; t<31_536_000/STEPSIZE ; t++){
 
 
            for(SpaceObject object : solarSystem){

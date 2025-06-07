@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import static src.Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
 public class GradientDescentStage2 {
 
     private ArrayList<SpaceObject> solarSystem ;
@@ -148,7 +150,7 @@ public class GradientDescentStage2 {
                 return previous - ALPHA*gradient;
             }
             case 3,4 -> {
-                return Math.max(1 , previous - ALPHA*1e-3*gradient);
+                return Math.max(1 , previous - ALPHA*gradient);
             }
             default -> {
                 throw new RuntimeException("NO INDEX FUNCTIONALITY FOUND FOR INDEX " + index
@@ -205,7 +207,7 @@ public class GradientDescentStage2 {
                     SpaceShip spaceShip = (SpaceShip) solarSystemCopy.get(12);
 
                     vectorInterface VelocityVector = spaceShip.getVelocityVectorPasByValue();
-                    VelocityVector.add(scale(thrust , 600/spaceShip.getMass()));
+                    VelocityVector.add(scale(thrust , STEPSIZE/spaceShip.getMass()));
 
                     solarSystemCopy.get(12).setVelocity(new Vector(VelocityVector.getX(), VelocityVector.getY(), VelocityVector.getZ() ));
                 }
@@ -219,8 +221,8 @@ public class GradientDescentStage2 {
 
 
             steps++;
-            if(steps>105120){
-                TimePenalty = 0;
+            if(steps>31_536_000/STEPSIZE){
+                TimePenalty = 1e3;
                 break ;
             }
             else{
@@ -381,7 +383,7 @@ public class GradientDescentStage2 {
         double duration = thrust.getDuration() ;
 
         for(int i = 0 ; i<thrustVectorArray.length ; i++){
-            thrustVectorArray[i]*= duration*60;
+            thrustVectorArray[i]*= duration*STEPSIZE;
         }
         return new Vector(thrustVectorArray[0] , thrustVectorArray[1] , thrustVectorArray[2]);
 

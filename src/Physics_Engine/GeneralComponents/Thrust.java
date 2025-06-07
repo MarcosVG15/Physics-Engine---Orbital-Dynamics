@@ -33,10 +33,15 @@ public class Thrust extends Vector{
         thrustComponents[0] = super.getX() ;
         thrustComponents[1] = super.getY() ;
         thrustComponents[2] = super.getZ() ;
-        thrustComponents[3] = startTime ;
-        thrustComponents[4] = duration ;
+        thrustComponents[3] = this.startTime ;
+        thrustComponents[4] = this.duration ;
 
         return thrustComponents ;
+    }
+
+    public void print(){
+
+        System.out.println(" THRUST COMPONENTS : "+ super.getX()+ " , "+ super.getY()+ " , "+ super.getZ()+ " Starting : "+ startTime+ " Duration : "+ duration);
     }
 
 }

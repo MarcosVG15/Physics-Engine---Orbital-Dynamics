@@ -8,6 +8,8 @@ import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 
 import java.util.ArrayList;
 
+import static src.Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
 public class TEST {
     public static void main(String[] agrs){
         SolarSystem S = new SolarSystem() ;
@@ -15,7 +17,7 @@ public class TEST {
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
 
 
-        for(int t = 0 ; t<525600 ; t++){
+        for(int t = 0 ; t<31_536_000/STEPSIZE ; t++){
 
 
             for(SpaceObject object : solarSystem){
