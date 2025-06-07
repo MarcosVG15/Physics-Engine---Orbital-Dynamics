@@ -1,7 +1,7 @@
-package src.main.java.Physics_Engine.SpectralDefferedInProgress;
+package Physics_Engine.SpectralDefferedInProgress;
 
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,9 +1,10 @@
-package src.main.java.Physics_Engine.GeneralComponents;
+package Physics_Engine.GeneralComponents;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
-public class SpaceShip extends ProbeObject implements SpaceObject  {
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+public class SpaceShip extends ProbeObject implements SpaceObject {
     private double Fuel ;
     public SpaceShip(vectorInterface Velocity , vectorInterface Position){
         super(Velocity,Position);

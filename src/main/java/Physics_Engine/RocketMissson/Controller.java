@@ -1,6 +1,6 @@
-package src.main.java.Physics_Engine.RocketMissson;
+package Physics_Engine.RocketMissson;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
 public class Controller {
 

@@ -1,4 +1,4 @@
-package src.main.java.Physics_Engine.GeneralComponents;
+package Physics_Engine.GeneralComponents;
 
 public class Thrust extends Vector{
 

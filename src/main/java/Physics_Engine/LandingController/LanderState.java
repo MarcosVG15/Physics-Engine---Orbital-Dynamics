@@ -1,7 +1,7 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.main.java.Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.Vector;
 
 public class LanderState {
     public double x, y;        // Position (m)

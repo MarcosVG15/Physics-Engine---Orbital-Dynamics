@@ -1,13 +1,13 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
-import static src.main.java.Physics_Engine.LandingController.Constants.*;
+import static Physics_Engine.LandingController.Constants.*;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+import Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
 
 
-import src.main.java.Physics_Engine.GeneralComponents.SolarSystem;
-import src.main.java.Physics_Engine.GeneralComponents.Vector;
-import src.main.java.Physics_Engine.ODESolverRK4.RK4_ODESolver; // Assuming this is the concrete implementation of SolarSystemInterface
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.ODESolverRK4.RK4_ODESolver; // Assuming this is the concrete implementation of SolarSystemInterface
 
 public class LanderSimulation {
 

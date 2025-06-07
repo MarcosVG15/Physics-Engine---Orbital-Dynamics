@@ -1,14 +1,14 @@
-package src.main.java.Physics_Engine.RocketMissson;
+package Physics_Engine.RocketMissson;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.main.java.Physics_Engine.GeneralComponents.SolarSystem;
-import src.main.java.Physics_Engine.GeneralComponents.SpaceShip;
-import src.main.java.Physics_Engine.GeneralComponents.Thrust;
-import src.main.java.Physics_Engine.GeneralComponents.Vector;
-import src.main.java.Physics_Engine.ODESolverRK4.AccelerationFunction;
-import src.main.java.Physics_Engine.ODESolverRK4.RK4_ODESolver;
-import src.main.java.Physics_Engine.ODESolverRK4.VelocityFunction;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.SpaceShip;
+import Physics_Engine.GeneralComponents.Thrust;
+import Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.ODESolverRK4.AccelerationFunction;
+import Physics_Engine.ODESolverRK4.RK4_ODESolver;
+import Physics_Engine.ODESolverRK4.VelocityFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;

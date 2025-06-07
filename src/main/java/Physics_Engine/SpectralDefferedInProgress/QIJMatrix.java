@@ -1,4 +1,4 @@
-package src.main.java.Physics_Engine.SpectralDefferedInProgress;
+package Physics_Engine.SpectralDefferedInProgress;
 
 public class QIJMatrix {
 

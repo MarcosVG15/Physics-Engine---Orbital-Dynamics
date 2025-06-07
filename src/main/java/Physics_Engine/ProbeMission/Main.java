@@ -1,4 +1,4 @@
-package src.main.java.Physics_Engine.ProbeMission;
+package Physics_Engine.ProbeMission;
 
 public class Main {
     public static void main(String[] args){

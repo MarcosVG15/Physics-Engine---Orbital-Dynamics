@@ -1,11 +1,11 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
-import static src.main.java.Physics_Engine.LandingController.Constants.GRAVITY_TITAN;
+import static Physics_Engine.LandingController.Constants.GRAVITY_TITAN;
 import java.util.ArrayList;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.function;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.main.java.Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.function;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.Vector;
 
 public class LanderPhysicsFunction implements function {
     private LanderController controller;

@@ -1,4 +1,4 @@
-package src.main.java.Physics_Engine.GeneralComponents.Interfaces;
+package Physics_Engine.GeneralComponents.Interfaces;
 
 public interface vectorInterface {
 

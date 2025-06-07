@@ -1,6 +1,6 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
-import static src.main.java.Physics_Engine.LandingController.Constants.*;
+import static Physics_Engine.LandingController.Constants.*;
 
 
 public class LanderODEFunction  {

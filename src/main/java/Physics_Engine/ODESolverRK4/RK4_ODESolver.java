@@ -1,15 +1,15 @@
-package src.main.java.Physics_Engine.ODESolverRK4;
+package Physics_Engine.ODESolverRK4;
 
 import java.util.ArrayList;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.function;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
-import src.main.java.Physics_Engine.GeneralComponents.ProbeObject;
-import src.main.java.Physics_Engine.GeneralComponents.SpaceShip;
-import src.main.java.Physics_Engine.GeneralComponents.Vector; // Import StateDerivativeFunction
-import src.main.java.Physics_Engine.LandingController.LanderODEFunction;
+import Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.function;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.ProbeObject;
+import Physics_Engine.GeneralComponents.SpaceShip;
+import Physics_Engine.GeneralComponents.Vector; // Import StateDerivativeFunction
+import Physics_Engine.LandingController.LanderODEFunction;
 
 public class RK4_ODESolver {
 

@@ -1,7 +1,7 @@
-package src.main.java.Physics_Engine.LandingController; // Corrected package declaration
+package Physics_Engine.LandingController; // Corrected package declaration
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject; // Import the SpaceObject interface from GeneralComponents
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface; // Import the vectorInterface for position and velocity from GeneralComponents
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject; // Import the SpaceObject interface from GeneralComponents
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface; // Import the vectorInterface for position and velocity from GeneralComponents
 
 /**
  * Represents the lander object with its physical properties and state.

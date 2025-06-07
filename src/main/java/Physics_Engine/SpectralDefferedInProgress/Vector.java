@@ -1,7 +1,7 @@
-package src.main.java.Physics_Engine.SpectralDefferedInProgress;
+package Physics_Engine.SpectralDefferedInProgress;
 
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
 /**
  * Allows for opperations and copy of vectors ;

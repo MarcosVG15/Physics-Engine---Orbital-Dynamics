@@ -1,4 +1,4 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
 import java.util.Random;
 

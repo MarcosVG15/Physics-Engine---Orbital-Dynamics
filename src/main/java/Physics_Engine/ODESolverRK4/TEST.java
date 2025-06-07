@@ -1,7 +1,7 @@
-package src.main.java.Physics_Engine.ODESolverRK4;
+package Physics_Engine.ODESolverRK4;
 
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.SolarSystem;
 
 import java.util.ArrayList;
 

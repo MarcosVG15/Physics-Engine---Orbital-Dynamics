@@ -1,9 +1,9 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
 import java.util.ArrayList;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.function;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.function;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
 public class LanderVelocityFunction implements function {
 

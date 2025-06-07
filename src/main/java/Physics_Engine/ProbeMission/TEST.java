@@ -1,10 +1,10 @@
-package src.main.java.Physics_Engine.ProbeMission;
+package Physics_Engine.ProbeMission;
 
-import src.main.java.Physics_Engine.GeneralComponents.SolarSystem;
-import src.main.java.Physics_Engine.ODESolverRK4.AccelerationFunction;
-import src.main.java.Physics_Engine.ODESolverRK4.RK4_ODESolver;
-import src.main.java.Physics_Engine.ODESolverRK4.VelocityFunction;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.ODESolverRK4.AccelerationFunction;
+import Physics_Engine.ODESolverRK4.RK4_ODESolver;
+import Physics_Engine.ODESolverRK4.VelocityFunction;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 
 import java.util.ArrayList;
 

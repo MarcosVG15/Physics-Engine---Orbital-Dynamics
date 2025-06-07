@@ -1,6 +1,6 @@
-package src.main.java.Physics_Engine.LandingController;
+package Physics_Engine.LandingController;
 
-import static src.main.java.Physics_Engine.LandingController.Constants.*; // Import all static members from the Constants class for easy access to physical constants and limits.
+import static Physics_Engine.LandingController.Constants.*; // Import all static members from the Constants class for easy access to physical constants and limits.
 
 public class LanderController {
     /**

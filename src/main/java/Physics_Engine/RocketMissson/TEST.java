@@ -1,9 +1,9 @@
-package src.main.java.Physics_Engine.RocketMissson;
+package Physics_Engine.RocketMissson;
 
-import src.main.java.Physics_Engine.GeneralComponents.AstralObject;
-import src.main.java.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
-import src.main.java.Physics_Engine.GeneralComponents.SolarSystem;
-import src.main.java.Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.GeneralComponents.AstralObject;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
