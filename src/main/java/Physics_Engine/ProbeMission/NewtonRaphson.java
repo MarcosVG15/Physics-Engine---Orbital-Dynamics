@@ -34,7 +34,7 @@ public class NewtonRaphson {
         VelocityLog.add(probe.getVelocityVector());
          getDistanceEstimate();
 
-        probe.setVelocity(new Vector(51.147579,-31.208833,-13.9289997));
+        probe.setVelocity(new Vector(51.4596477974,-31.2491627792,-13.9004519339));
         VelocityLog.add(probe.getVelocityVector());
         getDistanceEstimate();
 
@@ -52,7 +52,7 @@ public class NewtonRaphson {
     }
 
 
-    public boolean ComputeNewtonRaphson(){
+    public boolean ComputeNewtonRaphson(int step){
 
         boolean[] VelocityEquals = new boolean[3];
         double[] updatedVelocity  = new double[3] ;
@@ -77,23 +77,14 @@ public class NewtonRaphson {
         getDistanceEstimate();
 
 
+        if(VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2]){
 
-
-        //System.out.println("Velocities ");
-
-        double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
-        System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
-
-        // for(int  i = VelocityLog.size()-2 ; i<VelocityLog.size() ; i++){
+            double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
+            System.out.print("Step : , "+ step + " , " );
+            System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
             VelocityLog.get(VelocityLog.size()-1).print(", Velocity , ");
-        //}
 
-        // System.out.println();
-        // System.out.println("Position ");
-
-        // for(int  i = PositionLog.size()-2 ; i<PositionLog.size() ; i++){
-        
-      //  }
+        }
 
 
         return VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2] ;

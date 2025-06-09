@@ -29,7 +29,7 @@ public class GradientDescentStage1 {
     private double fuelCap ;
 
 private  double ALPHA = 1E-3 ;
-    private double ALPHA_0 = 1e-1;
+    private double ALPHA_0 = 1e-4;
     private double beta1 = 0.9;
     private double beta2 = 0.999;
     private double epsilon = 1e-6;
@@ -92,35 +92,35 @@ private  double ALPHA = 1E-3 ;
 //        }
         //ArrayOfThrusts[1] = new Thrust(0,0,0);
 
-        ArrayOfThrusts[0] = new Thrust(46.019271053790824, 86.213510920168, 10.596484749385175) ;
+        ArrayOfThrusts[0] = new Thrust(41.48582683988354, 91.27543219460289, 15.959378193135148) ;
         ArrayOfThrusts[0].setDuration(1);
         ArrayOfThrusts[0].setStartTime( 26.621955301890434);
 
-        ArrayOfThrusts[1] = new Thrust(-10.266526601366785, 18.078613951398932, -55.657318973953565) ;
+        ArrayOfThrusts[1] = new Thrust(-20.86299291704483, 22.055144553001956, -52.25973851885885) ;
         ArrayOfThrusts[1].setDuration(1);
         ArrayOfThrusts[1].setStartTime(109.8091638751849);
 
-        ArrayOfThrusts[2] = new Thrust(5.830259575697072, 13.576290182302408, -64.03699493723634) ;
+        ArrayOfThrusts[2] = new Thrust(-5.0833475136945685, 15.776263922219993, -58.11541234212124) ;
         ArrayOfThrusts[2].setDuration(1.3462276957079227);
         ArrayOfThrusts[2].setStartTime(94.65404621287317);
 
 
 
 
-//        NEW COST : 6.335949574098804E7
-//        OLD COST : 6.3403174575143434E7
+//        NEW COST : 4.98638939166169E7
+//        OLD COST : 5.026088137555977E7
 //        GET DISTANCE FOR STOPPING CONDITION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //
 //                THRUST ARRAY
-//        YOU SHOULD SEE AN IMPACT ---[46.019271053790824, 86.213510920168, 10.596484749385175] start Time 26.621955301890434 Duration Time 1.0
-//        YOU SHOULD SEE AN IMPACT ---[-10.266526601366785, 18.078613951398932, -55.657318973953565] start Time 109.8091638751849 Duration Time 1.0
-//        YOU SHOULD SEE AN IMPACT ---[5.830259575697072, 13.576290182302408, -64.03699493723634] start Time 94.65404621287317 Duration Time 1.3462276957079227
-//        Distance  From Earth : [-2.0182191380782433E7, -5.238037445367696E7, -2.9376953421913903E7]
+//        YOU SHOULD SEE AN IMPACT ---[41.48582683988354, 91.27543219460289, 15.959378193135148] start Time 26.674422496196907 Duration Time 1.0369141215294422
+//        YOU SHOULD SEE AN IMPACT ---[-20.86299291704483, 22.055144553001956, -52.25973851885885] start Time 109.8920398664589 Duration Time 1.0683398686932135
+//        YOU SHOULD SEE AN IMPACT ---[-5.0833475136945685, 15.776263922219993, -58.11541234212124] start Time 94.68422584304135 Duration Time 1.4249781688707928
+//        Distance  From Earth : [-2.260548505629018E7, -3.958776180603171E7, -2.019645229261054E7]
 //        END SPACESHIP STATS
-//        SpaceShip, Position , 20217513.129959,52386865.228277,29377297.898138
-//        SpaceShip  Velocity , -54.070779,12.966621,17.050274
+//        SpaceShip, Position , 22640806.805467,39594252.580631,20196796.768834
+//        SpaceShip  Velocity , -58.685822,22.989516,23.196014
 //
-//        Distance From Target Velocity : [54.07077863926351, -11.09662149985099, -17.050274098791515]
+//        Distance From Target Velocity : [58.6858222375304, -21.119515717317846, -23.196013822771345]
 //        OLD UPDATE OF THRUST *****************************************************************
 
 
@@ -480,7 +480,7 @@ private  double ALPHA = 1E-3 ;
         for (Thrust t : thrusts) {
             fuel += getModulus(getImpulse(t)) / 1000.0;  // kg
         }
-        double penalty = Math.max(0, fuel - fuelCap) * 1e5;
+        double penalty = fuel - fuelCap * 1e5;
         if(distance<1000){
             return  Math.log(distance/2 + 1) + penalty + VelocityModulus+ TimePenalty ;
         }
