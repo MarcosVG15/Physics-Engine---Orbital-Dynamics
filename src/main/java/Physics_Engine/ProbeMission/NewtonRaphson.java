@@ -24,7 +24,8 @@ public class NewtonRaphson {
     private ProbeObject probe ;
 
 
-    public NewtonRaphson(){
+    public NewtonRaphson(double ALPHA){
+        ALPHA = ALPHA ; 
         PositionLog = new ArrayList<>();
         VelocityLog = new ArrayList<>() ;
 
@@ -33,7 +34,7 @@ public class NewtonRaphson {
         VelocityLog.add(probe.getVelocityVector());
          getDistanceEstimate();
 
-        probe.setVelocity(new Vector(55.147313,-33.207901,-17.928841));
+        probe.setVelocity(new Vector(51.147579,-31.208833,-13.9289997));
         VelocityLog.add(probe.getVelocityVector());
         getDistanceEstimate();
 
@@ -64,7 +65,7 @@ public class NewtonRaphson {
         for(int i = 0 ; i<3 ; i++){
          updatedVelocity[i] = currentVelocity[i] - ALPHA*(currentPosition[i]/derivativeArray[i]);
 
-            if (Math.abs(currentPosition[i]) < 10){
+            if (Math.abs(currentPosition[i]) < 1){
                 VelocityEquals[i] = true;
             }
         }
