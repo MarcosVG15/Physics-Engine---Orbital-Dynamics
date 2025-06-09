@@ -24,8 +24,8 @@ public class NewtonRaphson {
     private ProbeObject probe ;
 
 
-    public NewtonRaphson(double ALPHA){
-        ALPHA = ALPHA ; 
+    public NewtonRaphson(){
+         
         PositionLog = new ArrayList<>();
         VelocityLog = new ArrayList<>() ;
 
