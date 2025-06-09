@@ -46,12 +46,25 @@ public class Controller {
 
         vectorInterface normalVector = getDistance(earthStartPosition , titanPosition) ;
 
-        vectorInterface startPosition = getScale(normalVector , radiusEarth) ;
-        solarSystem.get(3).setPosition(startPosition);
+        vectorInterface earthToSurface = getScale(normalVector , radiusEarth) ;
+        vectorInterface startPosition = add(earthStartPosition , earthToSurface) ;
+        solarSystem.get(12).setPosition(startPosition);
 
-        vectorInterface endPosition   = getScale(normalVector , radiusEarth+35_786) ;
 
-        GradientDescentStage1 gradientDescentStage1 = new GradientDescentStage1(solarSystem , endPosition , 700_000 ,1) ;
+        vectorInterface earthToGEOOrbit   = getScale(normalVector , radiusEarth+35_786) ;
+        vectorInterface endPosition = add(normalVector , earthToGEOOrbit) ;
+
+
+
+
+//        SimpleOptimizer simpleOptimizer = new SimpleOptimizer(solarSystem , endPosition , 700_000 ,1) ;
+//        Thrust[] arrayOfThrust = new Thrust[1];
+//        arrayOfThrust[0] = new Thrust( 8249.65576874581, 2812.6366764712848, -1.6895724159232062);
+//        arrayOfThrust[0].setDuration(21.638797645402224);
+//        arrayOfThrust[0].setStartTime(0);
+//        arrayOfThrust = simpleOptimizer.optimize(arrayOfThrust);
+
+        GradientDescentStage1 gradientDescentStage1 = new GradientDescentStage1(solarSystem , endPosition , new Vector(0,1.87 , 0 ), 1_000_000 ,3) ;
         Thrust[] arrayOfThrust = gradientDescentStage1.gradientDescent() ; // COMPUTE STAGE 1 of gradient Descent
 
         for( int i = 0 ; i<arrayOfThrust.length ; i++){
@@ -74,6 +87,20 @@ public class Controller {
 //            arrayOfThrust2[i].print();
 //        }
 
+
+    }
+
+    public vectorInterface add(vectorInterface vector1 , vectorInterface vector2){
+
+        double[] vector1Array = vector1.getVector()  ;
+        double[] vector2Array = vector2.getVector()  ;
+
+        double[] vector = new double[3] ;
+
+        for(int i = 0  ; i<3 ; i++){
+            vector[i] = vector1Array[i]+vector2Array[i] ;
+        }
+        return new Vector(vector[0],vector[1] ,vector[2]) ;
 
     }
 

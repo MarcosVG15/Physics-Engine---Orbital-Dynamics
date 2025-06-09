@@ -8,6 +8,8 @@ import src.Physics_Engine.ODESolverRK4.*;
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 
+import static src.Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -31,7 +33,7 @@ public class NewtonRaphson {
         VelocityLog.add(probe.getVelocityVector());
          getDistanceEstimate();
 
-        probe.setVelocity(new Vector(0 , 10 , 10));
+        probe.setVelocity(new Vector(55.147313,-33.207901,-17.928841));
         VelocityLog.add(probe.getVelocityVector());
         getDistanceEstimate();
 
@@ -40,11 +42,11 @@ public class NewtonRaphson {
             object.print(" ");
         }
 
-        System.out.println();
-        System.out.println("Position ");
-        for (double[] values : PositionLog){
-            System.out.println(Arrays.toString(values));
-        }
+        // System.out.println();
+        // System.out.println("Position ");
+        // for (double[] values : PositionLog){
+        //     System.out.println(Arrays.toString(values));
+        // }
 
     }
 
@@ -60,11 +62,9 @@ public class NewtonRaphson {
 
         double norm = Math.sqrt(Math.pow(derivativeArray[0],2)+Math.pow(derivativeArray[1],2)+Math.pow(derivativeArray[2],2));
         for(int i = 0 ; i<3 ; i++){
-            updatedVelocity[i] = currentVelocity[i] - ALPHA*(currentPosition[i]/derivativeArray[i]);
-  //          derivativeArray[i]/= norm ;
-//            updatedVelocity[i] = currentVelocity[i] - ALPHA * derivativeArray[i];
+         updatedVelocity[i] = currentVelocity[i] - ALPHA*(currentPosition[i]/derivativeArray[i]);
 
-            if (Math.abs(updatedVelocity[i] - currentVelocity[i]) < 1e-6){
+            if (Math.abs(currentPosition[i]) < 10){
                 VelocityEquals[i] = true;
             }
         }
@@ -76,18 +76,23 @@ public class NewtonRaphson {
         getDistanceEstimate();
 
 
-        System.out.println("Velocities ");
 
-        for(int  i = VelocityLog.size()-2 ; i<VelocityLog.size() ; i++){
-            VelocityLog.get(i).print(" ");
-        }
 
-        System.out.println();
-        System.out.println("Position ");
+        //System.out.println("Velocities ");
 
-        for(int  i = PositionLog.size()-2 ; i<PositionLog.size() ; i++){
-            System.out.println(Arrays.toString(PositionLog.get(i)));
-        }
+        double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
+        System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
+
+        // for(int  i = VelocityLog.size()-2 ; i<VelocityLog.size() ; i++){
+            VelocityLog.get(VelocityLog.size()-1).print(", Velocity , ");
+        //}
+
+        // System.out.println();
+        // System.out.println("Position ");
+
+        // for(int  i = PositionLog.size()-2 ; i<PositionLog.size() ; i++){
+        
+      //  }
 
 
         return VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2] ;
@@ -113,15 +118,9 @@ public class NewtonRaphson {
         }
 
 
-        System.out.println("Derivative :  " + Arrays.toString(derivative));
+       // System.out.println("Derivative :  " + Arrays.toString(derivative));
         return derivative ;
     }
-
-
-
-
-
-
 
 
 
@@ -134,26 +133,25 @@ public class NewtonRaphson {
     public void getDistanceEstimate(){
 
 
-        ProbeObject probe = null ;
+        ProbeObject probeInstance = null ;
         AstralObject titan  = null ;
 
         SolarSystem S = new SolarSystem();
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
         solarSystem.get(11).setVelocity(this.probe.getVelocityVector());
 
-        for(int t = 0 ; t<525600 ; t++){
-
-            probe = (ProbeObject) solarSystem.get(11);
+        for(int t = 0 ; t<31_536_000/STEPSIZE ; t++){
+            probeInstance = (ProbeObject) solarSystem.get(11);
             titan = (AstralObject) solarSystem.get(8);
             //probe.print();
 
 //            double[] DistanceArray = getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector()) ;
 //            System.out.println(DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
 
-            if(probe.hasHitPlanet(titan , TITAN_RADIUS)){ // if the probe is in the bounds of the moon
+            if(probeInstance.hasHitPlanet(titan , TITAN_RADIUS)){ // if the probe is in the bounds of the moon
 
-                System.out.println("HAS HIT " + t);
-                PositionLog.add(getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector()));
+                //System.out.println("HAS HIT " + t);
+                PositionLog.add(getDifferenceArray(titan.getPositionVector().getVector() ,probeInstance.getPositionVector().getVector()));
                 return ;
             }
 
@@ -163,13 +161,13 @@ public class NewtonRaphson {
             odeSolver.ComputeODE(0 , S, acceleration ,velocity);
         }
 
-        PositionLog.add(getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector()));
+        PositionLog.add(getDifferenceArray(titan.getPositionVector().getVector() ,probeInstance.getPositionVector().getVector()));
 
 
-        System.out.println();
-        System.out.println("HASN'T HIT :( ");
-//        System.out.println(Arrays.toString(getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector())));
-        System.out.println();
+//         System.out.println();
+//        // System.out.println("HASN'T HIT :( ");
+// //        System.out.println(Arrays.toString(getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector())));
+//         System.out.println();
 
 
     }

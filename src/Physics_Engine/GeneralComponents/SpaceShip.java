@@ -21,12 +21,7 @@ public class SpaceShip extends ProbeObject implements SpaceObject  {
         return Fuel ;
     }
 
-    public double fuelConsumed(){
-        double fuelConsumed = 0 ;
 
-        // make it calculate the fuel consumed
-        return fuelConsumed ;
-    }
 
     @Override
     public SpaceObject clone(){

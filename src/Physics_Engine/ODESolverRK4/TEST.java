@@ -1,7 +1,11 @@
 package src.Physics_Engine.ODESolverRK4;
 
 import src.Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import src.Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 import src.Physics_Engine.GeneralComponents.SolarSystem;
+import src.Physics_Engine.GeneralComponents.SpaceShip;
+import src.Physics_Engine.GeneralComponents.Thrust;
+import src.Physics_Engine.GeneralComponents.Vector;
 
 import java.util.ArrayList;
 
@@ -26,6 +30,9 @@ public class TEST {
            AccelerationFunction acceleration = new AccelerationFunction();
            VelocityFunction velocity = new VelocityFunction();
            RK4_ODESolver odeSolver = new RK4_ODESolver();
+
+
+
 
            odeSolver.ComputeODE(8 , S, acceleration ,velocity);
 
