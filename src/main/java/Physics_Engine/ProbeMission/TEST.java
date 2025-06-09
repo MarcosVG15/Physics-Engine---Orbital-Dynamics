@@ -2,6 +2,7 @@ package Physics_Engine.ProbeMission;
 
 import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
 import Physics_Engine.ODESolverRK4.AccelerationFunction;
 import Physics_Engine.ODESolverRK4.RK4_ODESolver;
 import Physics_Engine.ODESolverRK4.VelocityFunction;
@@ -16,7 +17,7 @@ public class TEST {
         SolarSystem S = new SolarSystem() ;
 
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
-
+        solarSystem.get(11).setVelocity(new Vector(0 , 0 , 0));
 
         for(int t = 0 ; t<31_536_000/STEPSIZE ; t++){
 
