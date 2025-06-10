@@ -51,41 +51,15 @@ public class Controller {
         solarSystem.get(12).setPosition(startPosition);
 
 
-        vectorInterface earthToGEOOrbit   = getScale(normalVector , radiusEarth+35_786) ;
-        vectorInterface endPosition = add(normalVector , earthToGEOOrbit) ;
 
-
-
-
-//        SimpleOptimizer simpleOptimizer = new SimpleOptimizer(solarSystem , endPosition , 700_000 ,1) ;
-//        Thrust[] arrayOfThrust = new Thrust[1];
-//        arrayOfThrust[0] = new Thrust( 8249.65576874581, 2812.6366764712848, -1.6895724159232062);
-//        arrayOfThrust[0].setDuration(21.638797645402224);
-//        arrayOfThrust[0].setStartTime(0);
-//        arrayOfThrust = simpleOptimizer.optimize(arrayOfThrust);
-
-        GradientDescentStage1 gradientDescentStage1 = new GradientDescentStage1(solarSystem , endPosition , new Vector(0,1.87 , 0 ), 1_000_000 ,3) ;
-        Thrust[] arrayOfThrust = gradientDescentStage1.gradientDescent() ; // COMPUTE STAGE 1 of gradient Descent
+        GradientDescentStage1 gradientDescentStage1 = new GradientDescentStage1(solarSystem , titanPosition , new Vector(0,1.87 , 0 ), 1_000_000 ,3) ;
+        Thrust[] arrayOfThrust = gradientDescentStage1.gradientDescent() ;
 
         for( int i = 0 ; i<arrayOfThrust.length ; i++){
             arrayOfThrust[i].print();
         }
 
 
-//        run(solarSystemObject , arrayOfThrust , titanPosition);
-//        GradientDescentStage2 gradientDescentStage2 = new GradientDescentStage2(solarSystemObject.getSolarSystem() , titanPosition , new Vector(23 , 0 , 0 ) , 500_000 , 3);
-//        Thrust[] arrayOfThrust2 = gradientDescentStage2.gradientDescent() ;
-//
-//
-//
-//
-//        for( int i = 0 ; i<arrayOfThrust.length ; i++){
-//            arrayOfThrust[i].print();
-//        }
-//
-//        for( int i = 0 ; i<arrayOfThrust2.length ; i++){
-//            arrayOfThrust2[i].print();
-//        }
 
 
     }
