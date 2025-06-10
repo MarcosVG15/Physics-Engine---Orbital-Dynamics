@@ -53,7 +53,7 @@ public class Vector implements vectorInterface {
     }
 
     public void print(String  type ){
-        System.out.printf(type+ "%.10f,%.10f,%.10f \n"
+        System.out.printf(type+ "%f,%f,%f \n"
                 , values[0] , values[1], values[2]);
     }
 

@@ -25,7 +25,6 @@ public class NewtonRaphson {
 
 
     public NewtonRaphson(){
-         
         PositionLog = new ArrayList<>();
         VelocityLog = new ArrayList<>() ;
 
@@ -34,7 +33,7 @@ public class NewtonRaphson {
         VelocityLog.add(probe.getVelocityVector());
          getDistanceEstimate();
 
-        probe.setVelocity(new Vector(51.4596477974,-31.2491627792,-13.9004519339));
+        probe.setVelocity(new Vector(55.147313,-33.207901,-17.928841));
         VelocityLog.add(probe.getVelocityVector());
         getDistanceEstimate();
 
@@ -52,7 +51,7 @@ public class NewtonRaphson {
     }
 
 
-    public boolean ComputeNewtonRaphson(int step){
+    public boolean ComputeNewtonRaphson(){
 
         boolean[] VelocityEquals = new boolean[3];
         double[] updatedVelocity  = new double[3] ;
@@ -65,7 +64,7 @@ public class NewtonRaphson {
         for(int i = 0 ; i<3 ; i++){
          updatedVelocity[i] = currentVelocity[i] - ALPHA*(currentPosition[i]/derivativeArray[i]);
 
-            if (Math.abs(currentPosition[i]) < 1){
+            if (Math.abs(currentPosition[i]) < 10){
                 VelocityEquals[i] = true;
             }
         }
@@ -77,14 +76,23 @@ public class NewtonRaphson {
         getDistanceEstimate();
 
 
-        if(VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2]){
 
-            double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
-            System.out.print("Step : , "+ step + " , " );
-            System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
+
+        //System.out.println("Velocities ");
+
+        double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
+        System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
+
+        // for(int  i = VelocityLog.size()-2 ; i<VelocityLog.size() ; i++){
             VelocityLog.get(VelocityLog.size()-1).print(", Velocity , ");
+        //}
 
-        }
+        // System.out.println();
+        // System.out.println("Position ");
+
+        // for(int  i = PositionLog.size()-2 ; i<PositionLog.size() ; i++){
+        
+      //  }
 
 
         return VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2] ;

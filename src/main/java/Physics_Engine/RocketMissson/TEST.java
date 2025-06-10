@@ -34,7 +34,25 @@ public class TEST {
         System.out.println("Time Taken For Stage1 : "+ timeLapsed);
 
     }
+    public static void runStage2(){
 
+        long startTime = System.currentTimeMillis() ;
+
+        SolarSystem solarSystem = new SolarSystem();
+        ArrayList<SpaceObject> solar = solarSystem.getSolarSystem() ;
+        AstralObject titan = (AstralObject) solar.get(8) ;
+        GradientDescentStage2 gradientDescentStage2 = new GradientDescentStage2(solarSystem.getSolarSystem()
+                , new Vector(1410758275.936530,111700556.947724,-57922927.710213)
+                , new Vector(0,0,0),50_000 ,3);
+
+        System.out.println(Arrays.toString(gradientDescentStage2.gradientDescent()));
+        long endTime = System.currentTimeMillis() ;
+
+        double timeLapsed = (endTime - startTime)/1000 ;
+
+        System.out.println("Time Taken For Stage2 : "+ timeLapsed);
+
+    }
 
 
 }

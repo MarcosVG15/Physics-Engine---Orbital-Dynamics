@@ -22,9 +22,10 @@ public class TEST {
 
        for(int t = 0 ; t<31_536_000/STEPSIZE ; t++){
 
-        solarSystem.get(8).print();
-          solarSystem.get(11).print();
 
+           for(SpaceObject object : solarSystem){
+               object.print();
+           }
 
            AccelerationFunction acceleration = new AccelerationFunction();
            VelocityFunction velocity = new VelocityFunction();
