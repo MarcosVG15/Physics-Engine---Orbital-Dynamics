@@ -29,10 +29,10 @@ public class GradientDescentStage1 {
     private double fuelCap ;
 
 private  double ALPHA = 1E-3 ;
-    private double ALPHA_0 = 10;
+    private double ALPHA_0 = 1e-4;
     private double beta1 = 0.9;
     private double beta2 = 0.999;
-    private double epsilon = 5e-2;
+    private double epsilon = 1e-6;
     private double[] m = new double[5];
     private double[] v = new double[5];
     private double t = 0;
@@ -53,85 +53,77 @@ private  double ALPHA = 1E-3 ;
 
         ArrayOfThrusts = new Thrust[amountOfThrust];
 
-        Random random = new Random();
-
-        // Estimate the required impulse direction based on the target vector
-        double[] targetDirection = targetVector.getVector();
-        double magnitude = getModulus(targetVector);
-        for (int i = 0; i < targetDirection.length; i++) {
-            targetDirection[i] /= magnitude; // Normalize the direction vector
-        }
-
-        // Estimate the required impulse magnitude based on the target velocity
-        double[] targetVelocityDirection = targetVelocity.getVector();
-        double velocityMagnitude = getModulus(targetVelocity);
-         for (int i = 0; i < targetVelocityDirection .length; i++) {
-            targetVelocityDirection [i] /= velocityMagnitude; // Normalize the direction vector
-        }
-
-        double thrustMagnitude = 5000; // Adjust this value as needed
-        double duration = 5; // Adjust this value as needed
-
-        for (int i = 0; i < ArrayOfThrusts.length; i++) {
-            // Calculate thrust components based on the target direction
-            double xThrust = thrustMagnitude * targetDirection[0];
-            double yThrust = thrustMagnitude * targetDirection[1];
-            double zThrust = thrustMagnitude * targetDirection[2];
-
-            Thrust thrust = new Thrust(xThrust, yThrust, zThrust);
-            thrust.setDuration(duration);
-
-            // Distribute start times randomly
-            double startTime = random.nextDouble(100); // Adjust the range as needed
-            thrust.setStartTime(startTime);
-
-            ArrayOfThrusts[i] = thrust;
-
-            System.out.print(Arrays.toString(thrust.getVector()));
-            System.out.println(" Duration : " + thrust.getDuration() + " StartTime : " + thrust.getStartTime());
-        }
-        //ArrayOfThrusts[1] = new Thrust(0,0,0);
-
-
-//        THRUST ARRAY
-//        YOU SHOULD SEE AN IMPACT ---[7996.11484680932, 2195.859801709455, 26.69269153722458] start Time 1.9081054625946372 Duration Time 1.5456316805961328
-//        YOU SHOULD SEE AN IMPACT ---[1995.9689184129943, 4995.780140609252, -3.0222042353732106] start Time 602.2370071947036 Duration Time 2.8823528703384205
-//        YOU SHOULD SEE AN IMPACT ---[16.078249566094414, 55.92886277760073, -2.752712217573608] start Time 902.0987333985038 Duration Time 1.4446909442558222
-//        Distance  From Earth : [-4.8510219446254456E10, -3.9612740408427315E10, -6627699.250471789]
-//        END SPACESHIP STATS
-//        SpaceShip, Position , 48510254768.003630,39612746899.201910,6628043.726695
-//        SpaceShip  Velocity , 1572.907542,1331.653421,0.133423
+//        Random random = new Random();
 //
-//        Distance From Target Velocity : [-1572.9075416781352, -1329.783420844369, -0.1334227239529892]
-//        NEW COST : 6.262915472332018E10
-//        OLD COST : 6.262929673178141E10
-//        GET DISTANCE FOR STOPPING CONDITION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-
-
-
-
-
-        //        Random random = new Random();
+//        // Estimate the required impulse direction based on the target vector
+//        double[] targetDirection = targetVector.getVector();
+//        double magnitude = getModulus(targetVector);
+//        for (int i = 0; i < targetDirection.length; i++) {
+//            targetDirection[i] /= magnitude; // Normalize the direction vector
+//        }
 //
-//        for(int i = 0 ; i<ArrayOfThrusts.length ; i++){
+//        // Estimate the required impulse magnitude based on the target velocity
+//        double[] targetVelocityDirection = targetVelocity.getVector();
+//        double velocityMagnitude = getModulus(targetVelocity);
+//         for (int i = 0; i < targetVelocityDirection .length; i++) {
+//            targetVelocityDirection [i] /= velocityMagnitude; // Normalize the direction vector
+//        }
 //
-//            Thrust thrust = new Thrust(-1*(random.nextInt(50))*100+1, -1*(random.nextInt(50))*100+1,(random.nextInt(50))*100+1 );
-//            thrust.setDuration(random.nextDouble(5)+10);
+//        double thrustMagnitude = 5000; // Adjust this value as needed
+//        double duration = 5; // Adjust this value as needed
 //
-//            double previous = 0 ;
+//        for (int i = 0; i < ArrayOfThrusts.length; i++) {
+//            // Calculate thrust components based on the target direction
+//            double xThrust = thrustMagnitude * targetDirection[0];
+//            double yThrust = thrustMagnitude * targetDirection[1];
+//            double zThrust = thrustMagnitude * targetDirection[2];
 //
-//            if(i != 0 ){
-//                previous += ArrayOfThrusts[i-1].getDuration() + ArrayOfThrusts[i-1].getStartTime();
-//            }
-//            thrust.setStartTime(random.nextDouble(5)+ previous);
-//            ArrayOfThrusts[i] = thrust ;
+//            Thrust thrust = new Thrust(xThrust, yThrust, zThrust);
+//            thrust.setDuration(duration);
+//
+//            // Distribute start times randomly
+//            double startTime = random.nextDouble(100); // Adjust the range as needed
+//            thrust.setStartTime(startTime);
+//
+//            ArrayOfThrusts[i] = thrust;
 //
 //            System.out.print(Arrays.toString(thrust.getVector()));
 //            System.out.println(" Duration : " + thrust.getDuration() + " StartTime : " + thrust.getStartTime());
 //        }
         //ArrayOfThrusts[1] = new Thrust(0,0,0);
+
+        ArrayOfThrusts[0] = new Thrust(41.48582683988354, 91.27543219460289, 15.959378193135148) ;
+        ArrayOfThrusts[0].setDuration(1);
+        ArrayOfThrusts[0].setStartTime( 26.621955301890434);
+
+        ArrayOfThrusts[1] = new Thrust(-20.86299291704483, 22.055144553001956, -52.25973851885885) ;
+        ArrayOfThrusts[1].setDuration(1);
+        ArrayOfThrusts[1].setStartTime(109.8091638751849);
+
+        ArrayOfThrusts[2] = new Thrust(-5.0833475136945685, 15.776263922219993, -58.11541234212124) ;
+        ArrayOfThrusts[2].setDuration(1.3462276957079227);
+        ArrayOfThrusts[2].setStartTime(94.65404621287317);
+
+
+
+
+//        NEW COST : 4.98638939166169E7
+//        OLD COST : 5.026088137555977E7
+//        GET DISTANCE FOR STOPPING CONDITION ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//
+//                THRUST ARRAY
+//        YOU SHOULD SEE AN IMPACT ---[41.48582683988354, 91.27543219460289, 15.959378193135148] start Time 26.674422496196907 Duration Time 1.0369141215294422
+//        YOU SHOULD SEE AN IMPACT ---[-20.86299291704483, 22.055144553001956, -52.25973851885885] start Time 109.8920398664589 Duration Time 1.0683398686932135
+//        YOU SHOULD SEE AN IMPACT ---[-5.0833475136945685, 15.776263922219993, -58.11541234212124] start Time 94.68422584304135 Duration Time 1.4249781688707928
+//        Distance  From Earth : [-2.260548505629018E7, -3.958776180603171E7, -2.019645229261054E7]
+//        END SPACESHIP STATS
+//        SpaceShip, Position , 22640806.805467,39594252.580631,20196796.768834
+//        SpaceShip  Velocity , -58.685822,22.989516,23.196014
+//
+//        Distance From Target Velocity : [58.6858222375304, -21.119515717317846, -23.196013822771345]
+//        OLD UPDATE OF THRUST *****************************************************************
+
+
 
 
     }
@@ -152,11 +144,10 @@ private  double ALPHA = 1E-3 ;
 
 
         boolean hasHit = false ;
-        double ALPHA_0 = 5;
-        double decayRate = 1e-7;
+        double decayRate = 1e-4;
 
-        double temperature = 1000;
-        double temperatureDecayRate = 0.99;
+        double temperature = 10000;
+        double temperatureDecayRate = 0.9999;
 
         double iterations = 0 ;
 
@@ -285,9 +276,9 @@ private  double ALPHA = 1E-3 ;
                 double delta = newCost - costOld;
                 double normalizedDelta = delta / costs.get(0); // Normalize delta by initial cost
 
-                if (delta >0 && random.nextDouble() < Math.exp(1 / temperature)) {
+                if (delta >0 && random.nextDouble() < Math.exp(normalizedDelta / temperature)) {
                     System.out.println("delta activated");
-Thrust modded = new Thrust(nextThrustContent[i][0]+random.nextDouble(10)-10*ALPHA
+                    Thrust modded = new Thrust(nextThrustContent[i][0]+random.nextDouble(10)-10*ALPHA
                             ,nextThrustContent[i][1]+random.nextDouble(10)-10*ALPHA
                             ,nextThrustContent[i][2]+random.nextDouble(10)-10*ALPHA );
 
@@ -489,22 +480,9 @@ Thrust modded = new Thrust(nextThrustContent[i][0]+random.nextDouble(10)-10*ALPH
         for (Thrust t : thrusts) {
             fuel += getModulus(getImpulse(t)) / 1000.0;  // kg
         }
-
-        double penalty = Math.max(0, fuel - fuelCap) * 1e5;
-//
-//        SpaceShip ship = (SpaceShip) solarSystem.get(12);
-//        vectorInterface velocityVec = ship.getVelocityVectorPasByValue();
-//        vectorInterface toTargetVec = new Vector(targetVector.getX() - distanceVec.getX(), targetVector.getY() - distanceVec.getY(), targetVector.getZ() - distanceVec.getZ());
-
-//        double velocityComponentAway = 0;
-//        if (dotProduct(velocityVec, toTargetVec) < 0) {
-//            velocityComponentAway = getModulus(velocityVec);
-//        }
-
-//        double velocityPenalty = velocityComponentAway * 1e-2;
-
-        if(distance<10000){
-            return  Math.log(distance/2 + 1) + penalty + 1 +VelocityModulus+ TimePenalty ;
+        double penalty = fuel - fuelCap * 1e5;
+        if(distance<1000){
+            return  Math.log(distance/2 + 1) + penalty + VelocityModulus+ TimePenalty ;
         }
         else{
             return  distance + penalty + VelocityModulus+ TimePenalty ;
@@ -612,7 +590,7 @@ Thrust modded = new Thrust(nextThrustContent[i][0]+random.nextDouble(10)-10*ALPH
 
 
         for(int i = 0 ; i<target.length ; i++ ){
-            if(Math.abs(target[i] - projection[i] ) <10){
+            if(Math.abs(target[i] - projection[i] ) <0.1){
                 shouldTerminate[i] = true ;
             }else{
                 shouldTerminate[i] = false ;

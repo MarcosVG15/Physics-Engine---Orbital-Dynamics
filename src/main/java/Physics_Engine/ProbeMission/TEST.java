@@ -1,6 +1,8 @@
 package Physics_Engine.ProbeMission;
 
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
 import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
 import Physics_Engine.ODESolverRK4.AccelerationFunction;
 import Physics_Engine.ODESolverRK4.RK4_ODESolver;
 import Physics_Engine.ODESolverRK4.VelocityFunction;
@@ -15,14 +17,10 @@ public class TEST {
         SolarSystem S = new SolarSystem() ;
 
         ArrayList<SpaceObject> solarSystem = S.getSolarSystem();
-
+        solarSystem.get(11).setVelocity(new Vector(0 , 0 , 0));
 
         for(int t = 0 ; t<31_536_000/STEPSIZE ; t++){
 
-
-            for(SpaceObject object : solarSystem){
-                object.print();
-            }
 
             AccelerationFunction acceleration = new AccelerationFunction();
             VelocityFunction velocity = new VelocityFunction();
@@ -31,5 +29,14 @@ public class TEST {
             odeSolver.ComputeODE(8 , S, acceleration ,velocity);
 
         }
+
+        double[] positionProbe = solarSystem.get(11).getPositionVector().getVector() ; // gets the probe
+        double[] positionTitan = solarSystem.get(8).getPositionVector().getVector() ; // gets the titan
+
+        double xDifference = positionProbe[0] - positionTitan[0] ;
+        double yDifference = positionProbe[1] - positionTitan[1] ;
+        double zDifference = positionProbe[2] - positionTitan[2] ;
+
+        System.out.println("For Step size "+ STEPSIZE+ "   Accuracy :  "+ xDifference + " , "+ yDifference +" , "+ zDifference);
     }
 }
