@@ -77,14 +77,13 @@ public class NewtonRaphson {
         getDistanceEstimate();
 
 
-        if(VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2]){
 
-            double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
-            System.out.print("Step : , "+ step + " , " );
-            System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
-            VelocityLog.get(VelocityLog.size()-1).print(", Velocity , ");
+        double[] DistanceArray = PositionLog.get(PositionLog.size()-1);
+        System.out.print("Step : , "+ step + " , " );
+        System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
+        VelocityLog.get(VelocityLog.size()-1).print(", Velocity , ");
 
-        }
+
 
 
         return VelocityEquals[0]& VelocityEquals[1] & VelocityEquals[2] ;
