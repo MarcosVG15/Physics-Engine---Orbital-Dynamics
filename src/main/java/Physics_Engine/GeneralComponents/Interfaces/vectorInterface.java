@@ -1,5 +1,7 @@
 package Physics_Engine.GeneralComponents.Interfaces;
 
+import Physics_Engine.GeneralComponents.Vector;
+
 public interface vectorInterface {
 
     double[] getVector();
@@ -26,7 +28,8 @@ public interface vectorInterface {
      */
     double distance(vectorInterface other);
 
-    void add(vectorInterface vector2);
+    Vector add(vectorInterface vector2);
+    vectorInterface subtract(vectorInterface vector2);
     void scale(double scale);
 
 

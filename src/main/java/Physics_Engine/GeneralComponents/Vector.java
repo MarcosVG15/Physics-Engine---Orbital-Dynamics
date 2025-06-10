@@ -17,7 +17,7 @@ public class Vector implements vectorInterface {
      * @param z - position in z plane
      */
     public Vector(double x , double  y , double z){
-        this.values = new double[]{x, y, z};;
+        this.values = new double[]{x, y, z};
 
     }
 
@@ -72,14 +72,18 @@ public class Vector implements vectorInterface {
     }
 
     @Override
-    public void add(vectorInterface vector2) {
+    public Vector add(vectorInterface vector2) {
         double[] vector2Array = vector2.getVector() ;
 
         for(int i = 0 ; i<vector2Array.length ; i++){
             values[i]+= vector2Array[i] ;
         }
+        return this;
+    }
 
-
+    @Override
+    public vectorInterface subtract(vectorInterface vector2) {
+        return null;
     }
 
     @Override
@@ -115,7 +119,7 @@ public class Vector implements vectorInterface {
 
     @Override
     public void setY(double Y) {
-         values[1]= Y;
+        values[1]= Y;
     }
 
     @Override
@@ -123,5 +127,103 @@ public class Vector implements vectorInterface {
         values[2] = Z;
     }
 
+    /**
+     * Adds another vector to this vector.
+     *
+     * @param v The vector to add
+     * @return A new Vector representing the sum of this and v
+     */
+    public Vector add(Vector v) {
+        return new Vector(
+                this.getX() + v.getX(),
+                this.getY() + v.getY(),
+                this.getZ() + v.getZ()
+        );
+    }
 
+    /**
+     * Subtracts another vector from this vector.
+     *
+     * @param v The vector to subtract
+     * @return A new Vector representing the difference between this and v
+     */
+    public Vector subtract(Vector v) {
+        return new Vector(
+                this.getX() - v.getX(),
+                this.getY() - v.getY(),
+                this.getZ() - v.getZ()
+        );
+    }
+
+    /**
+     * Scales this vector by a scalar value.
+     *
+     * @param scale The scaling factor
+     * @return A new Vector representing this vector scaled by the given factor
+     */
+    public Vector multiply(double scale) {
+        return new Vector(
+                this.getX() * scale,
+                this.getY() * scale,
+                this.getZ() * scale
+        );
+    }
+
+    /**
+     * Negates this vector.
+     *
+     * @return A new Vector representing the negation of this vector
+     */
+    public Vector negate() {
+        return new Vector(
+                -this.getX(),
+                -this.getY(),
+                -this.getZ()
+        );
+    }
+
+    /**
+     * Computes the dot product of this vector with another vector.
+     *
+     * @param v The other vector
+     * @return The dot product of this and v
+     */
+    public double dot(Vector v) {
+        return (
+                this.getX() * v.getX() +
+                        this.getY() * v.getY() +
+                        this.getZ() * v.getZ()
+        );
+    }
+
+    /**
+     * Computes the cross product of this vector with another vector.
+     *
+     * @param v The other vector
+     * @return A new Vector representing the cross product of this and v
+     */
+    public Vector cross(Vector v) {
+        return new Vector(
+                this.getY() * v.getZ() - this.getZ() * v.getY(),
+                this.getZ() * v.getX() - this.getX() * v.getZ(),
+                this.getX() * v.getY() - this.getY() * v.getX()
+        );
+    }
+
+    /**
+     * Normalizes this vector to have unit length.
+     *
+     * @return A new Vector representing the normalized version of this vector
+     */
+    public Vector normalize() {
+        double norm = computeNorm();
+        if (norm == 0) {
+            return new Vector(0, 0, 0);
+        }
+        return new Vector(
+                this.getX() / norm,
+                this.getY() / norm,
+                this.getZ() / norm
+        );
+    }
 }

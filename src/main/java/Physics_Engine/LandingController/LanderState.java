@@ -36,7 +36,7 @@ public class LanderState {
 
 
     // Optional: Add a copy constructor or clone method if your solver needs immutable states
-    public LanderState clone() {
+    public LanderState copy() {
         return new LanderState(this.x, this.y, this.vx, this.vy, this.theta, this.omega);
     }
 }

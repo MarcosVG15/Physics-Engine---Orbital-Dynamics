@@ -1,15 +1,21 @@
 package Physics_Engine.LandingController;
 
+import Physics_Engine.GeneralComponents.Vector;
 import static Physics_Engine.LandingController.Constants.*;
-
 
 public class LanderODEFunction  {
     private LanderController controller;
     private WindModel windModel;
+    private Vector targetPosition;
 
-    public LanderODEFunction(LanderController controller, WindModel windModel) {
+    public LanderODEFunction(LanderController controller, WindModel windModel, Vector targetPosition) {
         this.controller = controller;
         this.windModel = windModel;
+        this.targetPosition = targetPosition;
+    }
+
+    public void setTargetPosition(Vector targetPosition) {
+        this.targetPosition = targetPosition;
     }
 
 
@@ -23,19 +29,21 @@ public class LanderODEFunction  {
      * @param params Optional parameters needed for the derivative computation.
      * @return The derivative of the state vector [dx/dt, dy/dt, dvx/dt, dvy/dt, dtheta/dt, domega/dt].
      */
-    
+
     public double[] computeDerivative(double[] state, double time, double[] params) {
         // Convert raw state array to LanderState object for easier access and readability
         LanderState currentLanderState = new LanderState(
-            state[0], state[1], state[2], state[3], state[4], state[5]
+                state[0], state[1], state[2], state[3], state[4], state[5]
         );
 
-        // Get control inputs (thrust and torque) from the controller based on the current state
-        ControlInputs inputs = controller.calculateControlInputs(currentLanderState);
+        // Get control inputs (thrust and torque) from the controller based on the current state and target position
+        ControlInputs inputs = controller.calculateControlInputs(currentLanderState, this.targetPosition);
 
-        // Get wind forces at the current time
-        double wind_force_x = windModel.getWindX(time);
-        double wind_force_y = windModel.getWindY(time);
+        double altitude = currentLanderState.y; // Altitude is the y-component in this 2D simulation
+        double airspeed = Math.sqrt(currentLanderState.vx * currentLanderState.vx + currentLanderState.vy * currentLanderState.vy); // Airspeed is the magnitude of the velocity
+
+        double wind_force_x = windModel.getWindX(altitude, airspeed);
+        double wind_force_y = windModel.getWindY(altitude, airspeed);
 
         // Calculate the derivatives of the state variables based on physics equations:
         // dx/dt = vx (horizontal velocity)

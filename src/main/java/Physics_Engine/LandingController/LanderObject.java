@@ -1,7 +1,8 @@
 package Physics_Engine.LandingController; // Corrected package declaration
 
-import Physics_Engine.GeneralComponents.Interfaces.SpaceObject; // Import the SpaceObject interface from GeneralComponents
-import Physics_Engine.GeneralComponents.Interfaces.vectorInterface; // Import the vectorInterface for position and velocity from GeneralComponents
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.Vector;
 
 /**
  * Represents the lander object with its physical properties and state.
@@ -25,7 +26,7 @@ public class LanderObject implements SpaceObject {
      * @param orientation The initial orientation (angle) of the lander in radians.
      * @param angularVelocity The initial angular velocity of the lander in radians per second.
      */
-    public LanderObject(vectorInterface position, vectorInterface velocity, double mass, String name, double orientation, double angularVelocity) {
+    public LanderObject(Vector position, Vector velocity, double mass, String name, double orientation, double angularVelocity) {
         this.position = position;
         this.velocity = velocity;
         this.mass = mass;

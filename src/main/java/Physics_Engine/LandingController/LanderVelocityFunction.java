@@ -1,9 +1,9 @@
 package Physics_Engine.LandingController;
 
-import java.util.ArrayList;
 import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
 import Physics_Engine.GeneralComponents.Interfaces.function;
 import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import java.util.ArrayList;
 
 public class LanderVelocityFunction implements function {
 
@@ -16,7 +16,7 @@ public class LanderVelocityFunction implements function {
 
         LanderObject lander = (LanderObject) solarSystem.get(i);
 
-        // The derivative of position is velocity
+
         return lander.getVelocityVector();
     }
 }
