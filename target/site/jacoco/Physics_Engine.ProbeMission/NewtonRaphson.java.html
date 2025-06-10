@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewtonRaphson.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.ProbeMission</a> &gt; <span class="el_source">NewtonRaphson.java</span></div><h1>NewtonRaphson.java</h1><pre class="source lang-java linenums">package Physics_Engine.ProbeMission;
+
+import Physics_Engine.GeneralComponents.AstralObject;
+import Physics_Engine.GeneralComponents.ProbeObject;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.ODESolverRK4.*;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+import static Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class NewtonRaphson {
+
+<span class="nc" id="L18">    private final double TITAN_RADIUS = 2575 ;</span>
+<span class="nc" id="L19">    private final double ALPHA = 0.5;</span>
+
+
+    private ArrayList&lt;double[]&gt; PositionLog;
+    private  ArrayList&lt;vectorInterface&gt; VelocityLog ;
+    private ProbeObject probe ;
+
+
+<span class="nc" id="L27">    public NewtonRaphson(){</span>
+<span class="nc" id="L28">        PositionLog = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L29">        VelocityLog = new ArrayList&lt;&gt;() ;</span>
+
+<span class="nc" id="L31">        SolarSystem solarSystem = new SolarSystem();</span>
+<span class="nc" id="L32">        this.probe = (ProbeObject) solarSystem.getSolarSystem().get(11);</span>
+<span class="nc" id="L33">        VelocityLog.add(probe.getVelocityVector());</span>
+<span class="nc" id="L34">         getDistanceEstimate();</span>
+
+<span class="nc" id="L36">        probe.setVelocity(new Vector(55.147313,-33.207901,-17.928841));</span>
+<span class="nc" id="L37">        VelocityLog.add(probe.getVelocityVector());</span>
+<span class="nc" id="L38">        getDistanceEstimate();</span>
+
+<span class="nc" id="L40">        System.out.println(&quot;Velocities &quot;);</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        for(vectorInterface object: VelocityLog){</span>
+<span class="nc" id="L42">            object.print(&quot; &quot;);</span>
+<span class="nc" id="L43">        }</span>
+
+        // System.out.println();
+        // System.out.println(&quot;Position &quot;);
+        // for (double[] values : PositionLog){
+        //     System.out.println(Arrays.toString(values));
+        // }
+
+<span class="nc" id="L51">    }</span>
+
+
+    public boolean ComputeNewtonRaphson(){
+
+<span class="nc" id="L56">        boolean[] VelocityEquals = new boolean[3];</span>
+<span class="nc" id="L57">        double[] updatedVelocity  = new double[3] ;</span>
+
+<span class="nc" id="L59">        double[] currentVelocity = VelocityLog.get(VelocityLog.size()-1).getVector();</span>
+<span class="nc" id="L60">        double[] currentPosition = PositionLog.get(PositionLog.size()-1) ;</span>
+<span class="nc" id="L61">        double[] derivativeArray = getDerivative();</span>
+
+<span class="nc" id="L63">        double norm = Math.sqrt(Math.pow(derivativeArray[0],2)+Math.pow(derivativeArray[1],2)+Math.pow(derivativeArray[2],2));</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+<span class="nc" id="L65">         updatedVelocity[i] = currentVelocity[i] - ALPHA*(currentPosition[i]/derivativeArray[i]);</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            if (Math.abs(currentPosition[i]) &lt; 10){</span>
+<span class="nc" id="L68">                VelocityEquals[i] = true;</span>
+            }
+        }
+
+<span class="nc" id="L72">        vectorInterface VelocityVector = new Vector(updatedVelocity[0] , updatedVelocity[1] , updatedVelocity[2]);</span>
+<span class="nc" id="L73">        VelocityLog.add(VelocityVector);</span>
+<span class="nc" id="L74">        this.probe.setVelocity(VelocityVector);</span>
+
+<span class="nc" id="L76">        getDistanceEstimate();</span>
+
+
+
+
+        //System.out.println(&quot;Velocities &quot;);
+
+<span class="nc" id="L83">        double[] DistanceArray = PositionLog.get(PositionLog.size()-1);</span>
+<span class="nc" id="L84">        System.out.print(&quot;Distance , &quot; + DistanceArray[0] + &quot; , &quot;+ DistanceArray[1] +&quot; , &quot;+ DistanceArray[2]);</span>
+
+        // for(int  i = VelocityLog.size()-2 ; i&lt;VelocityLog.size() ; i++){
+<span class="nc" id="L87">            VelocityLog.get(VelocityLog.size()-1).print(&quot;, Velocity , &quot;);</span>
+        //}
+
+        // System.out.println();
+        // System.out.println(&quot;Position &quot;);
+
+        // for(int  i = PositionLog.size()-2 ; i&lt;PositionLog.size() ; i++){
+        
+      //  }
+
+
+<span class="nc" id="L98">        return VelocityEquals[0]&amp; VelocityEquals[1] &amp; VelocityEquals[2] ;</span>
+    }
+
+
+
+    public double[] getDerivative(){
+
+<span class="nc" id="L105">        int sizeVelocityLog = VelocityLog.size();</span>
+<span class="nc" id="L106">        double[] currentVelocity = VelocityLog.get(sizeVelocityLog-1).getVector();</span>
+<span class="nc" id="L107">        double[] pastVelocity    = VelocityLog.get(sizeVelocityLog-2).getVector() ;</span>
+
+<span class="nc" id="L109">        int sizePosition = PositionLog.size();</span>
+<span class="nc" id="L110">        double[] currentPosition = PositionLog.get(sizePosition-1);</span>
+<span class="nc" id="L111">        double[] pastPosition    = PositionLog.get(sizePosition-2);</span>
+
+<span class="nc" id="L113">        double[] derivative = new double[3];</span>
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+
+<span class="nc" id="L117">            derivative[i] = ((currentPosition[i] - pastPosition[i])/(currentVelocity[i] - pastVelocity[i]));</span>
+        }
+
+
+       // System.out.println(&quot;Derivative :  &quot; + Arrays.toString(derivative));
+<span class="nc" id="L122">        return derivative ;</span>
+    }
+
+
+
+    /**
+     * Method that performs one full rotation of the earth in order to compute the vector distance between Titan and the probe
+     * If the probe has hit titan it terminates the process and return the modulus
+     *
+     * @return - returns the modulus of the distance between the probe and titan
+     */
+    public void getDistanceEstimate(){
+
+
+<span class="nc" id="L136">        ProbeObject probeInstance = null ;</span>
+<span class="nc" id="L137">        AstralObject titan  = null ;</span>
+
+<span class="nc" id="L139">        SolarSystem S = new SolarSystem();</span>
+<span class="nc" id="L140">        ArrayList&lt;SpaceObject&gt; solarSystem = S.getSolarSystem();</span>
+<span class="nc" id="L141">        solarSystem.get(11).setVelocity(this.probe.getVelocityVector());</span>
+
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        for(int t = 0 ; t&lt;31_536_000/STEPSIZE ; t++){</span>
+<span class="nc" id="L144">            probeInstance = (ProbeObject) solarSystem.get(11);</span>
+<span class="nc" id="L145">            titan = (AstralObject) solarSystem.get(8);</span>
+            //probe.print();
+
+//            double[] DistanceArray = getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector()) ;
+//            System.out.println(DistanceArray[0] + &quot; , &quot;+ DistanceArray[1] +&quot; , &quot;+ DistanceArray[2]);
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">            if(probeInstance.hasHitPlanet(titan , TITAN_RADIUS)){ // if the probe is in the bounds of the moon</span>
+
+                //System.out.println(&quot;HAS HIT &quot; + t);
+<span class="nc" id="L154">                PositionLog.add(getDifferenceArray(titan.getPositionVector().getVector() ,probeInstance.getPositionVector().getVector()));</span>
+<span class="nc" id="L155">                return ;</span>
+            }
+
+<span class="nc" id="L158">            AccelerationFunction acceleration = new AccelerationFunction();</span>
+<span class="nc" id="L159">            VelocityFunction velocity = new VelocityFunction();</span>
+<span class="nc" id="L160">            RK4_ODESolver odeSolver = new RK4_ODESolver();</span>
+<span class="nc" id="L161">            odeSolver.ComputeODE(0 , S, acceleration ,velocity);</span>
+        }
+
+<span class="nc" id="L164">        PositionLog.add(getDifferenceArray(titan.getPositionVector().getVector() ,probeInstance.getPositionVector().getVector()));</span>
+
+
+//         System.out.println();
+//        // System.out.println(&quot;HASN'T HIT :( &quot;);
+// //        System.out.println(Arrays.toString(getDifferenceArray(titan.getPositionVector().getVector() ,probe.getPositionVector().getVector())));
+//         System.out.println();
+
+
+<span class="nc" id="L173">    }</span>
+
+
+    public double[] getDifferenceArray(double[] Array1 , double[] Array2){
+<span class="nc" id="L177">        double[] differenceArray = new double[3] ;</span>
+
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+<span class="nc" id="L180">            differenceArray[i] =  Array1[i] -Array2[i] ;</span>
+        }
+
+<span class="nc" id="L183">        return differenceArray ;</span>
+    }
+
+    public double getModulus ( vectorInterface vectorProbe , vectorInterface vectorTitan){
+
+<span class="nc" id="L188">        double[] probeValues = vectorProbe.getVector();</span>
+<span class="nc" id="L189">        double[] titanValues = vectorTitan.getVector();</span>
+
+<span class="nc" id="L191">        double sum =0 ;</span>
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+<span class="nc" id="L194">            sum += Math.pow((probeValues[i]- titanValues[i]), 2);</span>
+        }
+
+<span class="nc" id="L197">        return Math.sqrt(sum);</span>
+    }
+
+
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

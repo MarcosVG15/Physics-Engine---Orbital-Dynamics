@@ -25,7 +25,6 @@ public class NewtonRaphson {
 
 
     public NewtonRaphson(){
-         
         PositionLog = new ArrayList<>();
         VelocityLog = new ArrayList<>() ;
 
@@ -34,7 +33,7 @@ public class NewtonRaphson {
         VelocityLog.add(probe.getVelocityVector());
          getDistanceEstimate();
 
-        probe.setVelocity(new Vector(51.4596477974,-31.2491627792,-13.9004519339));
+        probe.setVelocity(new Vector(55.147313,-33.207901,-17.928841));
         VelocityLog.add(probe.getVelocityVector());
         getDistanceEstimate();
 
@@ -52,7 +51,7 @@ public class NewtonRaphson {
     }
 
 
-    public boolean ComputeNewtonRaphson(int step){
+    public boolean ComputeNewtonRaphson(int step ){
 
         boolean[] VelocityEquals = new boolean[3];
         double[] updatedVelocity  = new double[3] ;
@@ -82,6 +81,7 @@ public class NewtonRaphson {
         System.out.print("Step : , "+ step + " , " );
         System.out.print("Distance , " + DistanceArray[0] + " , "+ DistanceArray[1] +" , "+ DistanceArray[2]);
         VelocityLog.get(VelocityLog.size()-1).print(", Velocity , ");
+
 
 
 

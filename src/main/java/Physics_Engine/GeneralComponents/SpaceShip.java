@@ -23,7 +23,7 @@ public class SpaceShip extends ProbeObject implements SpaceObject {
 
 
     @Override
-    public SpaceObject clone(){
+    public SpaceShip clone(){
 
         SpaceShip spaceShip = new SpaceShip(new Vector(super.getVelocityVector().getX() , super.getVelocityVector().getY() , super.getVelocityVector().getZ())
                 , new Vector(super.getPositionVector().getX() , super.getPositionVector().getY() , super.getPositionVector().getZ()));

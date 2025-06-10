@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HEUN_2ORDER.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.SpectralDefferedInProgress</a> &gt; <span class="el_source">HEUN_2ORDER.java</span></div><h1>HEUN_2ORDER.java</h1><pre class="source lang-java linenums">package Physics_Engine.SpectralDefferedInProgress;
+
+
+
+
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.function;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+import java.util.ArrayList;
+
+<span class="nc" id="L12">public class HEUN_2ORDER {</span>
+    private static final double H = 1;
+
+    public void ComputeODE(double t , SolarSystem solarSystem, function acceleration , function velocity){
+
+<span class="nc" id="L17">        int n = solarSystem.getSolarSystem().size();</span>
+
+<span class="nc" id="L19">        ArrayList&lt;SpaceObject&gt; solarSystemArr = solarSystem.getSolarSystem();</span>
+
+<span class="nc" id="L21">        ArrayList&lt;SpaceObject&gt; snapshotSolarSystem = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L22">        copyArrayList(solarSystemArr ,snapshotSolarSystem);</span>
+
+<span class="nc" id="L24">        vectorInterface[] k1_v = new vectorInterface[n], k1_p = new vectorInterface[n];</span>
+<span class="nc" id="L25">        vectorInterface[] k2_v = new vectorInterface[n], k2_p = new vectorInterface[n];</span>
+
+
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        for( int i = 0 ; i&lt;n ; i++){</span>
+<span class="nc" id="L29">            k1_p[i] = scale(solarSystemArr.get(i).getVelocityVector());</span>
+<span class="nc" id="L30">            k1_v[i] = scale(acceleration.computeDerivative(i , solarSystemArr.get(i).getPositionVector() , solarSystemArr));</span>
+        }
+
+<span class="nc" id="L33">        addSnapshotPosition(snapshotSolarSystem, solarSystemArr ,k1_p , H);</span>
+<span class="nc" id="L34">        addSnapshotVelocity(snapshotSolarSystem , solarSystemArr , k1_v , H);</span>
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        for ( int i = 0 ; i&lt;n ; i++){</span>
+<span class="nc" id="L37">            k2_p[i] = scale(snapshotSolarSystem.get(i).getVelocityVector());</span>
+<span class="nc" id="L38">            k2_v[i] = scale(acceleration.computeDerivative(i , snapshotSolarSystem.get(i).getPositionVector() , snapshotSolarSystem));</span>
+
+        }
+
+
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        for( int i = 0 ; i&lt; n ; i++){</span>
+<span class="nc" id="L45">            solarSystemArr.get(i).setPosition(addAll(solarSystemArr.get(i).getPositionVector() , k1_p[i] , k2_p[i] ));</span>
+<span class="nc" id="L46">            solarSystemArr.get(i).setVelocity(addAll(solarSystemArr.get(i).getVelocityVector() , k1_v[i] , k2_v[i] ));</span>
+
+        }
+
+
+
+
+<span class="nc" id="L53">    }</span>
+
+
+
+    private vectorInterface addAll(vectorInterface currentVector , vectorInterface k1 , vectorInterface k2 ){
+
+<span class="nc" id="L59">        double[] valueHolder = new double[3];</span>
+
+<span class="nc" id="L61">        valueHolder[0] = (currentVector.getX()+ ( H/2.0 * (k1.getX()+ k2.getX() )));</span>
+<span class="nc" id="L62">        valueHolder[1] = (currentVector.getY()+ ( H/2.0 * (k1.getY()+ k2.getY() )));</span>
+<span class="nc" id="L63">        valueHolder[2] = (currentVector.getZ()+ ( H/2.0 * (k1.getZ()+ k2.getZ())));</span>
+
+<span class="nc" id="L65">        return new Vector(valueHolder[0] , valueHolder[1]  , valueHolder[2]);</span>
+    }
+
+    /**
+     * Scales the vectors by a H that represents the step size
+     * @param vector - the vector that we want to scale
+     * @return - returns a scaled vector by H
+     */
+    private vectorInterface scale(vectorInterface vector){
+<span class="nc" id="L74">        double[] valueHolder = new double[3];</span>
+
+<span class="nc" id="L76">        valueHolder[0] = (vector.getX() * H ) ;</span>
+<span class="nc" id="L77">        valueHolder[1] = (vector.getY() * H ) ;</span>
+<span class="nc" id="L78">        valueHolder[2] = (vector.getZ() * H ) ;</span>
+
+<span class="nc" id="L80">        return new Vector(valueHolder[0] , valueHolder[1]  , valueHolder[2]);</span>
+    }
+
+
+    /**
+     * Updates all the vectors for each k that i am analysing ONLY for POSITION
+     * @param snapshotArray - the solar system snapshot
+     * @param solarSystem - the actual solar system
+     * @param currentK = the array of k values
+     * @param scalar - the scalar  k that i want to multiple
+     */
+    private void addSnapshotPosition(ArrayList&lt;SpaceObject&gt; snapshotArray , ArrayList&lt;SpaceObject&gt; solarSystem, vectorInterface[] currentK , double scalar){
+
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        for(int i = 0 ; i &lt; solarSystem.size() ; i++){</span>
+<span class="nc" id="L94">            snapshotArray.get(i).setPosition(createSnapshotVector(solarSystem.get(i).getPositionVector() , currentK[i] , scalar));</span>
+        }
+
+<span class="nc" id="L97">    }</span>
+
+    /**
+     * Updates all the vectors for each k that i am analysing ONLY for VELOCITY
+     * @param snapshotArray
+     * @param solarSystem
+     * @param currentK
+     * @param scalar
+     */
+    private void addSnapshotVelocity(ArrayList&lt;SpaceObject&gt; snapshotArray , ArrayList&lt;SpaceObject&gt; solarSystem, vectorInterface[] currentK , double scalar){
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        for(int i = 0 ; i &lt; solarSystem.size() ; i++){</span>
+<span class="nc" id="L109">            snapshotArray.get(i).setVelocity(createSnapshotVector(solarSystem.get(i).getVelocityVector() , currentK[i] , scalar));</span>
+        }
+
+<span class="nc" id="L112">    }</span>
+
+
+    /**
+     * Creates the RK4 vector for each kn such that i can use it in the { @Link addSnapshotPosition} as well as the velocity one
+     *
+     * @param currentVector - the current vector position or velocity for each planet
+     * @param currentK - the current K that i am working with for each planet
+     * @param scalar - the scalar i want to multiply they system with in accordance to the RK4 formulas
+     * @return - return an updated vector.
+     */
+    private vectorInterface createSnapshotVector(vectorInterface currentVector , vectorInterface currentK , double scalar){
+<span class="nc" id="L124">        double[] valueHolder = new double[3];</span>
+
+<span class="nc" id="L126">        valueHolder[0] = (currentVector.getX() + currentK.getX() * scalar ) ;</span>
+<span class="nc" id="L127">        valueHolder[1] = (currentVector.getY() + currentK.getY() * scalar ) ;</span>
+<span class="nc" id="L128">        valueHolder[2] = (currentVector.getZ() + currentK.getZ() * scalar ) ;</span>
+
+<span class="nc" id="L130">        return new Vector(valueHolder[0] , valueHolder[1]  , valueHolder[2]);</span>
+
+    }
+
+    /**
+     * Allows me to initialise the astral objects in the snapshot with solar system without passing by reference
+     * @param actual - the array we want to copy from
+     * @param copy - the array we want the copies to be
+     */
+    public void copyArrayList(ArrayList&lt;SpaceObject&gt; actual , ArrayList&lt;SpaceObject&gt; copy){
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        for( int i = 0  ; i&lt;actual.size() ; i++){</span>
+<span class="nc" id="L142">            SpaceObject newObject = new AstralObject(</span>
+<span class="nc" id="L143">                    new Vector(actual.get(i).getVelocityVector().getX() , actual.get(i).getVelocityVector().getY(),actual.get(i).getVelocityVector().getZ())</span>
+<span class="nc" id="L144">                    , new Vector(actual.get(i).getPositionVector().getX(), actual.get(i).getPositionVector().getY(), actual.get(i).getPositionVector().getZ() )</span>
+<span class="nc" id="L145">                    , actual.get(i).getMass());</span>
+
+<span class="nc" id="L147">            copy.add(newObject);</span>
+        }
+<span class="nc" id="L149">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

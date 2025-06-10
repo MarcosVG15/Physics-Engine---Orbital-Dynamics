@@ -42,6 +42,7 @@ public class AstralObjectTest {
     @Test
     public void testClone(){
             SpaceObject newObject = object.clone();
+
             assertEquals(object.getMass(), newObject.getMass(), 0);
             assertEquals(object.getName(), newObject.getName());
             assertEquals(object.getPositionVector().getX(), newObject.getPositionVector().getX(), 0);

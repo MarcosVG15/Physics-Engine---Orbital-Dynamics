@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QIJMatrix.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.SpectralDefferedInProgress</a> &gt; <span class="el_source">QIJMatrix.java</span></div><h1>QIJMatrix.java</h1><pre class="source lang-java linenums">package Physics_Engine.SpectralDefferedInProgress;
+
+public class QIJMatrix {
+
+    private double StartT;
+    private double EndT;
+
+<span class="nc" id="L8">    private static int NUMBER_OF_INTERVALS = 11 ; // will change if it takes too much time to calculate ;</span>
+
+<span class="nc" id="L10">    public QIJMatrix( double StartT , double EndT){</span>
+<span class="nc" id="L11">        this.StartT = StartT;</span>
+<span class="nc" id="L12">        this.EndT = EndT;</span>
+
+
+
+<span class="nc" id="L16">    }</span>
+
+
+    public double[][] QijMatrix(int size){
+
+<span class="nc" id="L21">        double[][] QIJMatrix = new double[size][size];</span>
+
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        for(int i = 1 ; i&lt;10 ; i++){</span>
+<span class="nc bnc" id="L24" title="All 2 branches missed.">            for(int j = 1 ; j&lt;10 ; j++){</span>
+<span class="nc bnc" id="L25" title="All 2 branches missed.">                if(j&lt;=i){</span>
+<span class="nc" id="L26">                    QIJMatrix[i][j] = TrapezoidIntegration( getAllTs(), i , j);</span>
+
+                }
+
+            }
+        }
+<span class="nc" id="L32">        return QIJMatrix;</span>
+    }
+
+
+    /**
+     * This method computes the Integral for a given interval of a specific lagrange Polynomial for a given range
+     * @param AllTs - This is the array of all subsections of the interval t and t+1 which would be 1 second for our planet
+     * @param I - is the current Row of the Qij Matrix that we want to compute
+     * @param J - is the current Column of the Qij Matrix that we want to compute and corresponds to the lagrange Polynomial
+     * @return - It should return the integral  over a given range of the specific Lagrange Polynomial.
+     */
+    public double TrapezoidIntegration(double[] AllTs , int I , int J ){
+
+<span class="nc" id="L45">        double Integral = 0 ;</span>
+<span class="nc" id="L46">        double[] SegmentedArray = Segmenter(I ,  AllTs);</span>
+<span class="nc" id="L47">        double Tj = SegmentedArray[J];</span>
+<span class="nc" id="L48">        double h = (SegmentedArray[I]- SegmentedArray[0])/SegmentedArray.length;</span>
+
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if(SegmentedArray.length &lt; 2) {</span>
+<span class="nc" id="L51">            throw new IllegalArgumentException(&quot; The Size Must be bigger than 2&quot;);</span>
+        }
+
+<span class="nc" id="L54">        Integral+= LagrangePolynomial(SegmentedArray[0] ,Tj , SegmentedArray );</span>
+
+<span class="nc" id="L56">        Integral+= LagrangePolynomial(SegmentedArray[I] , Tj, SegmentedArray );</span>
+
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (int i = 1 ; i&lt; I ; i++){</span>
+<span class="nc" id="L60">            Integral += 2 * (LagrangePolynomial(SegmentedArray[i] ,Tj ,SegmentedArray));</span>
+        }
+
+
+<span class="nc" id="L64">        return (h/2.0) * Integral ;</span>
+    }
+
+    public double[] Segmenter ( int I , double[] AllTs){
+
+<span class="nc" id="L69">        double[] segmenetedArray = new double[I+1];</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        for(int i = 0 ; i&lt;I+1 ; i++){</span>
+<span class="nc" id="L72">            segmenetedArray[i] = AllTs[i];</span>
+        }
+<span class="nc" id="L74">        return segmenetedArray;</span>
+    }
+
+
+
+    /**
+     * This method compute the lagrange polynomial values such that i could integrate over these values for different S
+     * it requires the S that we want to compute the polynomial for , the Tj which is the step J that is needed and an
+     * array of T values which are essentially a subset of the main step interval.
+     *
+     * @param S - value we want to compute for
+     * @param Tj - the current T value
+     * @param AllTs - all T values
+     * @return - returns the value of the Lagrange Polynomials for the current S
+     */
+    public double LagrangePolynomial(double S , double Tj , double[] AllTs){
+<span class="nc" id="L90">        double Jth_LagrangeValue = 1;</span>
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        for (double allT : AllTs) {</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            if(Tj == allT){</span>
+<span class="nc" id="L94">                continue;</span>
+            }
+<span class="nc" id="L96">            Jth_LagrangeValue *= ((S - allT)/(Tj - allT));</span>
+<span class="nc" id="L97">            System.out.println(&quot;Numerator : For Ti : &quot;+ allT +&quot; We get : &quot;+ (S - allT));</span>
+<span class="nc" id="L98">            System.out.println(&quot;Denominator : For Ti : &quot;+ allT +&quot; We get : &quot;+ (Tj - allT));</span>
+        }
+
+<span class="nc" id="L101">        return Jth_LagrangeValue;</span>
+    }
+
+
+    public double[] getAllTs(){
+
+<span class="nc" id="L107">        double h = (EndT - StartT)/(NUMBER_OF_INTERVALS-1) ;</span>
+<span class="nc" id="L108">        double[] ArrayOfTs = new double[NUMBER_OF_INTERVALS];</span>
+
+<span class="nc" id="L110">        double Accumulation = StartT;</span>
+<span class="nc" id="L111">        ArrayOfTs[0] = Accumulation;</span>
+
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        for( int i = 1 ; i&lt;NUMBER_OF_INTERVALS ; i++){</span>
+<span class="nc" id="L114">            Accumulation+= h;</span>
+<span class="nc" id="L115">            ArrayOfTs[i] = (double) Math.round(Accumulation * 10_000) /10_000;</span>
+        }
+
+<span class="nc" id="L118">       return ArrayOfTs;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

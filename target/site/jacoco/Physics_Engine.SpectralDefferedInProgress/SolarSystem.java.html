@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SolarSystem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.SpectralDefferedInProgress</a> &gt; <span class="el_source">SolarSystem.java</span></div><h1>SolarSystem.java</h1><pre class="source lang-java linenums">package Physics_Engine.SpectralDefferedInProgress;
+
+
+
+import Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+
+import java.util.ArrayList;
+
+
+public class SolarSystem implements SolarSystemInterface {
+
+    private static SolarSystem instance;
+
+    private ArrayList&lt;SpaceObject&gt; solarSystem;
+
+    public static SolarSystem getInstance() {
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        if (instance == null) {</span>
+<span class="nc" id="L19">            instance = new SolarSystem();</span>
+        }
+<span class="nc" id="L21">        return instance;</span>
+    }
+
+<span class="nc" id="L24">    private SolarSystem(){</span>
+
+<span class="nc" id="L26">        SpaceObject sun = new AstralObject(</span>
+                new Vector(0, 0, 0),
+                new Vector(0, 0, 0),
+                1.99E30
+        );
+<span class="nc" id="L31">        sun.setName(&quot;SUN &quot;);</span>
+
+<span class="nc" id="L33">        SpaceObject mercury = new AstralObject(</span>
+                new Vector(13.9, -40.3, -4.57),
+                new Vector(-5.67E7, -3.23E7, 2.58E6),
+                3.30E23
+        );
+<span class="nc" id="L38">        mercury.setName(&quot;mercury&quot;);</span>
+
+<span class="nc" id="L40">        SpaceObject venus = new AstralObject(</span>
+                new Vector(9.89, -33.7, -1.03),
+                new Vector(-1.04E8, -3.19E7, 5.55E6),
+                4.87E24
+        );
+<span class="nc" id="L45">        venus.setName(&quot;venus&quot;);</span>
+
+<span class="nc" id="L47">        SpaceObject earth = new AstralObject(</span>
+                new Vector(5.31, -29.3, 6.69E-4),
+                new Vector(-1.47E8, -2.97E7, 2.75E4),
+                5.97E24
+        );
+<span class="nc" id="L52">        earth.setName(&quot;earth&quot;);</span>
+
+<span class="nc" id="L54">        SpaceObject moon = new AstralObject(</span>
+                new Vector(4.53, -28.6, 6.73E-2),
+                new Vector(-1.47E8, -2.95E7, 5.29E4),
+                7.35E22
+        );
+<span class="nc" id="L59">        moon.setName(&quot;moon&quot;);</span>
+
+<span class="nc" id="L61">        SpaceObject mars = new AstralObject(</span>
+                new Vector(-11.5, -18.7, -1.11E-1),
+                new Vector(-2.15E8, 1.27E8, 7.94E6),
+                6.42E23
+        );
+<span class="nc" id="L66">        mars.setName(&quot;mars&quot;);</span>
+
+<span class="nc" id="L68">        SpaceObject jupiter = new AstralObject(</span>
+                new Vector(-13.2, 12.9, 5.22E-2),
+                new Vector(5.54E7, 7.62E8, -4.40E6),
+                1.90E27
+        );
+<span class="nc" id="L73">        jupiter.setName(&quot;jupiter&quot;);</span>
+
+<span class="nc" id="L75">        SpaceObject saturn = new AstralObject(</span>
+                new Vector(0.748, 9.55, -0.196),
+                new Vector(1.42E9, -1.91E8, -5.33E7),
+                5.68E26
+        );
+<span class="nc" id="L80">        saturn.setName(&quot;saturn&quot;);</span>
+
+<span class="nc" id="L82">        SpaceObject titan = new AstralObject(</span>
+                new Vector(5.95, 7.68, 0.254),
+                new Vector(1.42E9, -1.92E8, -5.28E7),
+                1.35E23
+        );
+<span class="nc" id="L87">        titan.setName(&quot;titan&quot;);</span>
+
+<span class="nc" id="L89">        SpaceObject uranus = new AstralObject(</span>
+                new Vector(-5.72, 3.45, 8.70E-2),
+                new Vector(1.62E9, 2.43E9, -1.19E7),
+                8.68E25
+        );
+<span class="nc" id="L94">        uranus.setName(&quot;uranus&quot;);</span>
+
+<span class="nc" id="L96">        SpaceObject neptune = new AstralObject(</span>
+                new Vector(0.0287, 5.47, -0.113),
+                new Vector(4.47E9, -5.31E7, -1.02E8),
+                1.02E26
+        );
+<span class="nc" id="L101">        neptune.setName(&quot;neptune&quot;);</span>
+
+<span class="nc" id="L103">        solarSystem = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L105">        solarSystem.add( sun);</span>
+<span class="nc" id="L106">        solarSystem.add( mercury);</span>
+<span class="nc" id="L107">        solarSystem.add( venus);</span>
+<span class="nc" id="L108">        solarSystem.add( earth);</span>
+<span class="nc" id="L109">        solarSystem.add( moon);</span>
+<span class="nc" id="L110">        solarSystem.add( mars);</span>
+<span class="nc" id="L111">        solarSystem.add( jupiter);</span>
+<span class="nc" id="L112">        solarSystem.add( saturn);</span>
+<span class="nc" id="L113">        solarSystem.add( titan);</span>
+<span class="nc" id="L114">        solarSystem.add( uranus);</span>
+<span class="nc" id="L115">        solarSystem.add(neptune);</span>
+
+<span class="nc" id="L117">    }</span>
+
+    public ArrayList&lt;SpaceObject&gt; getSolarSystem(){
+<span class="nc" id="L120">        return solarSystem;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

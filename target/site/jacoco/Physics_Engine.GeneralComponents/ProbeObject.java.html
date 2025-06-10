@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProbeObject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.GeneralComponents</a> &gt; <span class="el_source">ProbeObject.java</span></div><h1>ProbeObject.java</h1><pre class="source lang-java linenums">package Physics_Engine.GeneralComponents;
+
+
+
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+import java.util.ArrayList;
+
+public class ProbeObject implements SpaceObject {
+
+    private vectorInterface velocity ;
+    private vectorInterface position ;
+
+    private ArrayList&lt;vectorInterface&gt; positionHistory ;
+    private ArrayList&lt;vectorInterface&gt; velocityHistory ;
+
+    private String Name ;
+
+
+<span class="fc" id="L21">    public ProbeObject(vectorInterface Velocity , vectorInterface Position){</span>
+<span class="fc" id="L22">        this.velocity = Velocity;</span>
+<span class="fc" id="L23">        this.position = Position ;</span>
+
+<span class="fc" id="L25">        positionHistory = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">        velocityHistory = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L28">       positionHistory.add(</span>
+<span class="fc" id="L29">                new Vector(position.getX(),</span>
+<span class="fc" id="L30">                        position.getY(),</span>
+<span class="fc" id="L31">                        position.getZ())</span>
+        );
+
+<span class="fc" id="L34">        velocityHistory.add(</span>
+<span class="fc" id="L35">                new Vector(velocity.getX(),</span>
+<span class="fc" id="L36">                        velocity.getY(),</span>
+<span class="fc" id="L37">                        velocity.getZ())</span>
+        );
+<span class="fc" id="L39">    }</span>
+
+    public void setPosition(vectorInterface v) {
+<span class="nc" id="L42">        position.setVector(v);</span>
+<span class="nc" id="L43">        positionHistory.add(</span>
+<span class="nc" id="L44">                new Vector(position.getX(), position.getY(), position.getZ())</span>
+        );
+<span class="nc" id="L46">    }</span>
+
+    @Override
+    public void setName(String name) {
+<span class="fc" id="L50">        this.Name = name;</span>
+<span class="fc" id="L51">    }</span>
+
+    @Override
+    public void print() {
+<span class="fc" id="L55">        position.print(Name + &quot;, Position , &quot;);</span>
+<span class="fc" id="L56">        velocity.print(Name + &quot;  Velocity , &quot;);</span>
+<span class="fc" id="L57">    }</span>
+
+    @Override
+    public double getMass() {
+<span class="fc" id="L61">        return 50000 ;</span>
+    }
+
+    public void setVelocity(vectorInterface v) {
+<span class="nc" id="L65">        velocity.setVector(v);</span>
+<span class="nc" id="L66">        velocityHistory.add(</span>
+<span class="nc" id="L67">                new Vector(velocity.getX(), velocity.getY(), velocity.getZ())</span>
+        );
+<span class="nc" id="L69">    }</span>
+
+    public vectorInterface getVelocityVector(){
+<span class="fc" id="L72">        return velocityHistory.get(velocityHistory.size()-1);</span>
+    }
+
+
+    public vectorInterface getVelocityVectorPasByValue(){
+<span class="nc" id="L77">        return new Vector(velocityHistory.get(velocityHistory.size()-1).getX() ,velocityHistory.get(velocityHistory.size()-1).getY(),velocityHistory.get(velocityHistory.size()-1).getZ()) ;</span>
+    }
+    public vectorInterface getPositionVector(){
+<span class="fc" id="L80">        return positionHistory.get(positionHistory.size()-1);</span>
+    }
+
+
+
+    public ArrayList&lt;vectorInterface&gt; getVelocityLog(){
+<span class="nc" id="L86">        return velocityHistory;</span>
+    }
+    public ArrayList&lt;vectorInterface&gt; getPositionLog(){
+<span class="nc" id="L89">        return positionHistory;</span>
+    }
+
+
+    public boolean hasHitPlanet(SpaceObject astralObject , double Radius){
+
+<span class="fc" id="L95">        double[] positionArray = position.getVector();</span>
+<span class="fc" id="L96">        double[] AstralObjectArray = astralObject.getPositionVector().getVector();</span>
+<span class="fc" id="L97">        boolean[] hasHit = new boolean[3];</span>
+
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for(int i = 0 ; i&lt;positionArray.length ; i++){</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">            if(Math.abs(positionArray[i] -AstralObjectArray[i]) &lt;= Radius ){</span>
+<span class="fc" id="L101">                hasHit[i] = true ;</span>
+            }
+            else{
+<span class="fc" id="L104">                hasHit[i] = false ;</span>
+            }
+        }
+
+<span class="fc" id="L108">        return hasHit[0] &amp; hasHit[1] &amp; hasHit[2];</span>
+    }
+
+    @Override
+    public SpaceObject clone() {
+<span class="fc" id="L113">        ProbeObject probe = new ProbeObject(new Vector(velocity.getX() , velocity.getY() , velocity.getZ())</span>
+<span class="fc" id="L114">                            , new Vector(position.getX() , position.getY() , position.getZ()));</span>
+<span class="fc" id="L115">        probe.setName(Name);</span>
+<span class="fc" id="L116">        return probe ;</span>
+    }
+
+    public String getName(){
+<span class="fc" id="L120">        return Name ;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -77,7 +77,7 @@ public class LanderController {
      * @param maximumValue The upper bound of the clamping range.
      * @return The clamped value.
      */
-    private double clamp(double valueToClamp, double minimumValue, double maximumValue) {
+    public double clamp(double valueToClamp, double minimumValue, double maximumValue) {
         return Math.max(minimumValue, Math.min(maximumValue, valueToClamp));
     }
 
@@ -89,7 +89,7 @@ public class LanderController {
      * @param angleInRadians The angle to be normalized, in radians.
      * @return The normalized angle in radians.
      */
-    private double normalizeAngle(double angleInRadians) {
+    public double normalizeAngle(double angleInRadians) {
         return (angleInRadians + Math.PI) % (2 * Math.PI) - Math.PI;
     }
 }
