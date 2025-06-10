@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GeneticAlgorithmOptimizer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.ProbeMission</a> &gt; <span class="el_source">GeneticAlgorithmOptimizer.java</span></div><h1>GeneticAlgorithmOptimizer.java</h1><pre class="source lang-java linenums">package Physics_Engine.ProbeMission;
+
+import Physics_Engine.GeneralComponents.AstralObject;
+import Physics_Engine.GeneralComponents.ProbeObject;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.ODESolverRK4.*;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+import static Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class GeneticAlgorithmOptimizer {
+
+<span class="nc" id="L20">    private final double TITAN_RADIUS = 2575;</span>
+<span class="nc" id="L21">    private final int POPULATION_SIZE = 50;</span>
+<span class="nc" id="L22">    private final int MAX_GENERATIONS = 100;</span>
+<span class="nc" id="L23">    private final double MUTATION_RATE = 0.1;</span>
+<span class="nc" id="L24">    private final double CROSSOVER_RATE = 0.8;</span>
+<span class="nc" id="L25">    private final double ELITE_RATIO = 0.1;</span>
+    
+    // Velocity bounds for search space
+<span class="nc" id="L28">    private final double MIN_VELOCITY = -100.0;</span>
+<span class="nc" id="L29">    private final double MAX_VELOCITY = 100.0;</span>
+    
+    private Random random;
+    private ArrayList&lt;Individual&gt; population;
+    private Individual bestSolution;
+    
+    // Optimization: Cache solar system and reduce simulation time
+<span class="nc" id="L36">    private final int SIMULATION_STEPS = (int) (31_536_000 / (STEPSIZE * 10)); // Reduce by factor of 10</span>
+    
+<span class="nc" id="L38">    public GeneticAlgorithmOptimizer() {</span>
+<span class="nc" id="L39">        this.random = new Random();</span>
+<span class="nc" id="L40">        this.population = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L41">        initializePopulation();</span>
+<span class="nc" id="L42">        evolve();</span>
+<span class="nc" id="L43">    }</span>
+    
+    /**
+     * Individual represents a candidate solution (velocity vector)
+     */
+    private class Individual {
+        double[] velocity;
+        double fitness;
+        boolean fitnessCalculated;
+        
+<span class="nc" id="L53">        public Individual(double vx, double vy, double vz) {</span>
+<span class="nc" id="L54">            this.velocity = new double[]{vx, vy, vz};</span>
+<span class="nc" id="L55">            this.fitness = Double.MAX_VALUE;</span>
+<span class="nc" id="L56">            this.fitnessCalculated = false;</span>
+<span class="nc" id="L57">        }</span>
+        
+<span class="nc" id="L59">        public Individual(double[] velocity) {</span>
+<span class="nc" id="L60">            this.velocity = velocity.clone();</span>
+<span class="nc" id="L61">            this.fitness = Double.MAX_VALUE;</span>
+<span class="nc" id="L62">            this.fitnessCalculated = false;</span>
+<span class="nc" id="L63">        }</span>
+        
+        public double getFitness() {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (!fitnessCalculated) {</span>
+<span class="nc" id="L67">                this.fitness = evaluateFitness();</span>
+<span class="nc" id="L68">                this.fitnessCalculated = true;</span>
+            }
+<span class="nc" id="L70">            return fitness;</span>
+        }
+        
+        private double evaluateFitness() {
+<span class="nc" id="L74">            return getDistanceToTitan(velocity);</span>
+        }
+        
+        public Individual clone() {
+<span class="nc" id="L78">            return new Individual(this.velocity);</span>
+        }
+    }
+    
+    /**
+     * Initialize population with random velocity vectors
+     */
+    private void initializePopulation() {
+<span class="nc" id="L86">        population.clear();</span>
+        
+        // Add some known good solutions as seeds
+<span class="nc" id="L89">        population.add(new Individual(51.147313,-31.207901,-13.928841));</span>
+<span class="nc" id="L90">        population.add(new Individual(45.147313,-35.207901,-7.928841));</span>
+<span class="nc" id="L91">        population.add(new Individual(55.147313, -33.207901, -17.928841));</span>
+        
+        // Fill rest with random individuals
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        for (int i = 3; i &lt; POPULATION_SIZE; i++) {</span>
+<span class="nc" id="L95">            double vx = MIN_VELOCITY + (MAX_VELOCITY - MIN_VELOCITY) * random.nextDouble();</span>
+<span class="nc" id="L96">            double vy = MIN_VELOCITY + (MAX_VELOCITY - MIN_VELOCITY) * random.nextDouble();</span>
+<span class="nc" id="L97">            double vz = MIN_VELOCITY + (MAX_VELOCITY - MIN_VELOCITY) * random.nextDouble();</span>
+<span class="nc" id="L98">            population.add(new Individual(vx, vy, vz));</span>
+        }
+<span class="nc" id="L100">    }</span>
+    
+    /**
+     * Main evolution loop
+     */
+    public void evolve() {
+<span class="nc" id="L106">        System.out.println(&quot;Starting Genetic Algorithm Optimization...&quot;);</span>
+        
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        for (int generation = 0; generation &lt; MAX_GENERATIONS; generation++) {</span>
+            // Evaluate fitness for all individuals
+<span class="nc" id="L110">            evaluatePopulation();</span>
+            
+            // Sort by fitness (ascending - lower is better)
+<span class="nc" id="L113">            Collections.sort(population, Comparator.comparingDouble(Individual::getFitness));</span>
+            
+            // Track best solution
+<span class="nc bnc" id="L116" title="All 4 branches missed.">            if (bestSolution == null || population.get(0).getFitness() &lt; bestSolution.getFitness()) {</span>
+<span class="nc" id="L117">                bestSolution = population.get(0).clone();</span>
+            }
+            
+            // Print progress
+<span class="nc bnc" id="L121" title="All 4 branches missed.">            if (generation % 10 == 0 || generation == MAX_GENERATIONS - 1) {</span>
+<span class="nc" id="L122">                System.out.printf(&quot;Generation %d: Best fitness = %.2f, Velocity = [%.6f, %.6f, %.6f]\n&quot;,</span>
+<span class="nc" id="L123">                    generation, bestSolution.getFitness(),</span>
+<span class="nc" id="L124">                    bestSolution.velocity[0], bestSolution.velocity[1], bestSolution.velocity[2]);</span>
+            }
+            
+            // Early termination if very close to target
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            if (bestSolution.getFitness() &lt; 100.0) {</span>
+<span class="nc" id="L129">                System.out.println(&quot;Target reached! Stopping early.&quot;);</span>
+<span class="nc" id="L130">                break;</span>
+            }
+            
+            // Create next generation
+<span class="nc" id="L134">            ArrayList&lt;Individual&gt; nextGeneration = createNextGeneration();</span>
+<span class="nc" id="L135">            population = nextGeneration;</span>
+        }
+        
+<span class="nc" id="L138">        System.out.println(&quot;\nOptimization Complete!&quot;);</span>
+<span class="nc" id="L139">        System.out.printf(&quot;Best Solution: Distance = %.2f\n&quot;, bestSolution.getFitness());</span>
+<span class="nc" id="L140">        System.out.printf(&quot;Optimal Velocity: [%.6f, %.6f, %.6f]\n&quot;,</span>
+<span class="nc" id="L141">            bestSolution.velocity[0], bestSolution.velocity[1], bestSolution.velocity[2]);</span>
+<span class="nc" id="L142">    }</span>
+    
+    /**
+     * Evaluate fitness for entire population
+     */
+    private void evaluatePopulation() {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        for (Individual individual : population) {</span>
+<span class="nc" id="L149">            individual.getFitness(); // This will calculate if not already done</span>
+<span class="nc" id="L150">        }</span>
+<span class="nc" id="L151">    }</span>
+    
+    /**
+     * Create next generation using selection, crossover, and mutation
+     */
+    private ArrayList&lt;Individual&gt; createNextGeneration() {
+<span class="nc" id="L157">        ArrayList&lt;Individual&gt; nextGen = new ArrayList&lt;&gt;();</span>
+        
+        // Elitism - keep best individuals
+<span class="nc" id="L160">        int eliteCount = (int) (POPULATION_SIZE * ELITE_RATIO);</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        for (int i = 0; i &lt; eliteCount; i++) {</span>
+<span class="nc" id="L162">            nextGen.add(population.get(i).clone());</span>
+        }
+        
+        // Fill rest with crossover and mutation
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        while (nextGen.size() &lt; POPULATION_SIZE) {</span>
+<span class="nc" id="L167">            Individual parent1 = tournamentSelection();</span>
+<span class="nc" id="L168">            Individual parent2 = tournamentSelection();</span>
+            
+            Individual child;
+<span class="nc bnc" id="L171" title="All 2 branches missed.">            if (random.nextDouble() &lt; CROSSOVER_RATE) {</span>
+<span class="nc" id="L172">                child = crossover(parent1, parent2);</span>
+            } else {
+<span class="nc" id="L174">                child = parent1.clone();</span>
+            }
+            
+<span class="nc bnc" id="L177" title="All 2 branches missed.">            if (random.nextDouble() &lt; MUTATION_RATE) {</span>
+<span class="nc" id="L178">                mutate(child);</span>
+            }
+            
+<span class="nc" id="L181">            nextGen.add(child);</span>
+<span class="nc" id="L182">        }</span>
+        
+<span class="nc" id="L184">        return nextGen;</span>
+    }
+    
+    /**
+     * Tournament selection
+     */
+    private Individual tournamentSelection() {
+<span class="nc" id="L191">        int tournamentSize = 3;</span>
+<span class="nc" id="L192">        Individual best = null;</span>
+        
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        for (int i = 0; i &lt; tournamentSize; i++) {</span>
+<span class="nc" id="L195">            Individual candidate = population.get(random.nextInt(population.size()));</span>
+<span class="nc bnc" id="L196" title="All 4 branches missed.">            if (best == null || candidate.getFitness() &lt; best.getFitness()) {</span>
+<span class="nc" id="L197">                best = candidate;</span>
+            }
+        }
+        
+<span class="nc" id="L201">        return best;</span>
+    }
+    
+    /**
+     * Arithmetic crossover
+     */
+    private Individual crossover(Individual parent1, Individual parent2) {
+<span class="nc" id="L208">        double alpha = random.nextDouble();</span>
+<span class="nc" id="L209">        double[] childVelocity = new double[3];</span>
+        
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        for (int i = 0; i &lt; 3; i++) {</span>
+<span class="nc" id="L212">            childVelocity[i] = alpha * parent1.velocity[i] + (1 - alpha) * parent2.velocity[i];</span>
+        }
+        
+<span class="nc" id="L215">        return new Individual(childVelocity);</span>
+    }
+    
+    /**
+     * Gaussian mutation
+     */
+    private void mutate(Individual individual) {
+<span class="nc" id="L222">        double mutationStrength = 5.0; // Adjust based on problem scale</span>
+        
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        for (int i = 0; i &lt; 3; i++) {</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">            if (random.nextDouble() &lt; 0.3) { // 30% chance to mutate each component</span>
+<span class="nc" id="L226">                individual.velocity[i] += random.nextGaussian() * mutationStrength;</span>
+                
+                // Keep within bounds
+<span class="nc" id="L229">                individual.velocity[i] = Math.max(MIN_VELOCITY, </span>
+<span class="nc" id="L230">                    Math.min(MAX_VELOCITY, individual.velocity[i]));</span>
+            }
+        }
+        
+        // Reset fitness since individual changed
+<span class="nc" id="L235">        individual.fitnessCalculated = false;</span>
+<span class="nc" id="L236">    }</span>
+    
+    /**
+     * Optimized fitness evaluation - calculates distance to Titan
+     */
+    private double getDistanceToTitan(double[] velocityArray) {
+        try {
+<span class="nc" id="L243">            SolarSystem solarSystem = new SolarSystem();</span>
+<span class="nc" id="L244">            ArrayList&lt;SpaceObject&gt; solarSystemObjects = solarSystem.getSolarSystem();</span>
+            
+            // Set probe velocity
+<span class="nc" id="L247">            ProbeObject probe = (ProbeObject) solarSystemObjects.get(11);</span>
+<span class="nc" id="L248">            probe.setVelocity(new Vector(velocityArray[0], velocityArray[1], velocityArray[2]));</span>
+            
+            // Run simulation with reduced steps for speed
+<span class="nc" id="L251">            AccelerationFunction acceleration = new AccelerationFunction();</span>
+<span class="nc" id="L252">            VelocityFunction velocity = new VelocityFunction();</span>
+<span class="nc" id="L253">            RK4_ODESolver odeSolver = new RK4_ODESolver();</span>
+            
+<span class="nc" id="L255">            AstralObject titan = (AstralObject) solarSystemObjects.get(8);</span>
+            
+            // Check for collision during simulation
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            for (int t = 0; t &lt; SIMULATION_STEPS; t++) {</span>
+<span class="nc" id="L259">                ProbeObject currentProbe = (ProbeObject) solarSystemObjects.get(11);</span>
+                
+<span class="nc bnc" id="L261" title="All 2 branches missed.">                if (currentProbe.hasHitPlanet(titan, TITAN_RADIUS)) {</span>
+<span class="nc" id="L262">                    return 0.0; // Perfect hit</span>
+                }
+                
+<span class="nc" id="L265">                odeSolver.ComputeODE(0, solarSystem, acceleration, velocity);</span>
+                
+                // Early termination if probe is getting very far
+<span class="nc" id="L268">                double currentDistance = getModulus(currentProbe.getPositionVector(), titan.getPositionVector());</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">                if (currentDistance &gt; 1e10) { // Very far, likely diverged</span>
+<span class="nc" id="L270">                    return currentDistance;</span>
+                }
+            }
+            
+            // Return final distance
+<span class="nc" id="L275">            ProbeObject finalProbe = (ProbeObject) solarSystemObjects.get(11);</span>
+<span class="nc" id="L276">            return getModulus(finalProbe.getPositionVector(), titan.getPositionVector());</span>
+            
+<span class="nc" id="L278">        } catch (Exception e) {</span>
+            // Return large penalty for invalid solutions
+<span class="nc" id="L280">            return Double.MAX_VALUE / 2;</span>
+        }
+    }
+    
+    /**
+     * Calculate Euclidean distance between two position vectors
+     */
+    private double getModulus(vectorInterface vectorProbe, vectorInterface vectorTitan) {
+<span class="nc" id="L288">        double[] probeValues = vectorProbe.getVector();</span>
+<span class="nc" id="L289">        double[] titanValues = vectorTitan.getVector();</span>
+        
+<span class="nc" id="L291">        double sum = 0;</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">        for (int i = 0; i &lt; 3; i++) {</span>
+<span class="nc" id="L293">            sum += Math.pow((probeValues[i] - titanValues[i]), 2);</span>
+        }
+        
+<span class="nc" id="L296">        return Math.sqrt(sum);</span>
+    }
+    
+    /**
+     * Get the best solution found
+     */
+    public double[] getBestVelocity() {
+<span class="nc bnc" id="L303" title="All 2 branches missed.">        return bestSolution != null ? bestSolution.velocity.clone() : null;</span>
+    }
+    
+    /**
+     * Get the best fitness value
+     */
+    public double getBestFitness() {
+<span class="nc bnc" id="L310" title="All 2 branches missed.">        return bestSolution != null ? bestSolution.getFitness() : Double.MAX_VALUE;</span>
+    }
+    
+    //Main method for testing
+//    public static void main(String[] args) {
+//        GeneticAlgorithmOptimizer optimizer = new GeneticAlgorithmOptimizer();
+//
+//        double[] bestVelocity = optimizer.getBestVelocity();
+//        if (bestVelocity != null) {
+//            System.out.println(&quot;\nFinal Results:&quot;);
+//            System.out.printf(&quot;Best Velocity: [%.6f, %.6f, %.6f]\n&quot;,
+//                bestVelocity[0], bestVelocity[1], bestVelocity[2]);
+//            System.out.printf(&quot;Final Distance: %.2f\n&quot;, optimizer.getBestFitness());
+//        }
+//    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

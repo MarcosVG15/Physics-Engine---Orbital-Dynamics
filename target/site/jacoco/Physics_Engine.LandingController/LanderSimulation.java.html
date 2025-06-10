@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LanderSimulation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.LandingController</a> &gt; <span class="el_source">LanderSimulation.java</span></div><h1>LanderSimulation.java</h1><pre class="source lang-java linenums">package Physics_Engine.LandingController;
+
+import static Physics_Engine.LandingController.Constants.*;
+
+import Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+
+
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.ODESolverRK4.RK4_ODESolver; // Assuming this is the concrete implementation of SolarSystemInterface
+
+<span class="nc" id="L12">public class LanderSimulation {</span>
+
+    public static void main(String[] args) {
+        // 1. Initialize LanderState with initial conditions
+        // Example initial conditions (convert from km/s to m/s, km to m)
+<span class="nc" id="L17">        double initialX = 1000.0; // 1 km</span>
+<span class="nc" id="L18">        double initialY = 5000.0; // 5 km</span>
+<span class="nc" id="L19">        double initialVx = -0.5 * KM_TO_M; // -0.5 km/s</span>
+<span class="nc" id="L20">        double initialVy = -0.1 * KM_TO_M; // -0.1 km/s</span>
+<span class="nc" id="L21">        double initialTheta = Math.PI / 4; // 45 degrees (pointing somewhat right)</span>
+<span class="nc" id="L22">        double initialOmega = 0.0;</span>
+
+        // Initialize LanderState with initial conditions
+<span class="nc" id="L25">        LanderState currentLanderState = new LanderState(</span>
+            initialX, initialY, initialVx, initialVy, initialTheta, initialOmega
+        );
+
+        // Create a LanderObject for the SolarSystem based on the initial state
+<span class="nc" id="L30">        LanderObject landerObjectInSolarSystem = new LanderObject(</span>
+            new Vector(currentLanderState.x, currentLanderState.y, 0), // Assuming 2D for now, Z is 0
+            new Vector(currentLanderState.vx, currentLanderState.vy, 0), // Assuming 2D for now, Z is 0
+            SPACESHIP_MASS, // Assuming SPACESHIP_MASS is defined in Constants
+            &quot;Lander&quot;,
+            currentLanderState.theta, currentLanderState.omega
+        );
+
+        // 2. Instantiate Controller, Wind Model, and ODE Function
+<span class="nc" id="L39">        LanderController controller = new LanderController();</span>
+<span class="nc" id="L40">        WindModel windModel = new WindModel(0.05); // Max wind force 0.05 m/s^2</span>
+        // Instantiate the unified LanderODEFunction
+<span class="nc" id="L42">        LanderODEFunction landerODEFunction = new LanderODEFunction(controller, windModel);</span>
+
+        // Setup SolarSystem for RK4_ODESolver
+<span class="nc" id="L45">        SolarSystemInterface solarSystem = new SolarSystem();</span>
+<span class="nc" id="L46">        solarSystem.getSolarSystem().add(landerObjectInSolarSystem); // Add the lander object to the system</span>
+
+        // Instantiate RK4_ODESolver
+<span class="nc" id="L49">        RK4_ODESolver rk4Solver = new RK4_ODESolver();</span>
+
+        // 4. Simulation Loop
+<span class="nc" id="L52">        double time = 0;</span>
+<span class="nc" id="L53">        double dt = 0.01; // Time step for simulation (tune this!)</span>
+<span class="nc" id="L54">        final double MAX_SIMULATION_TIME = 1000.0; // Max 1000 seconds to prevent infinite loops</span>
+
+<span class="nc" id="L56">        System.out.println(&quot;Starting Lander Simulation...&quot;);</span>
+<span class="nc" id="L57">        System.out.printf(&quot;Initial State: x=%.2f, y=%.2f, vx=%.2f, vy=%.2f, theta=%.2f, omega=%.2f%n&quot;,</span>
+<span class="nc" id="L58">            currentLanderState.x, currentLanderState.y,</span>
+<span class="nc" id="L59">            currentLanderState.vx, currentLanderState.vy,</span>
+<span class="nc" id="L60">            currentLanderState.theta, currentLanderState.omega);</span>
+
+        // Simulation Loop
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        while (currentLanderState.y &gt; 0 &amp;&amp; time &lt; MAX_SIMULATION_TIME) {</span>
+            // Get the current state as a double array
+<span class="nc" id="L65">            double[] currentStateArray = {</span>
+                currentLanderState.x, currentLanderState.y,
+                currentLanderState.vx, currentLanderState.vy,
+                currentLanderState.theta, currentLanderState.omega
+            };
+
+            // Perform one step of integration for the full state using the new RK4_ODESolver method
+<span class="nc" id="L72">            double[] nextStateArray = rk4Solver.computeODE(currentStateArray, time, dt, landerODEFunction, null); // Pass null for params if not needed</span>
+
+            // Update the LanderState object with the new state
+<span class="nc" id="L75">            currentLanderState.x = nextStateArray[0];</span>
+<span class="nc" id="L76">            currentLanderState.y = nextStateArray[1];</span>
+<span class="nc" id="L77">            currentLanderState.vx = nextStateArray[2];</span>
+<span class="nc" id="L78">            currentLanderState.vy = nextStateArray[3];</span>
+<span class="nc" id="L79">            currentLanderState.theta = nextStateArray[4];</span>
+<span class="nc" id="L80">            currentLanderState.omega = nextStateArray[5];</span>
+
+            // Update the LanderObject in the SolarSystem to match the LanderState
+<span class="nc" id="L83">            landerObjectInSolarSystem.setPosition(new Vector(currentLanderState.x, currentLanderState.y, 0)); // Assuming 2D</span>
+<span class="nc" id="L84">            landerObjectInSolarSystem.setVelocity(new Vector(currentLanderState.vx, currentLanderState.vy, 0)); // Assuming 2D</span>
+<span class="nc" id="L85">            landerObjectInSolarSystem.setOrientation(currentLanderState.theta);</span>
+<span class="nc" id="L86">            landerObjectInSolarSystem.setAngularVelocity(currentLanderState.omega);</span>
+
+
+<span class="nc" id="L89">            time += dt;</span>
+
+            // Optional: Print state periodically for debugging
+            // if (time % 1.0 &lt; dt) { // Print every second
+            //     System.out.printf(&quot;Time: %.2f, State: x=%.2f, y=%.2f, vx=%.2f, vy=%.2f, theta=%.2f, omega=%.2f%n&quot;,
+            //         time, currentLanderState.x, currentLanderState.y, currentLanderState.vx,
+            //         currentLanderState.vy, currentLanderState.theta, currentLanderState.omega);
+            // }
+<span class="nc" id="L97">        }</span>
+
+<span class="nc" id="L99">        System.out.println(&quot;\nSimulation Ended.&quot;);</span>
+<span class="nc" id="L100">        System.out.printf(&quot;Final State: x=%.2f, y=%.2f, vx=%.2f, vy=%.2f, theta=%.2f, omega=%.2f%n&quot;,</span>
+<span class="nc" id="L101">            currentLanderState.x, currentLanderState.y,</span>
+<span class="nc" id="L102">            currentLanderState.vx, currentLanderState.vy,</span>
+<span class="nc" id="L103">            currentLanderState.theta, currentLanderState.omega);</span>
+
+        // 5. Check success criteria
+<span class="nc" id="L106">        boolean landedSuccessfully =</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            Math.abs(currentLanderState.x) &lt;= DELTA_X &amp;&amp;</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            Math.abs(normalizeAngle(currentLanderState.theta)) &lt;= DELTA_THETA &amp;&amp;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            Math.abs(currentLanderState.vx) &lt;= EPSILON_X &amp;&amp;</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">            Math.abs(currentLanderState.vy) &lt;= EPSILON_Y &amp;&amp;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            Math.abs(currentLanderState.omega) &lt;= EPSILON_THETA;</span>
+
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (landedSuccessfully) {</span>
+<span class="nc" id="L114">            System.out.println(&quot;Lander successfully landed!&quot;);</span>
+        } else {
+<span class="nc" id="L116">            System.out.println(&quot;Lander failed to land successfully.&quot;);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (currentLanderState.y &lt;= 0) {</span>
+<span class="nc" id="L118">                System.out.println(&quot;Reason: Hit ground but failed conditions.&quot;);</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            } else if (time &gt;= MAX_SIMULATION_TIME) {</span>
+<span class="nc" id="L120">                System.out.println(&quot;Reason: Simulation timed out before landing.&quot;);</span>
+            }
+        }
+<span class="nc" id="L123">    }</span>
+
+    // Helper method to normalize angle to (-PI, PI]
+    private static double normalizeAngle(double angle) {
+<span class="nc" id="L127">        return (angle + Math.PI) % (2 * Math.PI) - Math.PI;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

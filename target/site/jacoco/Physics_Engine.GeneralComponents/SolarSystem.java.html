@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SolarSystem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.GeneralComponents</a> &gt; <span class="el_source">SolarSystem.java</span></div><h1>SolarSystem.java</h1><pre class="source lang-java linenums">package Physics_Engine.GeneralComponents;
+
+import Physics_Engine.GeneralComponents.Interfaces.SolarSystemInterface;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+import java.util.ArrayList;
+
+public class SolarSystem implements SolarSystemInterface {
+<span class="fc" id="L10">    private final double EARTH_RADIUS = 6370 ;</span>
+
+
+    private ArrayList&lt;SpaceObject&gt; solarSystem;
+
+
+
+<span class="fc" id="L17">    public SolarSystem(){</span>
+
+<span class="fc" id="L19">        SpaceObject sun = new AstralObject(</span>
+                new Vector(0, 0, 0),
+                new Vector(0, 0, 0),
+                1.99E30
+        );
+<span class="fc" id="L24">        sun.setName(&quot;SUN &quot;);</span>
+
+<span class="fc" id="L26">        SpaceObject mercury = new AstralObject(</span>
+                new Vector(13.9, -40.3, -4.57),
+                new Vector(-5.67E7, -3.23E7, 2.58E6),
+                3.30E23
+        );
+<span class="fc" id="L31">        mercury.setName(&quot;mercury&quot;);</span>
+
+<span class="fc" id="L33">        SpaceObject venus = new AstralObject(</span>
+                new Vector(9.89, -33.7, -1.03),
+                new Vector(-1.04E8, -3.19E7, 5.55E6),
+                4.87E24
+        );
+<span class="fc" id="L38">        venus.setName(&quot;venus&quot;);</span>
+
+<span class="fc" id="L40">        SpaceObject earth = new AstralObject(</span>
+                new Vector(5.31, -29.3, 6.69E-4),
+                new Vector(-1.47E8, -2.97E7, 2.75E4),
+                5.97E24
+        );
+<span class="fc" id="L45">        earth.setName(&quot;earth&quot;);</span>
+
+<span class="fc" id="L47">        SpaceObject moon = new AstralObject(</span>
+                new Vector(4.53, -28.6, 6.73E-2),
+                new Vector(-1.47E8, -2.95E7, 5.29E4),
+                7.35E22
+        );
+<span class="fc" id="L52">        moon.setName(&quot;moon&quot;);</span>
+
+<span class="fc" id="L54">        SpaceObject mars = new AstralObject(</span>
+                new Vector(-11.5, -18.7, -1.11E-1),
+                new Vector(-2.15E8, 1.27E8, 7.94E6),
+                6.42E23
+        );
+<span class="fc" id="L59">        mars.setName(&quot;mars&quot;);</span>
+
+<span class="fc" id="L61">        SpaceObject jupiter = new AstralObject(</span>
+                new Vector(-13.2, 12.9, 5.22E-2),
+                new Vector(5.54E7, 7.62E8, -4.40E6),
+                1.90E27
+        );
+<span class="fc" id="L66">        jupiter.setName(&quot;jupiter&quot;);</span>
+
+<span class="fc" id="L68">        SpaceObject saturn = new AstralObject(</span>
+                new Vector(0.748, 9.55, -0.196),
+                new Vector(1.42E9, -1.91E8, -5.33E7),
+                5.68E26
+        );
+<span class="fc" id="L73">        saturn.setName(&quot;saturn&quot;);</span>
+
+<span class="fc" id="L75">        SpaceObject titan = new AstralObject(</span>
+                new Vector(5.95, 7.68, 0.254),
+                new Vector(1.42E9, -1.92E8, -5.28E7),
+                1.35E23
+        );
+<span class="fc" id="L80">        titan.setName(&quot;titan&quot;);</span>
+
+<span class="fc" id="L82">        SpaceObject uranus = new AstralObject(</span>
+                new Vector(-5.72, 3.45, 8.70E-2),
+                new Vector(1.62E9, 2.43E9, -1.19E7),
+                8.68E25
+        );
+<span class="fc" id="L87">        uranus.setName(&quot;uranus&quot;);</span>
+
+<span class="fc" id="L89">        SpaceObject neptune = new AstralObject(</span>
+                new Vector(0.0287, 5.47, -0.113),
+                new Vector(4.47E9, -5.31E7, -1.02E8),
+                1.02E26
+        );
+<span class="fc" id="L94">        neptune.setName(&quot;neptune&quot;);</span>
+
+
+        //--------------------------------------------------------------------------------------------------------------
+
+
+        // Compute best coordinate to set the probe
+
+<span class="fc" id="L102">        double[] BestCoordinates = getBestInitialPositionCoordinates(titan.getPositionVector().getVector() , earth.getPositionVector().getVector());</span>
+
+<span class="fc" id="L104">        SpaceObject probe = new ProbeObject(</span>
+                new Vector(  51.147313,-31.207901,-13.928841),
+                new Vector(BestCoordinates[0] , BestCoordinates[1] , BestCoordinates[2])
+
+        );
+<span class="fc" id="L109">        probe.setName(&quot;PROBE&quot;);</span>
+
+
+<span class="fc" id="L112">        SpaceObject SpaceShip = new SpaceShip(</span>
+                new Vector(  5.31, -29.3, 6.69E-4),
+                new Vector(BestCoordinates[0]+1 , BestCoordinates[1] +1, BestCoordinates[2]+1 )
+
+        );
+<span class="fc" id="L117">        SpaceShip.setName(&quot;SpaceShip&quot;);</span>
+
+<span class="fc" id="L119">        solarSystem = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L121">        solarSystem.add( sun);</span>
+<span class="fc" id="L122">        solarSystem.add( mercury);</span>
+<span class="fc" id="L123">        solarSystem.add( venus);</span>
+<span class="fc" id="L124">        solarSystem.add( earth);</span>
+<span class="fc" id="L125">        solarSystem.add( moon);</span>
+<span class="fc" id="L126">        solarSystem.add( mars);</span>
+<span class="fc" id="L127">        solarSystem.add( jupiter);</span>
+<span class="fc" id="L128">        solarSystem.add( saturn);</span>
+<span class="fc" id="L129">        solarSystem.add( titan);</span>
+<span class="fc" id="L130">        solarSystem.add( uranus);</span>
+<span class="fc" id="L131">        solarSystem.add( neptune);</span>
+<span class="fc" id="L132">        solarSystem.add( probe);</span>
+<span class="fc" id="L133">        solarSystem.add(SpaceShip);</span>
+
+<span class="fc" id="L135">    }</span>
+
+    public  ArrayList&lt;SpaceObject&gt; getSolarSystem(){
+<span class="fc" id="L138">        return solarSystem;</span>
+    }
+
+    /**
+     * To compute the best initial position for the rocket we compute the vector that is between the earth and titan
+     * after which we then scale it down to the radius of the earth by normalising and finally adding it to the vector
+     * of earth such that the position remains relative to the sun.
+     * @param Titan - coordinates of Titan - start coordinates
+     * @param Earth - coordinates of Earth - start coordinates
+     * @return
+     */
+    public double[] getBestInitialPositionCoordinates(double[] Titan , double[] Earth){
+
+<span class="fc" id="L151">        double [] InitialPosition = new double[3] ;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        for( int i = 0 ; i&lt; 3 ; i++){</span>
+<span class="fc" id="L153">            InitialPosition[i] = Titan[i] - Earth[i] ;</span>
+
+        }
+
+        // We Normalise scale and add at the same time to save on computation
+<span class="fc" id="L158">        double Normal = getModulus(new Vector(InitialPosition[0] , InitialPosition[1], InitialPosition[2]) , new Vector(0,0,0));</span>
+
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        for(int i = 0 ; i&lt;3 ; i++ ){</span>
+<span class="fc" id="L161">            InitialPosition[i] = (InitialPosition[i]/Normal) * EARTH_RADIUS + Earth[i];</span>
+        }
+
+<span class="fc" id="L164">        return InitialPosition ;</span>
+    }
+    public double getModulus (vectorInterface vectorProbe , vectorInterface vectorTitan){
+
+<span class="fc" id="L168">        double[] probeValues = vectorProbe.getVector();</span>
+<span class="fc" id="L169">        double[] titanValues = vectorTitan.getVector();</span>
+
+<span class="fc" id="L171">        double sum =0 ;</span>
+
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+<span class="fc" id="L174">            sum += Math.pow((probeValues[i]- titanValues[i]), 2);</span>
+        }
+
+<span class="fc" id="L177">        return Math.sqrt(sum);</span>
+    }
+
+    public void setSolarSystem(ArrayList&lt;SpaceObject&gt; replacement){
+<span class="nc" id="L181">        solarSystem.clear();</span>
+
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        for (SpaceObject spaceObject : replacement) {</span>
+<span class="nc" id="L184">            solarSystem.add(spaceObject.clone()); // make sure each SpaceObject implements clone()</span>
+<span class="nc" id="L185">        }</span>
+<span class="nc" id="L186">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LanderController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.LandingController</a> &gt; <span class="el_source">LanderController.java</span></div><h1>LanderController.java</h1><pre class="source lang-java linenums">package Physics_Engine.LandingController;
+
+import static Physics_Engine.LandingController.Constants.*; // Import all static members from the Constants class for easy access to physical constants and limits.
+
+<span class="fc" id="L5">public class LanderController {</span>
+    /**
+     * Control Gains - These are tuning parameters for the Proportional-Derivative (PD) controller.
+     * They determine how strongly the lander reacts to errors in its position, velocity, and orientation.
+     * These values typically need to be adjusted through simulation to achieve stable and efficient landing.
+     */
+<span class="fc" id="L11">    private final double proportionalGainVerticalPosition = 0.5; // Kp: Proportional gain for vertical (y-axis) position error.</span>
+<span class="fc" id="L12">    private final double derivativeGainVerticalVelocity = 1.0;   // Kd: Derivative gain for vertical (y-axis) velocity error, helps damp oscillations.</span>
+<span class="fc" id="L13">    private final double proportionalGainHorizontalPosition = 0.1; // Kp: Proportional gain for horizontal (x-axis) position error.</span>
+<span class="fc" id="L14">    private final double derivativeGainHorizontalVelocity = 0.5; // Kd: Derivative gain for horizontal (x-axis) velocity error.</span>
+<span class="fc" id="L15">    private final double proportionalGainOrientationAngle = 5.0; // Kp: Proportional gain for orientation angle (rotation around Z-axis) error.</span>
+<span class="fc" id="L16">    private final double derivativeGainAngularVelocity = 2.0;    // Kd: Derivative gain for angular velocity (rate of rotation) error, helps damp rotational oscillations.</span>
+
+    /**
+     * Calculates the control inputs (thrust and torque) required for the lander
+     * to achieve its desired state based on its current state.
+     * This method implements a PD control strategy.
+     *
+     * @param currentLanderState The current state of the lander, including its position, velocity, orientation, and angular velocity.
+     * @return A ControlInputs object containing the calculated thrust and torque.
+     */
+    public ControlInputs calculateControlInputs(LanderState currentLanderState) {
+        // --- Vertical Control (Y-axis) ---
+        // The goal is to bring the lander to a vertical position of 0 and vertical velocity of 0.
+        // desired_ay = Kp_y * (desired_y - current_y) + Kd_y * (desired_vy - current_vy)
+<span class="fc" id="L30">        double desiredVerticalAcceleration = proportionalGainVerticalPosition * (0 - currentLanderState.getPositionVector().getY()) +</span>
+<span class="fc" id="L31">                                             derivativeGainVerticalVelocity * (0 - currentLanderState.getVelocityVector().getY());</span>
+        
+        // Calculate the raw thrust magnitude needed to achieve the desired vertical acceleration.
+        // This calculation also accounts for the constant gravitational pull of Titan and the lander's current tilt (orientation).
+        // thrust_raw = (desired_ay + gravity) / cos(orientation)
+<span class="fc" id="L36">        double rawThrustMagnitude = (desiredVerticalAcceleration + GRAVITY_TITAN) / Math.cos(currentLanderState.getOrientation());</span>
+
+        // Clamp the raw thrust magnitude to ensure it stays within the physical limits of the lander's engine.
+        // Thrust cannot be negative (pulling up) and has a maximum limit.
+<span class="fc" id="L40">        double finalThrustMagnitude = clamp(rawThrustMagnitude, 0, THRUST_MAX);</span>
+
+        // --- Horizontal Control (X-axis) ---
+        // The goal is to bring the lander to a horizontal position of 0 and horizontal velocity of 0.
+        // desired_ax = Kp_x * (desired_x - current_x) + Kd_x * (desired_vx - current_vx)
+<span class="fc" id="L45">        double desiredHorizontalAcceleration = proportionalGainHorizontalPosition * (0 - currentLanderState.getPositionVector().getX()) +</span>
+<span class="fc" id="L46">                                               derivativeGainHorizontalVelocity * (0 - currentLanderState.getVelocityVector().getX());</span>
+        
+        // Calculate the desired orientation angle (tilt) of the lander.
+        // This angle is determined by the desired horizontal acceleration and the current vertical thrust.
+        // The lander tilts to direct a component of its thrust horizontally.
+<span class="fc" id="L51">        double desiredOrientationAngleRadians = Math.atan2(desiredHorizontalAcceleration, (finalThrustMagnitude * Math.cos(currentLanderState.getOrientation())));</span>
+
+        // --- Orientation Control (Rotation) ---
+        // Calculate the error in the lander's orientation angle.
+        // The normalizeAngle helper ensures the error is always the shortest path between two angles (-PI to PI).
+<span class="fc" id="L56">        double orientationErrorRadians = normalizeAngle(desiredOrientationAngleRadians - currentLanderState.getOrientation());</span>
+        
+        // Calculate the torque (rotational force) needed to correct the lander's orientation.
+        // torque = Kp_theta * (desired_theta - current_theta) + Kd_omega * (desired_omega - current_omega)
+        // Desired angular velocity (omega) is typically 0 for stable landing.
+<span class="fc" id="L61">        double appliedTorqueMagnitude = proportionalGainOrientationAngle * orientationErrorRadians +</span>
+<span class="fc" id="L62">                                        derivativeGainAngularVelocity * (0 - currentLanderState.getAngularVelocity());</span>
+
+        // Clamp the applied torque magnitude to ensure it stays within the physical limits of the lander's thrusters.
+<span class="fc" id="L65">        appliedTorqueMagnitude = clamp(appliedTorqueMagnitude, -TORQUE_MAX, TORQUE_MAX);</span>
+
+        // Return the calculated thrust and torque as control inputs.
+<span class="fc" id="L68">        return new ControlInputs(finalThrustMagnitude, appliedTorqueMagnitude);</span>
+    }
+
+    /**
+     * Helper method to clamp a given value within a specified minimum and maximum range.
+     * This prevents control outputs from exceeding physical limits.
+     *
+     * @param valueToClamp The input value to be clamped.
+     * @param minimumValue The lower bound of the clamping range.
+     * @param maximumValue The upper bound of the clamping range.
+     * @return The clamped value.
+     */
+    public double clamp(double valueToClamp, double minimumValue, double maximumValue) {
+<span class="fc" id="L81">        return Math.max(minimumValue, Math.min(maximumValue, valueToClamp));</span>
+    }
+
+    /**
+     * Helper method to normalize an angle to the range (-PI, PI] radians.
+     * This is important for angle calculations to ensure the shortest angular distance.
+     * For example, an angle of 3PI becomes PI, and -3PI becomes -PI.
+     *
+     * @param angleInRadians The angle to be normalized, in radians.
+     * @return The normalized angle in radians.
+     */
+    public double normalizeAngle(double angleInRadians) {
+<span class="fc" id="L93">        return (angleInRadians + Math.PI) % (2 * Math.PI) - Math.PI;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

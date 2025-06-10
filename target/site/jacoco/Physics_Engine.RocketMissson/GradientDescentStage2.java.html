@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GradientDescentStage2.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.RocketMissson</a> &gt; <span class="el_source">GradientDescentStage2.java</span></div><h1>GradientDescentStage2.java</h1><pre class="source lang-java linenums">package Physics_Engine.RocketMissson;
+
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.SpaceShip;
+import Physics_Engine.GeneralComponents.Thrust;
+import Physics_Engine.GeneralComponents.Vector;
+import Physics_Engine.ODESolverRK4.AccelerationFunction;
+import Physics_Engine.ODESolverRK4.RK4_ODESolver;
+import Physics_Engine.ODESolverRK4.VelocityFunction;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+
+import static Physics_Engine.RocketMissson.VARIABLES.STEPSIZE;
+
+public class GradientDescentStage2 {
+
+    private ArrayList&lt;SpaceObject&gt; solarSystem ;
+    private Thrust[] ArrayOfThrusts;
+
+    private vectorInterface targetPositionVector;
+    private vectorInterface targetVelocity ;
+    private double fuelCap ;
+<span class="nc" id="L27">    private  double ALPHA = 1E-3 ;</span>
+    private double VelocityModulus ;
+    private double TimePenalty ;
+    private int amountOfThrust ;
+
+
+
+<span class="nc" id="L34">    public GradientDescentStage2(ArrayList&lt;SpaceObject&gt; solarSystems , vectorInterface targetPositionVector, vectorInterface targetVelocity, double fuelCap, int amountOfThrust){</span>
+<span class="nc" id="L35">        this.solarSystem = solarSystems ;</span>
+<span class="nc" id="L36">        this.targetPositionVector = targetPositionVector;</span>
+<span class="nc" id="L37">        this.targetVelocity = targetVelocity ;</span>
+<span class="nc" id="L38">        this.fuelCap = fuelCap ;</span>
+<span class="nc" id="L39">        this.amountOfThrust = amountOfThrust ;</span>
+
+<span class="nc" id="L41">        ArrayOfThrusts = new Thrust[amountOfThrust] ;</span>
+<span class="nc" id="L42">        Random random = new Random();</span>
+
+
+        //  Eventually changed to some estimation that i see is valid !!!!
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        for(int i = 0 ; i&lt;ArrayOfThrusts.length ; i++){</span>
+
+<span class="nc" id="L48">            Thrust thrust = new Thrust(-1*(random.nextInt(50))*100+1, -1*(random.nextInt(50))*100+1,(random.nextInt(50))*100+1 );</span>
+<span class="nc" id="L49">            thrust.setDuration(random.nextDouble(120)+120);</span>
+
+<span class="nc" id="L51">            double previous = 0 ;</span>
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if(i != 0 ){</span>
+<span class="nc" id="L54">                previous += ArrayOfThrusts[i-1].getDuration() + ArrayOfThrusts[i-1].getStartTime();</span>
+            }
+<span class="nc" id="L56">            thrust.setStartTime(random.nextDouble(500)+ previous);</span>
+<span class="nc" id="L57">            ArrayOfThrusts[i] = thrust ;</span>
+
+<span class="nc" id="L59">            System.out.print(Arrays.toString(thrust.getVector()));</span>
+<span class="nc" id="L60">            System.out.println(&quot; Duration : &quot; + thrust.getDuration() + &quot; StartTime : &quot; + thrust.getStartTime());</span>
+        }
+        //ArrayOfThrusts[1] = new Thrust(0,0,0);
+
+
+<span class="nc" id="L65">    }</span>
+
+
+    /**
+     * For each thrust and thrust component it applies a small change which will then allow us to determine the slope and
+     * thus the modification of that new component. It does this for all thrust components which include the 3 newton forces
+     * for each axis as well as the duration and the starting time for each thrust
+     *
+     */
+    public Thrust[] gradientDescent (){
+<span class="nc" id="L75">        Random random = new Random() ;</span>
+<span class="nc" id="L76">        Thrust[] arrayOfThrustAddition = new Thrust[ArrayOfThrusts.length] ;</span>
+<span class="nc" id="L77">        double[] fuelCostPerThrustComponent = new double[ArrayOfThrusts.length] ;</span>
+
+<span class="nc" id="L79">        boolean hasHit = false ;</span>
+
+<span class="nc" id="L81">        double ALPHA_0 = 1e-2;</span>
+<span class="nc" id="L82">        double decayRate = 1e-7;</span>
+
+<span class="nc" id="L84">        double iterations = 0 ;</span>
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        while(! hasHit){</span>
+
+<span class="nc" id="L88">            double[][] nextThrustContent = new double[ArrayOfThrusts.length][ArrayOfThrusts[0].getThrustVector().length] ;</span>
+
+<span class="nc" id="L90">            ALPHA = ALPHA_0 / (1 + decayRate *iterations);</span>
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if(ALPHA&lt;1e-4){</span>
+<span class="nc" id="L93">                ALPHA = 1e-3 ;</span>
+            }
+
+<span class="nc" id="L96">            System.out.println(&quot;OLD COSTS CALCULATIONS SHOULDN'T UPDATE ************************************************* &quot;);</span>
+<span class="nc" id="L97">            double costOld = getCost(ArrayOfThrusts) ;</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            for(int i = 0 ; i&lt;ArrayOfThrusts.length ; i++){</span>
+
+<span class="nc" id="L101">                double[] specificContentOfThrust = ArrayOfThrusts[i].getThrustVector() ;</span>
+<span class="nc" id="L102">                System.out.println();</span>
+<span class="nc" id="L103">                System.out.println(&quot;THRUST CONTENT &quot; + Arrays.toString(ArrayOfThrusts[i].getThrustVector()));</span>
+
+<span class="nc" id="L105">                Thrust currentThrust = ArrayOfThrusts[i] ;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                for(int j = 0 ; j&lt;specificContentOfThrust.length ; j++){</span>
+
+<span class="nc" id="L108">                    double perturbation = computePerturbation(specificContentOfThrust[j]) ;</span>
+<span class="nc" id="L109">                    Thrust[] TempArray = getPasByValueCopy(ArrayOfThrusts) ;</span>
+<span class="nc" id="L110">                    Thrust updatedThrust  = perturb( currentThrust, j ,perturbation ) ;</span>
+
+<span class="nc" id="L112">                    TempArray[i] = updatedThrust ;</span>
+
+<span class="nc" id="L114">                    double gradient = getSlope(TempArray , costOld, perturbation) ;</span>
+
+
+<span class="nc" id="L117">                    nextThrustContent[i][j] = getUpdate(specificContentOfThrust[j] ,gradient , j );</span>
+
+<span class="nc" id="L119">                    System.out.println( &quot; UPDATE : &quot; + nextThrustContent[i][j] + &quot; Gradient : &quot; + gradient);</span>
+
+
+                }
+
+            }
+
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            for(int i = 0 ; i&lt;ArrayOfThrusts.length ; i++){</span>
+<span class="nc" id="L127">                Thrust newThrust = new Thrust(nextThrustContent[i][0],nextThrustContent[i][1],nextThrustContent[i][2] );</span>
+<span class="nc" id="L128">                newThrust.setStartTime(nextThrustContent[i][3]);</span>
+<span class="nc" id="L129">                newThrust.setDuration(nextThrustContent[i][4]);</span>
+
+<span class="nc" id="L131">                ArrayOfThrusts[i] = newThrust ;</span>
+            }
+
+<span class="nc" id="L134">            vectorInterface newDistance = simulate(ArrayOfThrusts);</span>
+<span class="nc" id="L135">            hasHit = checkIfDistanceIsZero(newDistance);</span>
+
+<span class="nc" id="L137">            iterations++;</span>
+<span class="nc" id="L138">        }</span>
+
+<span class="nc" id="L140">        return ArrayOfThrusts ;</span>
+
+    }
+
+
+    public double getUpdate(double previous , double gradient , int index){
+
+<span class="nc bnc" id="L147" title="All 3 branches missed.">        switch (index) {</span>
+            case 0, 1, 2 -&gt; {
+<span class="nc" id="L149">                return previous - ALPHA*gradient;</span>
+            }
+            case 3,4 -&gt; {
+<span class="nc" id="L152">                return Math.max(1 , previous - ALPHA*gradient);</span>
+            }
+            default -&gt; {
+<span class="nc" id="L155">                throw new RuntimeException(&quot;NO INDEX FUNCTIONALITY FOUND FOR INDEX &quot; + index</span>
+                ) ;
+            }
+        }
+
+    }
+
+
+
+    /**
+     * This method takes in as set of thrust vectors such that i can run the simulation . Indeed the steps indicate the time
+     * and thus when the thrust should be initiated and then after simulating untill the projection reaches higher than
+     * the actual target then i can terminate and return the distance of the projector to the target. This will allow
+     * me to compute the cost function
+     * @param arrayOfThrustUpdate - the set of thurst vectors/ components
+     * @return - it returns the distance of the rocket to the destination.
+     */
+    public vectorInterface simulate(Thrust[] arrayOfThrustUpdate){
+
+        boolean shouldTerminate ;
+<span class="nc" id="L175">        SolarSystem solarSystemObject = new SolarSystem() ;</span>
+<span class="nc" id="L176">        solarSystemObject.setSolarSystem(solarSystem);</span>
+
+<span class="nc" id="L178">        ArrayList&lt;SpaceObject&gt; solarSystemCopy = solarSystemObject.getSolarSystem();</span>
+
+<span class="nc" id="L180">        shouldTerminate = determineStoppingOfSimulation(solarSystemCopy.get(12).getPositionVector());</span>
+<span class="nc" id="L181">        System.out.println(&quot; &quot;);</span>
+
+<span class="nc" id="L183">        int steps = 0 ;</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        while(!shouldTerminate){</span>
+
+<span class="nc" id="L186">            AccelerationFunction acceleration = new AccelerationFunction();</span>
+<span class="nc" id="L187">            VelocityFunction velocity = new VelocityFunction();</span>
+<span class="nc" id="L188">            RK4_ODESolver odeSolver = new RK4_ODESolver();</span>
+
+
+<span class="nc bnc" id="L191" title="All 2 branches missed.">            for(Thrust thrust : arrayOfThrustUpdate){</span>
+
+<span class="nc" id="L193">                double startTime  = thrust.getStartTime();</span>
+<span class="nc" id="L194">                double endTime = startTime+thrust.getDuration() ;</span>
+
+
+<span class="nc bnc" id="L197" title="All 2 branches missed.">                if (thrust.getDuration() &lt; 1) {</span>
+<span class="nc" id="L198">                    System.out.println(&quot;problem&quot;);</span>
+<span class="nc" id="L199">                    thrust.setDuration(10);</span>
+<span class="nc" id="L200">                    endTime = startTime+thrust.getDuration() ;</span>
+                }
+
+<span class="nc bnc" id="L203" title="All 4 branches missed.">                if(startTime &lt;= steps &amp;&amp; endTime&gt;= steps){</span>
+                    //System.out.println(&quot;YOU SHOULD SEE AN IMPACT -----------------------------------------------------&quot;  + Arrays.toString(thrust.getVector()));
+
+<span class="nc" id="L206">                    SpaceShip spaceShip = (SpaceShip) solarSystemCopy.get(12);</span>
+
+<span class="nc" id="L208">                    vectorInterface VelocityVector = spaceShip.getVelocityVectorPasByValue();</span>
+<span class="nc" id="L209">                    VelocityVector.add(scale(thrust , STEPSIZE/spaceShip.getMass()));</span>
+
+<span class="nc" id="L211">                    solarSystemCopy.get(12).setVelocity(new Vector(VelocityVector.getX(), VelocityVector.getY(), VelocityVector.getZ() ));</span>
+                }
+
+            }
+<span class="nc" id="L215">            odeSolver.ComputeODE(3 , solarSystemObject, acceleration ,velocity);</span>
+
+<span class="nc" id="L217">            vectorInterface position = solarSystemCopy.get(12).getPositionVector();</span>
+
+<span class="nc" id="L219">            shouldTerminate = determineStoppingOfSimulation(position);</span>
+
+
+<span class="nc" id="L222">            steps++;</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">            if(steps&gt;31_536_000/STEPSIZE){</span>
+<span class="nc" id="L224">                TimePenalty = 1e3;</span>
+<span class="nc" id="L225">                break ;</span>
+            }
+            else{
+<span class="nc" id="L228">                TimePenalty = 0 ;</span>
+            }
+
+<span class="nc" id="L231">        }</span>
+<span class="nc" id="L232">        vectorInterface endPositionVector   = solarSystemCopy.get(12).getPositionVector() ;</span>
+
+<span class="nc" id="L234">        System.out.println(&quot;THRUST ARRAY &quot;);</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">        for(Thrust thrust :arrayOfThrustUpdate){</span>
+<span class="nc" id="L236">            System.out.println(&quot;YOU SHOULD SEE AN IMPACT -----------------------------------------------------&quot;  + Arrays.toString(thrust.getVector()) + &quot; start Time &quot;+ thrust.getStartTime() + &quot; Duration Time &quot; + thrust.getDuration());</span>
+
+        }
+
+<span class="nc" id="L240">        solarSystemCopy.get(12).print();</span>
+<span class="nc" id="L241">        System.out.println(&quot;Distance  From Titan : &quot; + Arrays.toString(new Vector(targetPositionVector.getX()-endPositionVector.getX() , targetPositionVector.getY() - endPositionVector.getY() , targetPositionVector.getZ() - endPositionVector.getZ() ).getVector()));</span>
+<span class="nc" id="L242">        System.out.println(&quot; &quot;);</span>
+
+<span class="nc" id="L244">        setVelocityPenalty(solarSystemCopy.get(12).getVelocityVector());</span>
+
+<span class="nc" id="L246">        System.out.println(&quot; END SPACESHIP STATS&quot;);</span>
+
+<span class="nc" id="L248">        return new Vector(targetPositionVector.getX()-endPositionVector.getX()</span>
+<span class="nc" id="L249">                        , targetPositionVector.getY()-endPositionVector.getY()</span>
+<span class="nc" id="L250">                        , targetPositionVector.getZ()-endPositionVector.getZ());</span>
+
+    }
+
+
+    /**
+     * Allows me to make a copy of the old Thrust set such that i can modify without
+     * changing the values of the previous thrusts
+     * @param Array - the array of thrusts that we want to copy
+     * @return - returns an array of thrust
+     */
+    public Thrust[] getPasByValueCopy(Thrust[] Array){
+
+<span class="nc" id="L263">        Thrust[] arrayOfThrustAddition = new Thrust[Array.length] ;</span>
+
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        for(int i = 0 ; i&lt;Array.length ; i++){</span>
+<span class="nc" id="L266">            Thrust thrust = Array[i] ;</span>
+
+<span class="nc" id="L268">            arrayOfThrustAddition[i] = new Thrust(thrust.getX() , thrust.getY() , thrust.getZ() ) ;</span>
+
+<span class="nc" id="L270">            arrayOfThrustAddition[i].setStartTime(thrust.getStartTime());</span>
+<span class="nc" id="L271">            arrayOfThrustAddition[i].setDuration(thrust.getDuration());</span>
+        }
+
+<span class="nc" id="L274">        return arrayOfThrustAddition ;</span>
+    }
+
+    /**
+     * Gives me the gradient for the gradient descent based on the new and old thrust set
+     * @param NewThrustArray  - the updated set of thrust set
+     * @param costOld - the previous set of confirmed thruster
+     * @param h- the step size/ the perturbation we have applied to the NewThrustArray
+     * @return - it returns the slope
+     */
+    public double getSlope(Thrust[] NewThrustArray, double costOld, double h) {
+<span class="nc" id="L285">        System.out.println();</span>
+<span class="nc" id="L286">        System.out.println(&quot;NEW COSTS CALCULATIONS SHOULD UPDATE -----------------------------------------------&quot;);</span>
+<span class="nc" id="L287">        double costNew = getCost(NewThrustArray);</span>
+
+<span class="nc" id="L289">        return (costNew - costOld) / h;</span>
+
+    }
+
+
+    /**
+     * Gives the cost of a particular set of thurst components, like a general penality. This will allows us to determine
+     * the impact of an individual change on the performance of the system
+     * @param thrusts - the set of thursts
+     * @return - give the cost / the efficacy of the set of thrust.
+     */
+    public double getCost(Thrust[] thrusts) {
+<span class="nc" id="L301">        vectorInterface distanceVec = simulate(thrusts);</span>
+<span class="nc" id="L302">        double distance = getModulus(distanceVec);</span>
+
+<span class="nc" id="L304">        double fuel = 0;</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        for (Thrust t : thrusts) {</span>
+<span class="nc" id="L306">            fuel += getModulus(getImpulse(t)) / 1000.0;  // kg</span>
+        }
+
+<span class="nc" id="L309">        double penalty = Math.max(0, fuel - fuelCap) * 1e4;</span>
+
+<span class="nc bnc" id="L311" title="All 2 branches missed.">        if(distance&lt;10000){</span>
+<span class="nc" id="L312">            return distance + penalty +  VelocityModulus + TimePenalty+ 1;</span>
+        }
+        else{
+<span class="nc" id="L315">            return distance + penalty + (100 / (distance + 1))  ;</span>
+
+        }
+    }
+
+    /**
+     * The amount of change we apply depending on the parameter  we will apply more or less change
+     * @param xi - the component we want to perturb
+     * @return - the perturbation we have to apply for a given xi
+     */
+    public double computePerturbation(double xi) {
+<span class="nc" id="L326">        double epsilon = 1e-2;</span>
+<span class="nc" id="L327">        return epsilon * Math.max(0, Math.abs(xi));</span>
+    }
+
+
+    /**
+     * Used for the gradient descent it is essentially the amount of changed applied to a given parameter
+     * @param t - this is the thrust component
+     * @param index - this allows us to determine what component we want to modify, whether we want to edit the
+     *              duration or the x thrust amongst other
+     * @param h - is the change that we want to apply
+     * @return - returns an updated thrust components with only one modification
+     */
+    public Thrust perturb(Thrust t, int index, double h) {
+<span class="nc" id="L340">        Thrust perturbed = new Thrust(t.getX(), t.getY(), t.getZ());</span>
+<span class="nc" id="L341">        perturbed.setStartTime(t.getStartTime());</span>
+<span class="nc" id="L342">        perturbed.setDuration(t.getDuration());</span>
+
+
+<span class="nc bnc" id="L345" title="All 6 branches missed.">        switch (index) {</span>
+<span class="nc" id="L346">            case 0 -&gt; perturbed.setX(t.getX() + h);</span>
+<span class="nc" id="L347">            case 1 -&gt; perturbed.setY(t.getY() + h);</span>
+<span class="nc" id="L348">            case 2 -&gt; perturbed.setZ(t.getZ() + h);</span>
+<span class="nc" id="L349">            case 3 -&gt; perturbed.setStartTime(t.getStartTime() + h);</span>
+<span class="nc" id="L350">            case 4 -&gt; perturbed.setDuration(t.getDuration() + h);</span>
+        }
+
+<span class="nc" id="L353">        return perturbed;</span>
+    }
+
+    /**
+     * This method will determine the stopping condition for the gradient descent which will happen if the rocket is
+     * within 10 km of the target , this can be tweaked later on for more accuracy
+     * @param distance  - this is the vector that is given by the simulation
+     * @return - will return true if the rocket is within a 10 km sphere around to the target
+     */
+    public boolean checkIfDistanceIsZero(vectorInterface distance){
+
+<span class="nc" id="L364">        boolean[] checkDistance  = new boolean[3];</span>
+<span class="nc" id="L365">        double[] distanceArray = distance.getVector() ;</span>
+
+<span class="nc bnc" id="L367" title="All 2 branches missed.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">            if(Math.abs(distanceArray[i]) &lt;=1){ // ten kilometers from target , i can change that later</span>
+<span class="nc" id="L369">                checkDistance[i] = true ;</span>
+            }
+        }
+<span class="nc" id="L372">        return checkDistance[0]&amp; checkDistance[1] &amp; checkDistance[2] ;</span>
+    }
+
+    /**
+     * Because I assume that the thrusts remain constant the impulse is the thrust times the duration of the thrust
+     * @param thrust - the force in newtons that the rocket exerts for a period of time
+     * @return - returns the effect of the thrust aka the impulse
+     */
+    public vectorInterface getImpulse(Thrust thrust){
+<span class="nc" id="L381">        double[] thrustVectorArray = thrust.getVector();</span>
+<span class="nc" id="L382">        double duration = thrust.getDuration() ;</span>
+
+<span class="nc bnc" id="L384" title="All 2 branches missed.">        for(int i = 0 ; i&lt;thrustVectorArray.length ; i++){</span>
+<span class="nc" id="L385">            thrustVectorArray[i]*= duration*STEPSIZE;</span>
+        }
+<span class="nc" id="L387">        return new Vector(thrustVectorArray[0] , thrustVectorArray[1] , thrustVectorArray[2]);</span>
+
+    }
+
+    /**
+     * It determines the modulus of the two velocities being the target Velocity and the current Velocity such that we
+     * can add to the penality for getting into orbit
+     * @param currentVelocity - the velocity computed through the simulation
+     */
+    public void setVelocityPenalty(vectorInterface currentVelocity){
+
+<span class="nc" id="L398">        double[] targetVelocityArray = targetVelocity.getVector() ;</span>
+<span class="nc" id="L399">        double[] currentVelocityArray = currentVelocity.getVector() ;</span>
+
+<span class="nc" id="L401">        double[] distanceVector = new double[targetVelocityArray.length] ;</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">        for(int i = 0 ; i&lt;distanceVector.length ; i++){</span>
+<span class="nc" id="L403">            distanceVector[i] = targetVelocityArray[i] - currentVelocityArray[i] ;</span>
+        }
+
+<span class="nc" id="L406">        Vector vector = new Vector(distanceVector[0] , distanceVector[1] , distanceVector[2]) ;</span>
+
+<span class="nc" id="L408">        VelocityModulus = getModulus(vector) ;</span>
+
+<span class="nc" id="L410">        System.out.println(&quot; Distance From Target Velocity : &quot;+ Arrays.toString(vector.getVector()));</span>
+
+<span class="nc" id="L412">    }</span>
+
+
+    /**
+     * Returns a boolean value whether the code should keep running or terminate
+     */
+    public boolean determineStoppingOfSimulation(vectorInterface projector ){
+
+<span class="nc" id="L420">        boolean[] shouldTerminate = new boolean[3] ;</span>
+<span class="nc" id="L421">        double[] projection = getProjection( projector, targetPositionVector).getVector();</span>
+<span class="nc" id="L422">        double[] target = targetPositionVector.getVector() ;</span>
+
+
+<span class="nc bnc" id="L425" title="All 2 branches missed.">        for(int i = 0 ; i&lt;target.length ; i++ ){</span>
+<span class="nc bnc" id="L426" title="All 2 branches missed.">            if(Math.abs(target[i] - projection[i] ) &lt;10){</span>
+<span class="nc" id="L427">                shouldTerminate[i] = true ;</span>
+            }else{
+<span class="nc" id="L429">                shouldTerminate[i] = false ;</span>
+            }
+        }
+
+<span class="nc" id="L433">        return shouldTerminate[0] &amp; shouldTerminate[1] &amp; shouldTerminate[2];</span>
+    }
+
+
+
+
+
+
+    public vectorInterface scale(vectorInterface vector , double scale){
+<span class="nc" id="L442">        double[] vectorArray = vector.getVector() ;</span>
+<span class="nc" id="L443">        double[] scaledArray = new double[vectorArray.length];</span>
+
+<span class="nc bnc" id="L445" title="All 2 branches missed.">        for(int i = 0 ; i&lt;3 ; i++){</span>
+<span class="nc" id="L446">            scaledArray[i] = scale*vectorArray[i] ;</span>
+        }
+<span class="nc" id="L448">        return new Vector(scaledArray[0] , scaledArray[1] , scaledArray[2]);</span>
+    }
+
+
+    /**
+     * As the name inidcates it returns the project of a vector onto another such that i can figure out when i should terminate the
+     * simulation, because if the rocket hasnt reach the target by the time it is at that altitude then there is no point in continuing
+     * @param projector - the vector that projects its image onto the target
+     * @param target - the projectors target
+     * @return - the image / shadow of the projector on  the target
+     */
+    public vectorInterface getProjection(vectorInterface projector , vectorInterface target){
+
+<span class="nc" id="L461">        vectorInterface projection = new Vector(target.getX() , target.getY() , target.getZ()) ;</span>
+
+<span class="nc" id="L463">        double dotProduct = dotProduct(projector ,  target) ;</span>
+<span class="nc" id="L464">        double modulus  = getModulus(target);</span>
+
+<span class="nc" id="L466">        double multiplier = dotProduct/Math.pow(modulus,2) ;</span>
+<span class="nc" id="L467">        projection.scale(multiplier);</span>
+
+
+
+<span class="nc" id="L471">        return projection ;</span>
+    }
+
+
+
+    public double dotProduct(vectorInterface vector1 , vectorInterface vector2){
+
+<span class="nc" id="L478">        double[] vector1Array = vector1.getVector() ;</span>
+<span class="nc" id="L479">        double[] vector2Array = vector2.getVector() ;</span>
+
+<span class="nc" id="L481">        double sum = 0 ;</span>
+
+<span class="nc bnc" id="L483" title="All 2 branches missed.">        for(int i = 0; i&lt;vector2Array.length ; i++){</span>
+<span class="nc" id="L484">            sum+= vector1Array[i]*vector2Array[i] ;</span>
+        }
+
+<span class="nc" id="L487">        return sum ;</span>
+
+    }
+
+
+    /**
+     * Essentially it returns the modulus of a vector
+     * @param vector - the vector which we want to compute the modulus for
+     * @return
+     */
+    public double getModulus( vectorInterface vector){
+
+<span class="nc" id="L499">        double[] vectorArray = vector.getVector() ;</span>
+<span class="nc" id="L500">        double sum = 0 ;</span>
+
+<span class="nc bnc" id="L502" title="All 2 branches missed.">        for(double value : vectorArray){</span>
+<span class="nc" id="L503">            sum+= Math.pow(value , 2) ;</span>
+        }
+
+<span class="nc" id="L506">        return Math.sqrt(sum);</span>
+
+    }
+
+    public vectorInterface getDistance(){
+<span class="nc" id="L511">        return null ;</span>
+
+    }
+
+
+
+
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

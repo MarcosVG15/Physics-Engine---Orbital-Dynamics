@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TEST.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.RocketMissson</a> &gt; <span class="el_source">TEST.java</span></div><h1>TEST.java</h1><pre class="source lang-java linenums">package Physics_Engine.RocketMissson;
+
+import Physics_Engine.GeneralComponents.AstralObject;
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.SolarSystem;
+import Physics_Engine.GeneralComponents.Vector;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+<span class="nc" id="L11">public class TEST {</span>
+    public static void main(String[] args){
+<span class="nc" id="L13">        Controller controller = new Controller() ;</span>
+
+
+        //runStage1() ;
+<span class="nc" id="L17">    }</span>
+
+    public static void runStage1(){
+
+<span class="nc" id="L21">        long startTime = System.currentTimeMillis() ;</span>
+
+<span class="nc" id="L23">        SolarSystem solarSystem = new SolarSystem();</span>
+//        GradientDescentStage1 gradientDescentStage1 = new GradientDescentStage1(solarSystem.getSolarSystem()
+//                , new Vector(-146993666.454047-600,-29700654.885264-600,27287.513994+600 )
+//                , 60_000
+//                ,1);
+
+       // System.out.println(Arrays.toString(gradientDescentStage1.gradientDescent()));
+<span class="nc" id="L30">        long endTime = System.currentTimeMillis() ;</span>
+
+<span class="nc" id="L32">        double timeLapsed = (endTime - startTime)/1000 ;</span>
+
+<span class="nc" id="L34">        System.out.println(&quot;Time Taken For Stage1 : &quot;+ timeLapsed);</span>
+
+<span class="nc" id="L36">    }</span>
+    public static void runStage2(){
+
+<span class="nc" id="L39">        long startTime = System.currentTimeMillis() ;</span>
+
+<span class="nc" id="L41">        SolarSystem solarSystem = new SolarSystem();</span>
+<span class="nc" id="L42">        ArrayList&lt;SpaceObject&gt; solar = solarSystem.getSolarSystem() ;</span>
+<span class="nc" id="L43">        AstralObject titan = (AstralObject) solar.get(8) ;</span>
+<span class="nc" id="L44">        GradientDescentStage2 gradientDescentStage2 = new GradientDescentStage2(solarSystem.getSolarSystem()</span>
+                , new Vector(1410758275.936530,111700556.947724,-57922927.710213)
+                , new Vector(0,0,0),50_000 ,3);
+
+<span class="nc" id="L48">        System.out.println(Arrays.toString(gradientDescentStage2.gradientDescent()));</span>
+<span class="nc" id="L49">        long endTime = System.currentTimeMillis() ;</span>
+
+<span class="nc" id="L51">        double timeLapsed = (endTime - startTime)/1000 ;</span>
+
+<span class="nc" id="L53">        System.out.println(&quot;Time Taken For Stage2 : &quot;+ timeLapsed);</span>
+
+<span class="nc" id="L55">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

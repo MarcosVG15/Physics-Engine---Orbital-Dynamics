@@ -146,7 +146,7 @@ public class SolarSystem implements SolarSystemInterface {
      * @param Earth - coordinates of Earth - start coordinates
      * @return
      */
-    private double[] getBestInitialPositionCoordinates(double[] Titan , double[] Earth){
+    public double[] getBestInitialPositionCoordinates(double[] Titan , double[] Earth){
 
         double [] InitialPosition = new double[3] ;
         for( int i = 0 ; i< 3 ; i++){

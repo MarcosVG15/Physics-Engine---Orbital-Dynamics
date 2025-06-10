@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.SpectralDefferedInProgress</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package Physics_Engine.SpectralDefferedInProgress;
+
+
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+<span class="nc" id="L9">public class Main {</span>
+    public static void  main(String[] args){
+
+<span class="nc" id="L12">        QIJMatrix matrix = new QIJMatrix(2 , 4);</span>
+<span class="nc" id="L13">        System.out.println(Arrays.toString(matrix.getAllTs()));</span>
+<span class="nc" id="L14">        System.out.println(matrix.LagrangePolynomial(2.2 , 2.6 ,matrix.getAllTs()));</span>
+
+<span class="nc" id="L16">        double[][] matrixQij = matrix.QijMatrix(10);</span>
+
+<span class="nc bnc" id="L18" title="All 2 branches missed.">        for(int i = 0 ; i&lt;matrixQij.length ; i++){</span>
+<span class="nc" id="L19">            System.out.println(Arrays.toString(matrixQij[i]));</span>
+        }
+
+<span class="nc" id="L22">    }</span>
+
+    public static void HeunTest(){
+<span class="nc bnc" id="L25" title="All 2 branches missed.">        for( int i = 0 ; i&lt;10 ; i++){</span>
+<span class="nc" id="L26">            SolarSystem s = SolarSystem.getInstance();</span>
+<span class="nc" id="L27">            ArrayList&lt;SpaceObject&gt; solarSystem = s.getSolarSystem();</span>
+
+<span class="nc bnc" id="L29" title="All 2 branches missed.">            for (SpaceObject a: solarSystem){</span>
+<span class="nc" id="L30">                a.print();</span>
+<span class="nc" id="L31">            }</span>
+
+<span class="nc" id="L33">            HEUN_2ORDER solver = new HEUN_2ORDER();</span>
+<span class="nc" id="L34">            AccelerationFunction acceleration = new AccelerationFunction();</span>
+<span class="nc" id="L35">            VelocityFunction velocity = new VelocityFunction();</span>
+
+<span class="nc" id="L37">            solver.ComputeODE(0,s,acceleration,velocity);</span>
+        }
+<span class="nc" id="L39">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

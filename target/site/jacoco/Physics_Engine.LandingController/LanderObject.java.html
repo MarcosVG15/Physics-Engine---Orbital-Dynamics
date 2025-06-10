@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LanderObject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.LandingController</a> &gt; <span class="el_source">LanderObject.java</span></div><h1>LanderObject.java</h1><pre class="source lang-java linenums">package Physics_Engine.LandingController; // Corrected package declaration
+
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject; // Import the SpaceObject interface from GeneralComponents
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface; // Import the vectorInterface for position and velocity from GeneralComponents
+
+/**
+ * Represents the lander object with its physical properties and state.
+ * This class implements the SpaceObject interface, allowing it to be part of a larger solar system simulation.
+ */
+public class LanderObject implements SpaceObject {
+    private vectorInterface position; // The current position vector of the lander (e.g., x, y, z coordinates).
+    private vectorInterface velocity; // The current velocity vector of the lander (e.g., vx, vy, vz components).
+    private double mass; // The mass of the lander in kilograms.
+    private String name; // The name of the lander (e.g., &quot;Lunar Lander&quot;).
+    private double orientation; // The current orientation (angle) of the lander in radians, typically around the Z-axis for 2D.
+    private double angularVelocity; // The current angular velocity (rate of rotation) of the lander in radians per second.
+
+    /**
+     * Constructor for the LanderObject.
+     *
+     * @param position The initial position vector of the lander.
+     * @param velocity The initial velocity vector of the lander.
+     * @param mass The mass of the lander.
+     * @param name The name of the lander.
+     * @param orientation The initial orientation (angle) of the lander in radians.
+     * @param angularVelocity The initial angular velocity of the lander in radians per second.
+     */
+<span class="fc" id="L28">    public LanderObject(vectorInterface position, vectorInterface velocity, double mass, String name, double orientation, double angularVelocity) {</span>
+<span class="fc" id="L29">        this.position = position;</span>
+<span class="fc" id="L30">        this.velocity = velocity;</span>
+<span class="fc" id="L31">        this.mass = mass;</span>
+<span class="fc" id="L32">        this.name = name;</span>
+<span class="fc" id="L33">        this.orientation = orientation;</span>
+<span class="fc" id="L34">        this.angularVelocity = angularVelocity;</span>
+<span class="fc" id="L35">    }</span>
+
+    @Override
+    public vectorInterface getVelocityVector() {
+<span class="fc" id="L39">        return velocity;</span>
+    }
+
+    @Override
+    public vectorInterface getPositionVector() {
+<span class="fc" id="L44">        return position;</span>
+    }
+
+    @Override
+    public void setVelocity(vectorInterface v) {
+<span class="nc" id="L49">        this.velocity = v;</span>
+<span class="nc" id="L50">    }</span>
+
+    @Override
+    public void setPosition(vectorInterface v) {
+<span class="nc" id="L54">        this.position = v;</span>
+<span class="nc" id="L55">    }</span>
+
+    @Override
+    public void setName(String name) {
+<span class="nc" id="L59">        this.name = name;</span>
+<span class="nc" id="L60">    }</span>
+
+    @Override
+    public void print() {
+<span class="fc" id="L64">        System.out.println(&quot;Lander: &quot; + name);</span>
+<span class="fc" id="L65">        System.out.println(&quot;  Position: &quot; + position.getX() + &quot;, &quot; + position.getY() + &quot;, &quot; + position.getZ());</span>
+<span class="fc" id="L66">        System.out.println(&quot;  Velocity: &quot; + velocity.getX() + &quot;, &quot; + velocity.getY() + &quot;, &quot; + velocity.getZ());</span>
+<span class="fc" id="L67">        System.out.println(&quot;  Mass: &quot; + mass);</span>
+<span class="fc" id="L68">        System.out.println(&quot;  Orientation (radians): &quot; + orientation);</span>
+<span class="fc" id="L69">        System.out.println(&quot;  Angular Velocity (radians/s): &quot; + angularVelocity);</span>
+<span class="fc" id="L70">    }</span>
+
+    @Override
+    public double getMass() {
+<span class="fc" id="L74">        return mass;</span>
+    }
+
+    @Override
+    public String getName() {
+<span class="fc" id="L79">        return name;</span>
+    }
+
+    @Override
+    public boolean hasHitPlanet(SpaceObject astralObject, double Radius) {
+<span class="fc" id="L84">        double distance = this.position.distance(astralObject.getPositionVector());</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        return distance &lt;= Radius;</span>
+    }
+
+    @Override
+    public SpaceObject clone() {
+<span class="fc" id="L90">        return null;</span>
+    }
+
+    /**
+     * Gets the current orientation (angle) of the lander.
+     * @return The orientation angle in radians.
+     */
+    public double getOrientation() {
+<span class="fc" id="L98">        return orientation;</span>
+    }
+
+    /**
+     * Sets the orientation (angle) of the lander.
+     * @param orientation The new orientation angle in radians.
+     */
+    public void setOrientation(double orientation) {
+<span class="nc" id="L106">        this.orientation = orientation;</span>
+<span class="nc" id="L107">    }</span>
+
+    /**
+     * Gets the current angular velocity of the lander.
+     * @return The angular velocity in radians per second.
+     */
+    public double getAngularVelocity() {
+<span class="fc" id="L114">        return angularVelocity;</span>
+    }
+
+    /**
+     * Sets the angular velocity of the lander.
+     * @param angularVelocity The new angular velocity in radians per second.
+     */
+    public void setAngularVelocity(double angularVelocity) {
+<span class="nc" id="L122">        this.angularVelocity = angularVelocity;</span>
+<span class="nc" id="L123">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

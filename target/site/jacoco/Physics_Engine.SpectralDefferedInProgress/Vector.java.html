@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Vector.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.SpectralDefferedInProgress</a> &gt; <span class="el_source">Vector.java</span></div><h1>Vector.java</h1><pre class="source lang-java linenums">package Physics_Engine.SpectralDefferedInProgress;
+
+
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+/**
+ * Allows for opperations and copy of vectors ;
+ */
+public class Vector implements vectorInterface {
+
+    private double[] values ;
+
+    /**
+     *
+     * @param x - position in x plane
+     * @param y - position in y plane
+     * @param z - position in z plane
+     */
+<span class="nc" id="L19">    public Vector(double x , double  y , double z){</span>
+<span class="nc" id="L20">        this.values = new double[]{x, y, z};;</span>
+
+<span class="nc" id="L22">    }</span>
+
+    @Override
+    public double[] getVector() {
+<span class="nc" id="L26">        return values;</span>
+    }
+
+    /**
+     * computes the norm of the current vector
+     * @return - the norm of the vector
+     */
+    @Override
+    public double computeNorm() {
+<span class="nc" id="L35">        double sum = 0;</span>
+
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        for (double value : values) {</span>
+<span class="nc" id="L38">            sum += Math.pow(value,2);</span>
+        }
+
+<span class="nc" id="L41">        return Math.sqrt(sum);</span>
+    }
+
+    /**
+     * copies the vector without passing by reference
+     * @param v - vector that we want to copy
+     */
+    @Override
+    public void setVector(vectorInterface v) {
+<span class="nc" id="L50">        values[0] = v.getX();</span>
+<span class="nc" id="L51">        values[1] = v.getY();</span>
+<span class="nc" id="L52">        values[2] = v.getZ();</span>
+<span class="nc" id="L53">    }</span>
+
+    public void print(String  type ){
+<span class="nc" id="L56">        System.out.printf(type+ &quot;Vector : x : %f , | y : %f , | z : %f \n&quot;</span>
+<span class="nc" id="L57">                , values[0] , values[1], values[2]);</span>
+<span class="nc" id="L58">    }</span>
+
+    @Override
+    public double distance(vectorInterface other) {
+
+<span class="nc" id="L63">        double sum = 0 ;</span>
+<span class="nc" id="L64">        double[] arrayOfVector = other.getVector() ;</span>
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        for(int i = 0 ; i&lt;arrayOfVector.length ; i++){</span>
+<span class="nc" id="L67">            sum+= Math.pow((values[i] - arrayOfVector[i]),2);</span>
+        }
+
+<span class="nc" id="L70">        return Math.sqrt(sum);</span>
+    }
+
+    @Override
+    public void add(vectorInterface vector2) {
+<span class="nc" id="L75">        double[] vector2Array = vector2.getVector() ;</span>
+
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        for(int i = 0 ; i&lt;vector2Array.length ; i++){</span>
+<span class="nc" id="L78">            values[i]+= vector2Array[i] ;</span>
+        }
+
+
+<span class="nc" id="L82">    }</span>
+
+    @Override
+    public void scale(double scale) {
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        for(int i = 0 ; i&lt;values.length;i++){</span>
+<span class="nc" id="L88">            values[i]*= scale ;</span>
+        }
+
+<span class="nc" id="L91">    }</span>
+
+
+
+    @Override
+    public double getX() {
+<span class="nc" id="L97">        return values[0];</span>
+    }
+
+    @Override
+    public double getY() {
+<span class="nc" id="L102">        return values[1];</span>
+    }
+
+    @Override
+    public double getZ() {
+<span class="nc" id="L107">        return values[2];</span>
+    }
+    @Override
+    public void setX(double X) {
+<span class="nc" id="L111">        values[0] = X;</span>
+<span class="nc" id="L112">    }</span>
+
+    @Override
+    public void setY(double Y) {
+<span class="nc" id="L116">        values[1]= Y;</span>
+<span class="nc" id="L117">    }</span>
+
+    @Override
+    public void setZ(double Z) {
+<span class="nc" id="L121">        values[2] = Z;</span>
+<span class="nc" id="L122">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

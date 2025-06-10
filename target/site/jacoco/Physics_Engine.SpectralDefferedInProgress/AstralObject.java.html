@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AstralObject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.SpectralDefferedInProgress</a> &gt; <span class="el_source">AstralObject.java</span></div><h1>AstralObject.java</h1><pre class="source lang-java linenums">package Physics_Engine.SpectralDefferedInProgress;
+
+import Physics_Engine.GeneralComponents.Interfaces.SpaceObject;
+import Physics_Engine.GeneralComponents.Interfaces.vectorInterface;
+
+import java.util.ArrayList;
+
+public class AstralObject implements SpaceObject {
+    private Vector velocity ;
+    private Vector position ;
+    private double Mass;
+    private String Name ;
+    private ArrayList&lt;vectorInterface&gt; positionHistory ;
+    private ArrayList&lt;vectorInterface&gt; velocityHistory ;
+
+<span class="nc" id="L16">    public AstralObject(Vector velocity, Vector position, double Mass) {</span>
+<span class="nc" id="L17">        this.Mass     = Mass;</span>
+        // make internal copies instead of aliasing
+<span class="nc" id="L19">        this.position = new Vector(position.getX(),</span>
+<span class="nc" id="L20">                position.getY(),</span>
+<span class="nc" id="L21">                position.getZ());</span>
+<span class="nc" id="L22">        this.velocity = new Vector(velocity.getX(),</span>
+<span class="nc" id="L23">                velocity.getY(),</span>
+<span class="nc" id="L24">                velocity.getZ());</span>
+
+<span class="nc" id="L26">        positionHistory = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L27">        velocityHistory = new ArrayList&lt;&gt;();</span>
+
+        // now these snapshots are of your own internal data
+<span class="nc" id="L30">        positionHistory.add(</span>
+<span class="nc" id="L31">                new Vector(position.getX(),</span>
+<span class="nc" id="L32">                        position.getY(),</span>
+<span class="nc" id="L33">                        position.getZ())</span>
+        );
+<span class="nc" id="L35">        velocityHistory.add(</span>
+<span class="nc" id="L36">                new Vector(velocity.getX(),</span>
+<span class="nc" id="L37">                        velocity.getY(),</span>
+<span class="nc" id="L38">                        velocity.getZ())</span>
+        );
+<span class="nc" id="L40">    }</span>
+
+
+    public double getMass(){
+<span class="nc" id="L44">        return Mass;</span>
+    }
+
+    @Override
+    public String getName() {
+<span class="nc" id="L49">        return Name;</span>
+    }
+
+    @Override
+    public boolean hasHitPlanet(SpaceObject astralObject, double Radius) {
+<span class="nc" id="L54">        return false;</span>
+    }
+
+    @Override
+    public SpaceObject clone() {
+
+<span class="nc" id="L60">        AstralObject astralObject = new AstralObject(new Vector(velocity.getX(), velocity.getY(), velocity.getZ())</span>
+<span class="nc" id="L61">                , new Vector(position.getX(), position.getY(), position.getZ()), Mass);</span>
+
+<span class="nc" id="L63">        astralObject.setName(Name);</span>
+<span class="nc" id="L64">        return astralObject;</span>
+    }
+    public void setPosition(vectorInterface v) {
+<span class="nc" id="L67">        position.setVector(v);</span>
+<span class="nc" id="L68">        positionHistory.add(</span>
+<span class="nc" id="L69">                new Vector(position.getX(), position.getY(), position.getZ())</span>
+        );
+<span class="nc" id="L71">    }</span>
+
+    public void setVelocity(vectorInterface v) {
+<span class="nc" id="L74">        velocity.setVector(v);</span>
+<span class="nc" id="L75">        velocityHistory.add(</span>
+<span class="nc" id="L76">                new Vector(velocity.getX(), velocity.getY(), velocity.getZ())</span>
+        );
+<span class="nc" id="L78">    }</span>
+
+
+
+    public vectorInterface getVelocityVector(){
+<span class="nc" id="L83">        return this.velocity;</span>
+    }
+    public vectorInterface getPositionVector(){
+<span class="nc" id="L86">        return this.position;</span>
+    }
+
+
+
+    public ArrayList&lt;vectorInterface&gt; getVelocityLog(){
+<span class="nc" id="L92">        return velocityHistory;</span>
+    }
+    public ArrayList&lt;vectorInterface&gt; getPositionLog(){
+<span class="nc" id="L95">        return positionHistory;</span>
+    }
+
+
+    public void print(){
+<span class="nc" id="L100">        position.print(Name + &quot;  Position : &quot;);</span>
+<span class="nc" id="L101">        velocity.print(Name + &quot;  Velocity : &quot;);</span>
+<span class="nc" id="L102">        System.out.println(&quot;&quot;);</span>
+<span class="nc" id="L103">    }</span>
+
+    public void setName(String name){
+<span class="nc" id="L106">        this.Name = name;</span>
+<span class="nc" id="L107">    }</span>
+
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LanderODEFunction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">your-artifact</a> &gt; <a href="index.source.html" class="el_package">Physics_Engine.LandingController</a> &gt; <span class="el_source">LanderODEFunction.java</span></div><h1>LanderODEFunction.java</h1><pre class="source lang-java linenums">package Physics_Engine.LandingController;
+
+import static Physics_Engine.LandingController.Constants.*;
+
+
+public class LanderODEFunction  {
+    private LanderController controller;
+    private WindModel windModel;
+
+<span class="fc" id="L10">    public LanderODEFunction(LanderController controller, WindModel windModel) {</span>
+<span class="fc" id="L11">        this.controller = controller;</span>
+<span class="fc" id="L12">        this.windModel = windModel;</span>
+<span class="fc" id="L13">    }</span>
+
+
+
+    /**
+     * Computes the derivative of the state vector for the Lander.
+     * The state vector is [x, y, vx, vy, theta, omega].
+     *
+     * @param state The current state vector [x, y, vx, vy, theta, omega].
+     * @param time The current time.
+     * @param params Optional parameters needed for the derivative computation.
+     * @return The derivative of the state vector [dx/dt, dy/dt, dvx/dt, dvy/dt, dtheta/dt, domega/dt].
+     */
+    
+    public double[] computeDerivative(double[] state, double time, double[] params) {
+        // Convert raw state array to LanderState object for easier access and readability
+<span class="fc" id="L29">        LanderState currentLanderState = new LanderState(</span>
+            state[0], state[1], state[2], state[3], state[4], state[5]
+        );
+
+        // Get control inputs (thrust and torque) from the controller based on the current state
+<span class="fc" id="L34">        ControlInputs inputs = controller.calculateControlInputs(currentLanderState);</span>
+
+        // Get wind forces at the current time
+<span class="fc" id="L37">        double wind_force_x = windModel.getWindX(time);</span>
+<span class="fc" id="L38">        double wind_force_y = windModel.getWindY(time);</span>
+
+        // Calculate the derivatives of the state variables based on physics equations:
+        // dx/dt = vx (horizontal velocity)
+<span class="fc" id="L42">        double dx_dt = currentLanderState.vx;</span>
+        // dy/dt = vy (vertical velocity)
+<span class="fc" id="L44">        double dy_dt = currentLanderState.vy;</span>
+        // dvx/dt = horizontal acceleration (thrust component + wind force)
+<span class="fc" id="L46">        double dvx_dt = inputs.thrust * Math.sin(currentLanderState.theta) + wind_force_x;</span>
+        // dvy/dt = vertical acceleration (thrust component - gravity + wind force)
+<span class="fc" id="L48">        double dvy_dt = inputs.thrust * Math.cos(currentLanderState.theta) - GRAVITY_TITAN + wind_force_y;</span>
+        // dtheta/dt = omega (angular velocity)
+<span class="fc" id="L50">        double dtheta_dt = currentLanderState.omega;</span>
+        // domega/dt = angular acceleration (torque)
+<span class="fc" id="L52">        double domega_dt = inputs.torque;</span>
+
+        // Return the array of derivatives
+<span class="fc" id="L55">        return new double[]{dx_dt, dy_dt, dvx_dt, dvy_dt, dtheta_dt, domega_dt};</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

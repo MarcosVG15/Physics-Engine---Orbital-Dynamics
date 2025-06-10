@@ -38,7 +38,7 @@ public class AccelerationFunction implements function {
                 summation+= G*MassDividedModulus*(current.getMass());
 
             }
-            accelerationValues[i] = -summation;
+            accelerationValues[i] = -1*summation;
 
         }
 
